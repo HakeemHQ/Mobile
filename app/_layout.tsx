@@ -1,18 +1,41 @@
 import '@/global.css';
 
+import { useEffect } from 'react';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 export {
   ErrorBoundary,
 } from 'expo-router';
 
 export default function RootLayout() {
+  const [loaded, error] = useFonts({
+    'PlusJakarta-Regular': require('../assets/fonts/PlusJakartaSans-Regular.ttf'),
+    'PlusJakarta-Medium': require('../assets/fonts/PlusJakartaSans-Medium.ttf'),
+    'PlusJakarta-SemiBold': require('../assets/fonts/PlusJakartaSans-SemiBold.ttf'),
+    'PlusJakarta-Bold': require('../assets/fonts/PlusJakartaSans-Bold.ttf'),
+    'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
+    'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
+    'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
+    'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
 
   return (
-    <>
-      <Stack>
-        <Stack.Screen  name='index' options={{headerTitleAlign:'center' , headerTitle:'Hakeem'}} />
-      </Stack>
-    </>
+    <Stack>
+      <Stack.Screen name="index" options={{ headerTitleAlign: 'center', headerTitle: 'Hakeem' }} />
+    </Stack>
   );
 }

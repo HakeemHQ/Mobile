@@ -56,3 +56,15 @@
     --chart-5: 340 75% 55%;
   }
 }
+
+@layer utilities {
+  .text-header {
+    @apply font-inter-bold text-2xl leading-tight;
+  }
+  .text-subheader {
+    @apply font-inter-bold text-xl leading-tight;
+  }
+  .text-regular {
+    @apply font-inter-regular text-base leading-normal;
+  }
+}
