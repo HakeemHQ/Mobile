@@ -1,4 +1,5 @@
 const { hairlineWidth } = require('nativewind/theme');
+const { colors } = require("./lib/theme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -8,18 +9,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        ...colors,
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
+          ...colors.primary,
+          DEFAULT: 'hsl(var(--primary))',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
+          ...colors.secondary,
+          DEFAULT: 'hsl(var(--secondary))',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
