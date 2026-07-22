@@ -34,8 +34,9 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack>
+    <Stack >
       <Stack.Screen name="index" options={{ headerTitleAlign: 'center', headerTitle: 'Hakeem' }} />
     </Stack>
   );
 }
+
