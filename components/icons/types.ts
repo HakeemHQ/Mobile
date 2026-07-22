@@ -25,6 +25,9 @@ export interface IconProps extends Omit<SvgProps, 'color' | 'width' | 'height'> 
 
   /** Style object */
   style?: StyleProp<ViewStyle>;
+
+  /** Variant of the icon, useful for active tabs */
+  variant?: 'outline' | 'solid';
 }
 
 export type IconName =
