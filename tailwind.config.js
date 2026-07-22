@@ -1,4 +1,5 @@
 const { hairlineWidth } = require('nativewind/theme');
+const {colors}= require('./lib/theme/colors');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -7,19 +8,32 @@ module.exports = {
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
+      fontFamily: {
+        'inter-regular': ['Inter-Regular'],
+        'inter-medium': ['Inter-Medium'],
+        'inter-semibold': ['Inter-SemiBold'],
+        'inter-bold': ['Inter-Bold'],
+        'jakarta-regular': ['PlusJakarta-Regular'],
+        'jakarta-medium': ['PlusJakarta-Medium'],
+        'jakarta-semibold': ['PlusJakarta-SemiBold'],
+        'jakarta-bold': ['PlusJakarta-Bold'],
+      },
       colors: {
+        ...colors,
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
+          ...colors.primary,
+          DEFAULT: 'hsl(var(--primary))',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
+          ...colors.secondary,
+          DEFAULT: 'hsl(var(--secondary))',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
