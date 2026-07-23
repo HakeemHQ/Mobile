@@ -8,16 +8,24 @@ import * as Updates from 'expo-updates';
 // Import all locales
 import enOnboarding from './EN/onboarding.json';
 import arOnboarding from './AR/onboarding.json';
+import enOnboarding2 from './EN/onboarding2.json';
+import arOnboarding2 from './AR/onboarding2.json';
+import enOnboarding3 from './EN/onboarding3.json';
+import arOnboarding3 from './AR/onboarding3.json';
 import enCommon from './EN/common.json';
 import arCommon from './AR/common.json';
 
 const resources = {
   en: {
     onboarding: enOnboarding,
+    onboarding2: enOnboarding2,
+    onboarding3: enOnboarding3,
     common: enCommon,
   },
   ar: {
     onboarding: arOnboarding,
+    onboarding2: arOnboarding2,
+    onboarding3: arOnboarding3,
     common: arCommon,
   },
 };
@@ -78,8 +86,6 @@ export const setLanguage = async (lng: 'ar' | 'en' | 'auto') => {
   if (I18nManager.isRTL !== isRTL) {
     I18nManager.allowRTL(isRTL);
     I18nManager.forceRTL(isRTL);
-    // Reload the app to apply RTL changes
-   
   }
 };
 
