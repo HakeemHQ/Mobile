@@ -31,7 +31,7 @@ export default function Index() {
   }
 
   if (isFirstLaunch) {
-    return <Redirect href="/onboarding" />;
+    return <Redirect href="/(onboarding)" />;
   }
 
   return <Redirect href="/(tabs)" />;
