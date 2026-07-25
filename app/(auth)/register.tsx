@@ -1,4 +1,5 @@
 import { View, Text, TextInput, Pressable, ScrollView } from 'react-native';
+import { InputField } from '../../components/ui/InputField';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -10,35 +11,6 @@ import { LockOpenIcon } from '../../components/icons/LockOpenIcon';
 import { EyeOffIcon } from '../../components/icons/EyeOffIcon';
 import { ViewIcon } from '../../components/icons/ViewIcon';
 
-function InputField({ 
-  label, 
-  icon: Icon, 
-  placeholder, 
-  secureTextEntry = false, 
-  keyboardType = 'default',
-  rightIcon: RightIcon,
-  onRightIconPress
-}: any) {
-  return (
-    <View className="mb-4">
-      <Text className="text-xs font-jakarta-medium text-text-500 mb-2">{label}</Text>
-      <View className="flex-row items-center bg-bg rounded-2xl px-4 h-14">
-        <Icon size={20} color="text2.400" />
-        <TextInput 
-          className="flex-1 ml-3 text-base font-inter-regular text-text-500 placeholder:text-text2-400"
-          placeholder={placeholder}
-          secureTextEntry={secureTextEntry}
-          keyboardType={keyboardType}
-        />
-        {RightIcon && (
-          <Pressable onPress={onRightIconPress} className="p-2 -mr-2">
-            <RightIcon size={20} color="text2.400" />
-          </Pressable>
-        )}
-      </View>
-    </View>
-  );
-}
 
 export default function RegisterScreen() {
   const [isChecked, setIsChecked] = useState(false);
