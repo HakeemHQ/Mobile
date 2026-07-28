@@ -65,6 +65,24 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => <User02Icon size={24} color={color as string} variant={focused ? 'solid' : 'outline'} />,
         }}
       />
+      <Tabs.Screen
+        name="privacy"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="delete-account"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="change-password"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

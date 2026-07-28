@@ -1,18 +1,21 @@
 import * as React from "react"
 import Svg, { Path, Circle } from "react-native-svg"
-import type { SvgProps } from "react-native-svg"
+import { IconProps } from './types';
+import { resolveIconColor } from './utils';
 
-export function MaleIcon(props: SvgProps) {
+export function MaleIcon({ size = 24, color, strokeWidth = 1.5, style, ...props }: IconProps) {
+  const activeColor = resolveIconColor(color);
   return (
     <Svg
-      width={props.size || 24}
-      height={props.size || 24}
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={props.color || "currentColor"}
-      strokeWidth={2}
+      stroke={activeColor || "currentColor"}
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
+      style={style}
       {...props}
     >
       <Circle cx={10} cy={14} r={5} />

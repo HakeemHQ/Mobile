@@ -44,3 +44,10 @@ export { NotificationIcon as Notification01Icon } from './NotificationIcon';
 export { StethoscopeIcon as Stethoscope02Icon } from './StethoscopeIcon';
 export { TimeIcon as Time02Icon } from './TimeIcon';
 export { UserIcon as User02Icon } from './UserIcon';
+
+export * from './FaceIdIcon';
+export * from './LaptopIcon';
+export * from './InfoCircleIcon';
+export * from './ChevronRightIcon';
+export * from './LockIcon';
+export * from './CheckCircleIcon';
