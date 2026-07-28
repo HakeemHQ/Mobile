@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-community/datetimepicker": "9.1.0",
     "@rn-primitives/portal": "~1.4.0",
     "@rn-primitives/slot": "^1.5.2",
     "class-variance-authority": "^0.7.1",
@@ -30,6 +31,7 @@
     "nativewind": "^4.2.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-hook-form": "^7.83.0",
     "react-i18next": "^17.0.11",
     "react-native": "0.86.0",
     "react-native-reanimated": "4.5.0",

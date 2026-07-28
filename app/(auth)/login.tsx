@@ -1,8 +1,11 @@
-import { View, Text, TextInput, Pressable, ScrollView } from 'react-native';
+import { View, Text, TextInput, Pressable, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { InputField } from '../../components/ui/InputField';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { apiFetch, saveTokens } from '../../lib/api';
+import { GoogleIcon } from '../../components/icons/GoogleIcon';
 import { ArrowLeft02Icon } from '../../components/icons/ArrowLeft02Icon';
 import { Mail01Icon } from '../../components/icons/Mail01Icon';
 import { LockOpenIcon } from '../../components/icons/LockOpenIcon';
@@ -13,53 +16,45 @@ import { ShieldIcon } from '../../components/icons/ShieldIcon';
 
 export default function LoginScreen() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [globalError, setGlobalError] = useState('');
+  const { control, handleSubmit, setError, formState: { errors } } = useForm({
+    mode: 'onChange',
+    defaultValues: { email: '', password: '' }
+  });
 
-  const validateEmail = (text: string) => {
-    setEmail(text);
-    if (!text) {
-      setEmailError('Email is required');
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) {
-      setEmailError('Please enter a valid email address');
-    } else {
-      setEmailError('');
-    }
-  };
-
-  const validatePassword = (text: string) => {
-    setPassword(text);
-    if (!text) {
-      setPasswordError('Password is required');
-    } else if (text.length < 8) {
-      setPasswordError('Password must be at least 8 characters');
-    } else {
-      setPasswordError('');
-    }
-  };
-
-  const handleLogin = () => {
-    let valid = true;
-    if (!email) {
-      setEmailError('Email is required');
-      valid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailError('Please enter a valid email address');
-      valid = false;
-    }
-    
-    if (!password) {
-      setPasswordError('Password is required');
-      valid = false;
-    } else if (password.length < 8) {
-      setPasswordError('Password must be at least 8 characters');
-      valid = false;
-    }
-
-    if (valid) {
-      router.push('/(tabs)');
+  const onSubmit = async (data: any) => {
+    setGlobalError('');
+    setIsLoading(true);
+    try {
+      const response = await apiFetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+      
+      if (response.success && response.data) {
+        await saveTokens(response.data.accessToken, response.data.refreshToken);
+        router.push('/(tabs)');
+      } else {
+        setGlobalError(response.message || 'Something went wrong');
+      }
+    } catch (error: any) {
+      if (error.errorList && error.errorList.length > 0) {
+        error.errorList.forEach((err: any) => {
+          const propName = (err.propertyName || '').toLowerCase();
+          if (propName.includes('email')) {
+            setError('email', { type: 'server', message: err.message });
+          } else if (propName.includes('password')) {
+            setError('password', { type: 'server', message: err.message });
+          } else {
+            setGlobalError(err.message);
+          }
+        });
+      } else {
+        setGlobalError(error.message || 'Something went wrong');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,46 +88,75 @@ export default function LoginScreen() {
             <Text className="text-sm font-inter-regular text-text2-500">
               Sign in to access your medical records
             </Text>
+            {globalError ? (
+              <Text className="text-sm font-inter-regular text-red-500 mt-2">{globalError}</Text>
+            ) : null}
           </View>
 
           {/* Form Fields */}
-          <InputField 
-            label="Email Address" 
-            icon={Mail01Icon} 
-            placeholder="you@example.com" 
-            keyboardType="email-address"
-            value={email}
-            onChangeText={validateEmail}
-            error={emailError}
-            autoCapitalize="none"
-            containerClassName=""
+          <Controller
+            control={control}
+            name="email"
+            rules={{ 
+              required: 'Email is required',
+              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Please enter a valid email address' }
+            }}
+            render={({ field: { onChange, value } }) => (
+              <InputField 
+                label="Email Address" 
+                icon={Mail01Icon} 
+                placeholder="you@example.com" 
+                keyboardType="email-address"
+                value={value}
+                onChangeText={onChange}
+                error={errors.email?.message as string}
+                autoCapitalize="none"
+                containerClassName=""
+              />
+            )}
           />
-          <InputField 
-            label="Password" 
-            icon={LockOpenIcon} 
-            placeholder="At least 8 characters" 
-            secureTextEntry={!isPasswordVisible}
-            rightIcon={isPasswordVisible ? ViewIcon : EyeOffIcon}
-            onRightIconPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            value={password}
-            onChangeText={validatePassword}
-            error={passwordError}
-            containerClassName=""
+
+          <Controller
+            control={control}
+            name="password"
+            rules={{ 
+              required: 'Password is required',
+              minLength: { value: 8, message: 'Password must be at least 8 characters' }
+            }}
+            render={({ field: { onChange, value } }) => (
+              <InputField 
+                label="Password" 
+                icon={LockOpenIcon} 
+                placeholder="At least 8 characters" 
+                secureTextEntry={!isPasswordVisible}
+                rightIcon={isPasswordVisible ? ViewIcon : EyeOffIcon}
+                onRightIconPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                value={value}
+                onChangeText={onChange}
+                error={errors.password?.message as string}
+                containerClassName=""
+              />
+            )}
           />
           
           {/* Forgot password */}
           <View className="items-end">
-            <Pressable onPress={() => router.push('/(auth)/forgot-password')}>
+            <Pressable onPress={() => router.push('/(auth)/reset-password')}>
               <Text className="text-sm font-jakarta-bold text-secondary-900">Forgot password?</Text>
             </Pressable>
           </View>
 
           {/* Continue Button */}
           <Pressable 
-            className="bg-secondary-900 h-14 rounded-2xl items-center justify-center"
-            onPress={handleLogin}
+            className={`bg-secondary-900 h-14 rounded-2xl items-center justify-center ${isLoading ? 'opacity-70' : ''}`}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isLoading}
           >
-            <Text className="text-white font-jakarta-bold text-lg">Continue</Text>
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text className="text-white font-jakarta-bold text-lg">Continue</Text>
+            )}
           </Pressable>
 
           {/* Or continue with */}
@@ -141,14 +165,10 @@ export default function LoginScreen() {
           </View>
 
           {/* Social Login Buttons */}
-          <View className="flex-row justify-between">
-            <Pressable className="flex-1 h-14 border border-text2-100 rounded-2xl items-center justify-center mr-2">
-              <Text className="font-jakarta-bold text-text-900">Apple</Text>
-            </Pressable>
-            <Pressable className="flex-1 h-14 border border-text2-100 rounded-2xl items-center justify-center ml-2">
-              <Text className="font-jakarta-bold text-text-900">Google</Text>
-            </Pressable>
-          </View>
+          <Pressable className="h-14 border border-text2-100 rounded-2xl flex-row items-center justify-center mt-2 mb-2">
+            <GoogleIcon />
+            <Text className="font-jakarta-bold text-text-900 ml-3 text-base">Continue with Google</Text>
+          </Pressable>
 
           {/* Encryption Banner */}
           <View className="bg-[#E6F4EA] h-12 rounded-xl flex-row items-center justify-center px-4">
