@@ -1,0 +1,52 @@
+{
+  "category": {
+    "title": "What are you uploading ?",
+    "subtitle": "Select a document type so Hakeem knows what to extract.",
+    "medicalTests": "Medical Tests",
+    "medicalRadiation": "medical radiation",
+    "infoBanner": "Documents are encrypted at rest and in transit. Hakeem staff cannot access your files",
+    "continue": "Continue"
+  },
+  "details": {
+    "title": "Add document",
+    "subtitle": "Choose how you'd like to add your document.",
+    "takePhotoTitle": "Take a photo",
+    "takePhotoDefault": "use your camera to scan the document",
+    "takePhotoSelected": "Photo selected",
+    "chooseLibraryTitle": "Choose from library",
+    "chooseLibraryDefault": "Select an existing photo from your device",
+    "chooseLibrarySelected": "Image selected",
+    "browseFilesTitle": "Browse files",
+    "browseFilesDefault": "Import a PDF, DOC, or image file",
+    "browseFilesSelected": "File selected",
+    "documentTitleLabel": "Document Title*",
+    "documentTitlePlaceholder": "teeth checkup",
+    "documentDateLabel": "Document Date*",
+    "documentDatePlaceholder": "Select date",
+    "supportedFormats": "Supported formats : JPG , PNG, PDF, HEIC. Max 25 MB",
+    "uploadButton": "Upload Document",
+    "selectDateHeader": "Select Date",
+    "dateDone": "Done",
+    "dateOk": "OK",
+    "dateCancel": "Cancel",
+    "errors": {
+      "selectFile": "Please take a photo, select an image, or browse a file",
+      "titleRequired": "Document title is required",
+      "dateRequired": "Document date is required",
+      "permissionRequired": "Permission Required",
+      "cameraPermission": "Camera permission is required to take a photo.",
+      "libraryPermission": "Media library permission is required to select photos."
+    }
+  },
+  "confirmModal": {
+    "title": "Confirm Details",
+    "subtitle": "Are you sure you want to proceed with these document details?",
+    "pdfDocument": "PDF Document",
+    "documentTitle": "Document Title",
+    "documentDate": "Document Date",
+    "confirm": "Confirm",
+    "backToEdit": "Back to Edit",
+    "close": "Close",
+    "imagePreview": "Image Preview"
+  }
+}
