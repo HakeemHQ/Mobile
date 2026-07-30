@@ -1,0 +1,52 @@
+{
+  "category": {
+    "title": "ما الذي تقوم بتحميله؟",
+    "subtitle": "اختر نوع المستند حتى يتمكن حكيم من استخراج البيانات.",
+    "medicalTests": "تحاليل طبية",
+    "medicalRadiation": "أشعة طبية",
+    "infoBanner": "المستندات مشفرة أثناء التخزين والنقل. لا يمكن لموظفي حكيم الوصول إلى ملفاتك.",
+    "continue": "متابعة"
+  },
+  "details": {
+    "title": "إضافة مستند",
+    "subtitle": "اختر كيف ترغب في إضافة مستندك.",
+    "takePhotoTitle": "التقاط صورة",
+    "takePhotoDefault": "استخدم الكاميرا لمسح المستند ضوئيًا",
+    "takePhotoSelected": "تم اختيار الصورة",
+    "chooseLibraryTitle": "اختر من المعرض",
+    "chooseLibraryDefault": "اختر صورة موجودة من جهازك",
+    "chooseLibrarySelected": "تم اختيار الصورة",
+    "browseFilesTitle": "تصفح الملفات",
+    "browseFilesDefault": "استورد ملف PDF أو DOC أو صورة",
+    "browseFilesSelected": "تم اختيار الملف",
+    "documentTitleLabel": "عنوان المستند*",
+    "documentTitlePlaceholder": "فحص الأسنان",
+    "documentDateLabel": "تاريخ المستند*",
+    "documentDatePlaceholder": "اختر التاريخ",
+    "supportedFormats": "الصيغ المدعومة: JPG , PNG, PDF, HEIC. الحد الأقصى 25 ميجابايت",
+    "uploadButton": "تحميل المستند",
+    "selectDateHeader": "اختر التاريخ",
+    "dateDone": "تم",
+    "dateOk": "موافق",
+    "dateCancel": "إلغاء",
+    "errors": {
+      "selectFile": "يرجى التقاط صورة أو اختيار صورة أو تصفح ملف",
+      "titleRequired": "عنوان المستند مطلوب",
+      "dateRequired": "تاريخ المستند مطلوب",
+      "permissionRequired": "الإذن مطلوب",
+      "cameraPermission": "يلزم الحصول على إذن الكاميرا للتقاط صورة.",
+      "libraryPermission": "يلزم الحصول على إذن معرض الصور لاختيار الصور."
+    }
+  },
+  "confirmModal": {
+    "title": "تأكيد التفاصيل",
+    "subtitle": "هل أنت تأكد من رغبتك في المتابعة مع تفاصيل هذا المستند؟",
+    "pdfDocument": "مستند PDF",
+    "documentTitle": "عنوان المستند",
+    "documentDate": "تاريخ المستند",
+    "confirm": "تأكيد",
+    "backToEdit": "العودة للتعديل",
+    "close": "إغلاق",
+    "imagePreview": "معاينة الصورة"
+  }
+}
