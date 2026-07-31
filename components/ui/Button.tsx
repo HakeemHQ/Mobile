@@ -46,8 +46,8 @@ const textVariants = cva(
 
 export function Button({
   title,
-  variant,
-  size,
+  variant = 'primary',
+  size = 'default',
   leftIcon,
   rightIcon,
   className,
