@@ -15,6 +15,8 @@ import enCommon from './EN/common.json';
 import arCommon from './AR/common.json';
 import enAdd from './EN/add.json';
 import arAdd from './AR/add.json';
+import enHome from './EN/home.json';
+import arHome from './AR/home.json';
 
 const resources = {
   en: {
@@ -23,6 +25,7 @@ const resources = {
     onboarding3: enOnboarding3,
     common: enCommon,
     add: enAdd,
+    home: enHome,
   },
   ar: {
     onboarding: arOnboarding,
@@ -30,6 +33,7 @@ const resources = {
     onboarding3: arOnboarding3,
     common: arCommon,
     add: arAdd,
+    home: arHome,
   },
 };
 
