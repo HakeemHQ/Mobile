@@ -32,9 +32,14 @@ export default function LoginScreen() {
         body: JSON.stringify(data),
       });
       
-      if (response.success && response.data) {
-        await saveTokens(response.data.accessToken, response.data.refreshToken);
-        router.push('/(tabs)');
+      if (response && response.success && response.data) {
+        const token =
+          response.data.accessToken ||
+          response.data.token ||
+          (typeof response.data === 'string' ? response.data : '');
+        const refreshToken = response.data.refreshToken || '';
+        await saveTokens(token, refreshToken);
+        router.replace('/(tabs)');
       } else {
         setGlobalError(response.message || 'Something went wrong');
       }

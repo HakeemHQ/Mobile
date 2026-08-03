@@ -16,9 +16,7 @@ export default function ProfileScreen() {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      await apiFetch('/auth/logout', { method: 'POST' }).catch((err) => {
-        console.log('Server logout failed:', err);
-      });
+      await apiFetch('/auth/logout', { method: 'POST' }).catch(() => {});
     } finally {
       await clearTokens();
       router.replace('/(auth)/login');

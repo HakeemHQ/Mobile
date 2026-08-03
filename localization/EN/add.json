@@ -48,5 +48,37 @@
     "backToEdit": "Back to Edit",
     "close": "Close",
     "imagePreview": "Image Preview"
+  },
+  "processing": {
+    "title": "AI is reading your document",
+    "subtitle": "this usually takes 10-20 seconds",
+    "step1": "Uploading document",
+    "step2": "Detecting document information",
+    "step3": "Extracting medical information",
+    "step4": "Verifying data quality",
+    "step5": "Ready for review",
+    "successTitle": "Completed Successfully!",
+    "successSubtitle": "Your document has been uploaded and processed.",
+    "goToHome": "Go to Home"
+  },
+  "review": {
+    "title": "Review Extracted Data",
+    "defaultSubtitle": "HbA1c Lab Panel . Al-Habib Medical Lab",
+    "uploadedJustNow": "Uploaded just now",
+    "total": "Total",
+    "approved": "Approved",
+    "needReview": "Need Review",
+    "approve": "Approve",
+    "edit": "Edit",
+    "reject": "Reject",
+    "saveAndApprove": "Save & Approve",
+    "cancel": "Cancel",
+    "approvedStatus": "Approved",
+    "rejectedStatus": "Rejected",
+    "confirm": "Confirm",
+    "editPlaceholder": "Edit field value",
+    "successModalTitle": "Document Uploaded Successfully!",
+    "successModalMessage": "Extracted document fields retrieved successfully. Click below to review now.",
+    "reviewItNow": "Review it now"
   }
 }

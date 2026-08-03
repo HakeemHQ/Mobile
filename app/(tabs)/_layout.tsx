@@ -50,6 +50,12 @@ export default function TabLayout() {
             </View>
           ),
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('add', { screen: 'index' });
+          },
+        })}
       />
       <Tabs.Screen
         name="medical-cv"

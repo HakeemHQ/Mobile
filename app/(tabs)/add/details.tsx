@@ -133,21 +133,47 @@ export default function AddDetailsScreen() {
         setValue('imageUri', asset.uri, { shouldValidate: true });
       }
     } catch (err) {
-      console.log('Error picking document:', err);
+      // Handled silently
     }
   };
+
+  const startUploadAndExtraction = useDocumentStore((state) => state.startUploadAndExtraction);
 
   const onFormSubmit = () => {
     setShowConfirmModal(true);
   };
 
   const handleFinalConfirm = () => {
-    const isPdf =
-      imageUri?.toLowerCase().includes('.pdf') ||
-      fileName?.toLowerCase().endsWith('.pdf') ||
-      fileName?.toLowerCase().includes('.pdf');
+    const uriLower = imageUri?.toLowerCase() || '';
+    const nameLower = fileName?.toLowerCase() || '';
 
-    const name = fileName || (imageUri ? imageUri.split('/').pop() || (isPdf ? 'prescription.pdf' : 'document.jpg') : 'document.jpg');
+    const isPdf = uriLower.endsWith('.pdf') || nameLower.endsWith('.pdf') || uriLower.includes('.pdf') || nameLower.includes('.pdf');
+    const isPng = uriLower.endsWith('.png') || nameLower.endsWith('.png') || uriLower.includes('.png') || nameLower.includes('.png');
+    const isWebp = uriLower.endsWith('.webp') || nameLower.endsWith('.webp') || uriLower.includes('.webp') || nameLower.includes('.webp');
+    const isHeic = uriLower.endsWith('.heic') || nameLower.endsWith('.heic') || uriLower.includes('.heic') || nameLower.includes('.heic');
+
+    let mimeType = 'image/jpeg';
+    let fileExtension = '.jpg';
+
+    if (isPdf) {
+      mimeType = 'application/pdf';
+      fileExtension = '.pdf';
+    } else if (isPng) {
+      mimeType = 'image/png';
+      fileExtension = '.png';
+    } else if (isWebp) {
+      mimeType = 'image/webp';
+      fileExtension = '.webp';
+    } else if (isHeic) {
+      mimeType = 'image/heic';
+      fileExtension = '.heic';
+    }
+
+    let finalName = fileName || (imageUri ? imageUri.split('/').pop() || `document${fileExtension}` : `document${fileExtension}`);
+    if (!finalName.toLowerCase().endsWith(fileExtension)) {
+      finalName = finalName + fileExtension;
+    }
+
     const documentType = categoryId === 1 ? 'Medical Tests' : 'Medical Radiation';
 
     let formattedDate = documentDate;
@@ -160,21 +186,18 @@ export default function AddDetailsScreen() {
 
     const requestPayload = {
       file: {
-        uri: imageUri,
-        name: name,
-        type: isPdf ? 'application/pdf' : 'image/jpeg',
+        uri: imageUri || '',
+        name: finalName,
+        type: mimeType,
       },
       documentType,
       title: documentTitle,
       documentDate: formattedDate,
     };
 
-    console.log('Request payload:', requestPayload);
-
     setShowConfirmModal(false);
-    reset();
-    router.replace('/add');
-    router.navigate('/');
+    startUploadAndExtraction(requestPayload);
+    router.push('/add/processing');
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
@@ -328,6 +351,7 @@ export default function AddDetailsScreen() {
                   display="spinner"
                   textColor="#1F2937"
                   accentColor={colors.secondary[900]}
+                  maximumDate={new Date()}
                   onValueChange={handleDateChange}
                   onDismiss={() => setShowDatePicker(false)}
                 />
@@ -340,6 +364,7 @@ export default function AddDetailsScreen() {
             mode="date"
             display="default"
             accentColor={colors.secondary[900]}
+            maximumDate={new Date()}
             positiveButton={{ label: t('details.dateOk'), textColor: colors.secondary[900] }}
             negativeButton={{ label: t('details.dateCancel'), textColor: colors.text2[600] }}
             onValueChange={handleDateChange}

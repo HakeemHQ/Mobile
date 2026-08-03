@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -18,6 +18,11 @@ export default function AddCategoryScreen() {
   const isRTL = i18n.language === 'ar';
   const categoryId = useDocumentStore((state) => state.categoryId);
   const setCategoryId = useDocumentStore((state) => state.setCategoryId);
+  const reset = useDocumentStore((state) => state.reset);
+
+  useEffect(() => {
+    reset();
+  }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-bg px-6 pt-4" edges={['top', 'left', 'right']}>
