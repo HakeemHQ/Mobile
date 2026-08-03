@@ -3,7 +3,6 @@ import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
 import { I18nManager } from 'react-native';
-import * as Updates from 'expo-updates';
 
 // Import all locales
 import enOnboarding from './EN/onboarding.json';
@@ -60,7 +59,6 @@ const languageDetector = {
         callback(getSystemLanguage());
       }
     } catch (error) {
-      console.log('Error reading language', error);
       callback('en');
     }
   },
