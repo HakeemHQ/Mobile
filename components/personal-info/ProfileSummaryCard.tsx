@@ -38,7 +38,7 @@ export function ProfileSummaryCard({
                     ellipsizeMode="middle"
                     numberOfLines={1}
                 >
-                    ID: {profile.userId}
+                    ID: {profile.userId.slice(0,20)}
                 </Text>
 
                 <View

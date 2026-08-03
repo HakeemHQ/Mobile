@@ -17,7 +17,6 @@ export default function TabLayout() {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#F3F4F6',
-
           paddingHorizontal: 10,
         },
         tabBarLabelStyle: {
@@ -69,36 +68,6 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, focused }) => <User02Icon size={24} color={color as string} variant={focused ? 'solid' : 'outline'} />,
-        }}
-      />
-      <Tabs.Screen
-        name="personal-info"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="privacy"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="delete-account"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="change-password"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="help"
-        options={{
-          href: null,
         }}
       />
     </Tabs>
