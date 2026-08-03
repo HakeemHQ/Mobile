@@ -3,7 +3,6 @@ import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
 import { I18nManager } from 'react-native';
-import * as Updates from 'expo-updates';
 
 // Import all locales
 import enOnboarding from './EN/onboarding.json';
@@ -16,6 +15,8 @@ import enCommon from './EN/common.json';
 import arCommon from './AR/common.json';
 import enAdd from './EN/add.json';
 import arAdd from './AR/add.json';
+import enHome from './EN/home.json';
+import arHome from './AR/home.json';
 
 const resources = {
   en: {
@@ -24,6 +25,7 @@ const resources = {
     onboarding3: enOnboarding3,
     common: enCommon,
     add: enAdd,
+    home: enHome,
   },
   ar: {
     onboarding: arOnboarding,
@@ -31,6 +33,7 @@ const resources = {
     onboarding3: arOnboarding3,
     common: arCommon,
     add: arAdd,
+    home: arHome,
   },
 };
 
@@ -60,7 +63,6 @@ const languageDetector = {
         callback(getSystemLanguage());
       }
     } catch (error) {
-      console.log('Error reading language', error);
       callback('en');
     }
   },

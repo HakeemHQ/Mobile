@@ -1,28 +1,37 @@
 import { Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { verifyStoredToken } from '@/lib/api';
 import { View, ActivityIndicator } from 'react-native';
 
 export default function Index() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
+  const [authState, setAuthState] = useState<{
+    isFirstLaunch: boolean;
+    isAuthenticated: boolean;
+  } | null>(null);
 
   useEffect(() => {
-    async function checkFirstLaunch() {
+    async function checkAuthAndLaunchStatus() {
       try {
         const hasLaunched = await AsyncStorage.getItem('hasLaunched');
-        if (hasLaunched === null) {
-          setIsFirstLaunch(true);
-        } else {
-          setIsFirstLaunch(false);
-        }
+        const isAuthenticated = await verifyStoredToken();
+
+        setAuthState({
+          isFirstLaunch: hasLaunched === null,
+          isAuthenticated,
+        });
       } catch (error) {
-        setIsFirstLaunch(false);
+        setAuthState({
+          isFirstLaunch: false,
+          isAuthenticated: false,
+        });
       }
     }
-    checkFirstLaunch();
+
+    checkAuthAndLaunchStatus();
   }, []);
 
-  if (isFirstLaunch === null) {
+  if (authState === null) {
     return (
       <View className="flex-1 items-center justify-center bg-bg">
         <ActivityIndicator size="large" color="#1A56DB" />
@@ -30,9 +39,13 @@ export default function Index() {
     );
   }
 
-  if (isFirstLaunch) {
+  if (authState.isAuthenticated) {
+    return <Redirect href="/(tabs)" />;
+  }
+
+  if (authState.isFirstLaunch) {
     return <Redirect href="/(onboarding)" />;
   }
 
-  return <Redirect href="/(tabs)" />;
+  return <Redirect href="/(auth)/login" />;
 }
