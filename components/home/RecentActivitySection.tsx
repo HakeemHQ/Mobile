@@ -9,16 +9,16 @@ import {
   HeartPulse,
   ClipboardList,
 } from 'lucide-react-native';
-import { ListItem } from '@/components/ui/ListItem';
+import { ActivityListItem } from './ActivityListItem';
 
 interface RecentActivityItem {
   id: string;
   title: string;
   subtitle: string;
-  tag: string;
-  tagBgColor: string;
-  tagTextColor: string;
-  date: string;
+  tag?: string;
+  tagBgColor?: string;
+  tagTextColor?: string;
+  date?: string;
   icon: React.ReactNode;
 }
 
@@ -82,27 +82,18 @@ export const RecentActivitySection: React.FC<RecentActivitySectionProps> = ({
       </View>
 
       {defaultActivities.map((activity) => (
-        <View key={activity.id} className="mb-4">
-          <ListItem
-            title={activity.title}
-            body={activity.subtitle}
-            showLeftIcon
-            iconBgColor="bg-[#D1E2FF]"
-            leftIcon={activity.icon}
-            rightIcon={<ChevronRight size={20} color="#9CA3AF" style={{ transform: [{ scaleX: isRTL ? -1 : 1 }] }} />}
-            containerClassName="mb-1"
-          />
-          <View className={`px-4 ${isRTL ? 'flex-row-reverse' : 'flex-row'} items-center`}>
-            <View className={`px-2.5 py-0.5 rounded-md ${activity.tagBgColor} ${isRTL ? 'ml-2' : 'mr-2'}`}>
-              <Text className={`text-[12px] font-jakarta-bold ${activity.tagTextColor}`}>
-                {activity.tag}
-              </Text>
-            </View>
-            <Text className="text-[12px] font-inter-regular text-gray-400">
-              {activity.date}
-            </Text>
-          </View>
-        </View>
+        <ActivityListItem
+          key={activity.id}
+          title={activity.title}
+          body={activity.subtitle}
+          tag={activity.tag}
+          tagBgColor={activity.tagBgColor}
+          tagTextColor={activity.tagTextColor}
+          date={activity.date}
+          leftIcon={activity.icon}
+          iconBgColor="bg-[#D1E2FF]"
+          containerClassName="mb-3"
+        />
       ))}
     </View>
   );

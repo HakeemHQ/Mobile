@@ -1,10 +1,8 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
-
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 import {
   MedicalProfileCard,
   UpcomingAppointmentCard,
@@ -19,30 +17,24 @@ export default function HomeScreen() {
   const router = useRouter();
 
   return (
+    <>
+    <StatusBar  barStyle={'dark-content'} />
     <SafeAreaView className="flex-1 bg-[#F8FAFC]" edges={['top', 'left', 'right']}>
       <ScrollView
         className="flex-1 px-5 pt-3"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
       >
-        {/* Top Header Row with Language Switcher */}
-        {/* <View className={`w-full ${isRTL ? 'flex-row-reverse' : 'flex-row'} items-center justify-between mb-5`}>
-          <View>
-            <Text className={`text-[24px] font-jakarta-bold text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
-              Hakeem
-            </Text>
-          </View>
-          <LanguageSwitcher />
-        </View> */}
+
 
         {/* 1. Medical Profile Card Component */}
         <MedicalProfileCard isRTL={isRTL} />
 
         {/* 2. Upcoming Appointment Card Component */}
-        {/* <UpcomingAppointmentCard isRTL={isRTL} /> */}
+        <UpcomingAppointmentCard isRTL={isRTL} />
 
         {/* 3. Review Alert Banner Component */}
-        {/* <ReviewAlertBanner isRTL={isRTL} /> */}
+        <ReviewAlertBanner isRTL={isRTL} />
 
         {/* 4. Quick Actions Grid Component */}
         <QuickActionsGrid
@@ -56,5 +48,6 @@ export default function HomeScreen() {
         <RecentActivitySection isRTL={isRTL} />
       </ScrollView>
     </SafeAreaView>
+    </>
   );
 }
