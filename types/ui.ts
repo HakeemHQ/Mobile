@@ -4,7 +4,7 @@ export interface FastAccessButtonProps extends PressableProps {
   title: string;
   icon: React.ReactNode;
   active?: boolean;
-  
+
   width?: DimensionValue;
   height?: DimensionValue;
 

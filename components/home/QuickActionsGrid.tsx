@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Upload, Clock, FileText, Bell } from 'lucide-react-native';
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Upload01Icon, Time02Icon, File02Icon, Notification01Icon } from '@hugeicons/core-free-icons';
 import { FastAccessButton } from '@/components/ui/FastAccessButton';
+import { colors } from '@/lib/theme';
 
 interface QuickActionsGridProps {
   onUploadPress?: () => void;
@@ -31,9 +33,9 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
         {/* Upload Record */}
         <FastAccessButton
           title={t('uploadRecord', { defaultValue: 'Upload Record' })}
-          icon={<Upload size={22} color="#1A56DB" />}
+          icon={<HugeiconsIcon icon={Upload01Icon} size={22} color= {colors.primary[800]} />}
           active={false}
-          inactiveCircleColor="bg-[#D1E2FF]"
+          inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
           style={{ width: '48%' }}
           onPress={onUploadPress}
@@ -42,9 +44,9 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
         {/* Time line */}
         <FastAccessButton
           title={t('timeline', { defaultValue: 'Time line' })}
-          icon={<Clock size={22} color="#1A56DB" />}
+          icon={<HugeiconsIcon icon={Time02Icon} size={22} color= {colors.primary[800]} />}
           active={false}
-          inactiveCircleColor="bg-[#D1E2FF]"
+          inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
           style={{ width: '48%' }}
           onPress={onTimelinePress}
@@ -53,9 +55,9 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
         {/* CV */}
         <FastAccessButton
           title={t('cv', { defaultValue: 'CV' })}
-          icon={<FileText size={22} color="#1A56DB" />}
+          icon={<HugeiconsIcon icon={File02Icon} size={22}color= {colors.primary[800]} />}
           active={false}
-          inactiveCircleColor="bg-[#D1E2FF]"
+          inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
           style={{ width: '48%' }}
           onPress={onCvPress}
@@ -64,9 +66,9 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
         {/* Remainders */}
         <FastAccessButton
           title={t('remainders', { defaultValue: 'Remainders' })}
-          icon={<Bell size={22} color="#1A56DB" />}
+          icon={<HugeiconsIcon icon={Notification01Icon} size={22} color= {colors.primary[800]} />}
           active={false}
-          inactiveCircleColor="bg-[#D1E2FF]"
+          inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
           style={{ width: '48%' }}
           onPress={onRemaindersPress}
