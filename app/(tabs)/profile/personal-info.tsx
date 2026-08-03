@@ -115,7 +115,10 @@ export default function PersonalInfoScreen() {
                     accessibilityRole="button"
                     className="mr-4 h-10 w-10 items-center justify-center rounded-full border border-bg-600 bg-surface"
                     hitSlop={8}
-                    onPress={() => router.replace('/profile')}
+                    onPress={() => router.back()}
+                    style={({ pressed }) => ({
+                        opacity: pressed ? 0.7 : 1,
+                    })}
                 >
                     <ArrowLeft02Icon
                         size={20}

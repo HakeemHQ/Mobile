@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { apiFetch } from '@/lib/api';
+import { getProfileApi, updateProfileApi } from '@/lib/api';
 import type {
     EditableProfileField,
     ProfileData,
@@ -60,9 +60,7 @@ export const useProfileStore = create<ProfileStore>()(
             });
 
             try {
-                const response = (await apiFetch('/profile', {
-                    method: 'GET',
-                })) as ProfileResponse;
+                const response = await getProfileApi();
 
                 if (!response.success || !response.data) {
                     set({
@@ -111,10 +109,7 @@ export const useProfileStore = create<ProfileStore>()(
             });
 
             try {
-                const response = (await apiFetch('/profile', {
-                    method: 'PATCH',
-                    body: JSON.stringify(payload),
-                })) as ProfileUpdateResponse | null;
+                const response = await updateProfileApi(payload);
 
                 if (response?.success === false) {
                     set({
