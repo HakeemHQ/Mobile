@@ -29,6 +29,7 @@ export const ProcessingView: React.FC = () => {
   ];
 
   const handleNavigateHome = () => {
+    setShowSuccessModal(false);
     reset();
     router.replace('/(tabs)');
   };
@@ -83,11 +84,10 @@ export const ProcessingView: React.FC = () => {
           {t('processing.subtitle', { defaultValue: 'this usually takes 10-20 seconds' })}
         </Text>
 
-        <View className="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden mb-8">
-          <View
-            className="bg-[#06432E] h-full rounded-full transition-all duration-500"
-            style={{ width: `${progressPercent}%` }}
-          />
+        {/* Progress bar — use flex ratio instead of percentage string to avoid iOS layout crash */}
+        <View style={{ flexDirection: 'row', width: '100%', height: 10, borderRadius: 999, overflow: 'hidden', backgroundColor: '#E5E7EB', marginBottom: 32 }}>
+          <View style={{ flex: progressPercent, backgroundColor: '#06432E', borderRadius: 999 }} />
+          <View style={{ flex: 100 - progressPercent }} />
         </View>
 
         <View className="w-full">

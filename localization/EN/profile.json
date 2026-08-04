@@ -1,0 +1,23 @@
+{
+  "title": "Profile",
+  "loading": "Loading profile details...",
+  "unableToLoad": "Unable to load profile details",
+  "menu": {
+    "personalInfo": "Personal Information",
+    "privacy": "Privacy & Security",
+    "notifications": "Notifications",
+    "dataStorage": "Data & Storage",
+    "helpSupport": "Help & Support",
+    "language": "Language"
+  },
+  "languageModal": {
+    "title": "Change Language",
+    "subtitle": "Select your preferred language",
+    "english": "English",
+    "arabic": "العربية (Arabic)",
+    "auto": "System Default",
+    "cancel": "Close"
+  },
+  "signOut": "Sign out",
+  "version": "Hakeem v1.0.0 • HIPAA-compliant Security"
+}
