@@ -17,6 +17,8 @@ import enAdd from './EN/add.json';
 import arAdd from './AR/add.json';
 import enHome from './EN/home.json';
 import arHome from './AR/home.json';
+import enProfile from './EN/profile.json';
+import arProfile from './AR/profile.json';
 
 const resources = {
   en: {
@@ -26,6 +28,7 @@ const resources = {
     common: enCommon,
     add: enAdd,
     home: enHome,
+    profile: enProfile,
   },
   ar: {
     onboarding: arOnboarding,
@@ -34,6 +37,7 @@ const resources = {
     common: arCommon,
     add: arAdd,
     home: arHome,
+    profile: arProfile,
   },
 };
 
@@ -83,15 +87,12 @@ i18n
   });
 
 export const setLanguage = async (lng: 'ar' | 'en' | 'auto') => {
-  await AsyncStorage.setItem(LANGUAGE_KEY, lng);
-  const targetLanguage = lng === 'auto' ? getSystemLanguage() : lng;
-  i18n.changeLanguage(targetLanguage);
-  
-  // Handle RTL for Arabic
-  const isRTL = targetLanguage === 'ar';
-  if (I18nManager.isRTL !== isRTL) {
-    I18nManager.allowRTL(isRTL);
-    I18nManager.forceRTL(isRTL);
+  try {
+    await AsyncStorage.setItem(LANGUAGE_KEY, lng);
+    const targetLanguage = lng === 'auto' ? getSystemLanguage() : lng;
+    await i18n.changeLanguage(targetLanguage);
+  } catch (err) {
+    console.warn('Error changing language:', err);
   }
 };
 

@@ -34,6 +34,10 @@ export const pollExtractedFields = async (
         normalizedStatus === 'processed' ||
         (Array.isArray(items) && items.length > 0)
       ) {
+        console.log('🎉 ================================================');
+        console.log('✅ [Document Extraction Completed Response]:');
+        console.log(JSON.stringify(responseData, null, 2));
+        console.log('🎉 ================================================');
         return responseData;
       }
 
