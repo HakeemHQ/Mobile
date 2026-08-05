@@ -19,6 +19,10 @@ import enHome from './EN/home.json';
 import arHome from './AR/home.json';
 import enProfile from './EN/profile.json';
 import arProfile from './AR/profile.json';
+import enTimeline from './EN/timeline.json';
+import arTimeline from './AR/timeline.json';
+import enMedicalCv from './EN/medical-cv.json';
+import arMedicalCv from './AR/medical-cv.json';
 
 const resources = {
   en: {
@@ -29,6 +33,8 @@ const resources = {
     add: enAdd,
     home: enHome,
     profile: enProfile,
+    timeline: enTimeline,
+    medicalCv: enMedicalCv,
   },
   ar: {
     onboarding: arOnboarding,
@@ -38,6 +44,8 @@ const resources = {
     add: arAdd,
     home: arHome,
     profile: arProfile,
+    timeline: arTimeline,
+    medicalCv: arMedicalCv,
   },
 };
 

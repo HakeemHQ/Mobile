@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import Onboarding from '../../components/ui/Onboarding';
+import Onbording2Svg from '../../assets/images/Onbording2.svg';
 
 export default function OnboardingStep2() {
   const handleNext = () => {
@@ -15,7 +16,7 @@ export default function OnboardingStep2() {
       handleSkip={handleSkip}
       handleNext={handleNext}
       translateKey="onboarding2"
-      imageSource={require('../../assets/images/cards2.png')}
+      SvgComponent={Onbording2Svg}
       currentIndex={1}
       totalSteps={3}
       themeColor="secondary"

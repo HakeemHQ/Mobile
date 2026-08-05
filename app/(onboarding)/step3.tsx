@@ -2,6 +2,7 @@ import { View, Text, Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import Onboarding from '../../components/ui/Onboarding';
+import Onboarding3Svg from '../../assets/images/Onboarding3.svg';
 
 export default function OnboardingStep3() {
   const { t } = useTranslation('onboarding3');
@@ -36,7 +37,7 @@ export default function OnboardingStep3() {
       handleSkip={handleSkip}
       handleNext={() => {}} 
       translateKey="onboarding3"
-      imageSource={require('../../assets/images/cards3.png')}
+      SvgComponent={Onboarding3Svg}
       currentIndex={2}
       totalSteps={3}
       themeColor="dark"

@@ -1,4 +1,3 @@
-
 import { View, Text, TextInput, Pressable, TextInputProps } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +21,7 @@ export function InputField({
   onRightIconPress,
   error,
   containerClassName = 'mb-4',
-  bgClassName = 'bg-secondary-50',
+  bgClassName = 'bg-bg-color-600',
   ...props
 }: InputFieldProps) {
   const { i18n } = useTranslation();
@@ -30,9 +29,9 @@ export function InputField({
 
   return (
     <View className={containerClassName}>
-      <Text className={`text-xs font-jakarta-medium text-bg-800 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{label}</Text>
+      <Text className={`text-sm font-jakarta-bold text-bg-800 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>{label}</Text>
       <View
-        className={`${isRTL ? 'flex-row-reverse' : 'flex-row'} items-center ${bgClassName} rounded-2xl px-4 h-14 ${
+        className={`${isRTL ? 'flex-row-reverse' : 'flex-row'} items-center ${bgClassName} rounded-2xl px-4 h-[46px] ${
           error ? 'border border-red-500' : 'border border-transparent'
         }`}
       >
@@ -44,7 +43,7 @@ export function InputField({
           )
         ) : null}
         <TextInput
-          className={`flex-1 text-base font-inter-regular text-text-500 placeholder:text-text2-400 ${
+          className={`flex-1 text-sm font-inter-regular text-gray-900 placeholder:text-gray-500 ${
             isRTL ? 'text-right' : 'text-left'
           } ${Icon ? (isRTL ? 'mr-3' : 'ml-3') : 'ml-0'}`}
           placeholder={placeholder}
