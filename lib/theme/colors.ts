@@ -1,7 +1,7 @@
 export const colors = {
   primary: {
     DEFAULT: '#1A56DB',
-    50: '#BFD0F5',
+    50: '#BFD0F5', 
     100: '#ADC2F2',
     200: '#88A7EC',
     300: '#638CE7', 
