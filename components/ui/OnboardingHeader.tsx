@@ -15,7 +15,6 @@ export default function OnboardingHeader({ isRTL, handleSkip, bgClass, children 
         <View className={`w-full h-[436px] ${bgClass} items-center justify-center relative`}>
             <View className="absolute top-4 left-0 right-0 h-12 z-10">
                 <View className={`absolute top-0 ${isRTL ? 'right-6' : 'left-6'}`}>
-                    <LanguageSwitcher />
                 </View>
                 <View className={`absolute top-0 ${isRTL ? 'left-6' : 'right-6'}`}>
                     <Pressable
