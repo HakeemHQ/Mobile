@@ -1,0 +1,19 @@
+{
+  "title": "Time line",
+  "searchPlaceholder": "Search timeline...",
+  "filters": {
+    "all": "Approve",
+    "visits": "Visits",
+    "labs": "Labs",
+    "medications": "Medications",
+    "scans": "Scans"
+  },
+  "tags": {
+    "labs": "Labs",
+    "medication": "Medication",
+    "normal": "Normal",
+    "visits": "Visits",
+    "scans": "Scans"
+  },
+  "noResults": "No timeline records found."
+}

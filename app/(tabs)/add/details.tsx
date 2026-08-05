@@ -293,7 +293,6 @@ export default function AddDetailsScreen() {
                 }}
                 error={errors.documentTitle?.message}
                 containerClassName="mb-4"
-                bgClassName="bg-[#EDF4F0]"
               />
             )}
           />
@@ -313,7 +312,6 @@ export default function AddDetailsScreen() {
                     rightIcon={CalendarInputIcon}
                     error={errors.documentDate?.message}
                     containerClassName="mb-2"
-                    bgClassName="bg-[#EDF4F0]"
                   />
                 </View>
               </Pressable>

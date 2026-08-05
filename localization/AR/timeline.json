@@ -1,0 +1,19 @@
+{
+  "title": "الجدول الزمني",
+  "searchPlaceholder": "البحث في الجدول الزمني...",
+  "filters": {
+    "all": "موافقة",
+    "visits": "الزيارات",
+    "labs": "التحاليل",
+    "medications": "الأدوية",
+    "scans": "الفحوصات"
+  },
+  "tags": {
+    "labs": "تحاليل",
+    "medication": "دواء",
+    "normal": "طبيعي",
+    "visits": "زيارة",
+    "scans": "فحص"
+  },
+  "noResults": "لم يتم العثور على سجلات."
+}
