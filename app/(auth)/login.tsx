@@ -13,6 +13,7 @@ import { EyeOffIcon } from '../../components/icons/EyeOffIcon';
 import { ViewIcon } from '../../components/icons/ViewIcon';
 import { AddIcon } from '../../components/icons/AddIcon';
 import { ShieldIcon } from '../../components/icons/ShieldIcon';
+import { useProfileStore } from '../../store/useProfileStore';
 
 export default function LoginScreen() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -39,6 +40,7 @@ export default function LoginScreen() {
           (typeof response.data === 'string' ? response.data : '');
         const refreshToken = response.data.refreshToken || '';
         await saveTokens(token, refreshToken);
+        await useProfileStore.getState().fetchProfile(true);
         router.replace('/(tabs)');
       } else {
         setGlobalError(response.message || 'Something went wrong');

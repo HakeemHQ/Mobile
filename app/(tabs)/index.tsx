@@ -42,6 +42,7 @@ export default function HomeScreen() {
           onUploadPress={() => router.push('/add')}
           onTimelinePress={() => router.push('/(tabs)/timeline')}
           onCvPress={() => router.push('/(tabs)/medical-cv')}
+          onRemindersPress={() => router.push('/reminders')}
         />
 
         {/* 5. Recent Activity Section Component */}
