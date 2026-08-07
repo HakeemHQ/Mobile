@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { getProfileApi, updateProfileApi } from '@/lib/api';
+import { upsertDeviceUser } from '@/database/device-users';
 import type {
     EditableProfileField,
     ProfileData,
@@ -33,6 +34,33 @@ interface ProfileStore {
     resetProfile: () => void;
 }
 
+async function syncDeviceUser(
+    profile: ProfileData,
+): Promise<void> {
+    const userId = profile.userId?.trim();
+    const email = profile.email?.trim().toLowerCase();
+
+    if (!userId || !email) {
+        console.warn(
+            'The authenticated profile does not contain a valid userId and email.',
+        );
+
+        return;
+    }
+
+    try {
+        await upsertDeviceUser({
+            userId,
+            email,
+        });
+    } catch (error: unknown) {
+        console.error(
+            'Failed to synchronize the authenticated user with SQLite:',
+            error,
+        );
+    }
+}
+
 export const useProfileStore = create<ProfileStore>()(
     (set, get) => ({
         profile: null,
@@ -51,6 +79,7 @@ export const useProfileStore = create<ProfileStore>()(
 
             // Cached profile exists, so do not request it again.
             if (profile && !force) {
+                await syncDeviceUser(profile);
                 return;
             }
 
@@ -73,8 +102,12 @@ export const useProfileStore = create<ProfileStore>()(
                     return;
                 }
 
+                const profileData = response.data;
+
+                await syncDeviceUser(profileData);
+
                 set({
-                    profile: response.data,
+                    profile: profileData,
                     fetchStatus: 'success',
                     fetchError: '',
                 });
@@ -129,6 +162,10 @@ export const useProfileStore = create<ProfileStore>()(
 
                 updatedProfile.fullName =
                     `${updatedProfile.firstName} ${updatedProfile.lastName}`.trim();
+
+                if (field === 'email') {
+                    await syncDeviceUser(updatedProfile);
+                }
 
                 set({
                     profile: updatedProfile,
