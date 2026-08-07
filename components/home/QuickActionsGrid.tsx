@@ -10,7 +10,7 @@ interface QuickActionsGridProps {
   onUploadPress?: () => void;
   onTimelinePress?: () => void;
   onCvPress?: () => void;
-  onRemaindersPress?: () => void;
+  onRemindersPress?: () => void;
   isRTL?: boolean;
 }
 
@@ -18,7 +18,7 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
   onUploadPress,
   onTimelinePress,
   onCvPress,
-  onRemaindersPress,
+  onRemindersPress,
   isRTL = false,
 }) => {
   const { t } = useTranslation('home');
@@ -63,15 +63,15 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
           onPress={onCvPress}
         />
 
-        {/* Remainders */}
+        {/* Reminders */}
         <FastAccessButton
-          title={t('remainders', { defaultValue: 'Remainders' })}
+          title={t('Reminders', { defaultValue: 'Reminders' })}
           icon={<HugeiconsIcon icon={Notification01Icon} size={22} color= {colors.primary[800]} />}
           active={false}
           inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
           style={{ width: '48%' }}
-          onPress={onRemaindersPress}
+          onPress={onRemindersPress}
         />
       </View>
     </View>
