@@ -5,6 +5,10 @@ import {
 } from 'lucide-react-native';
 
 import {
+    useTranslation,
+} from 'react-i18next';
+
+import {
     ReminderDateTimeFields,
 } from '@/components/reminders/ReminderDateTimeFields';
 
@@ -40,6 +44,7 @@ interface AppointmentReminderFormProps {
 export function useAppointmentReminderForm({
     onSuccess,
 }: UseAppointmentReminderFormOptions): AppointmentReminderFormController {
+    const { t } = useTranslation('reminders');
     const addAppointment =
         useReminderStore(
             (state) =>
@@ -48,11 +53,11 @@ export function useAppointmentReminderForm({
 
     return useSingleEventReminderForm({
         titleRequiredMessage:
-            'Appointment title is required.',
+            t('appointmentTitleRequired'),
         dateTimeMessage:
-            'Select a future appointment date and time.',
+            t('appointmentDateTimeMessage'),
         failureAlertTitle:
-            'Unable to add appointment',
+            t('unableToAddAppointment'),
         onSuccess,
         save: async ({
             title,
@@ -79,15 +84,17 @@ export function useAppointmentReminderForm({
 export function AppointmentReminderForm({
     form,
 }: AppointmentReminderFormProps) {
+    const { t } = useTranslation('reminders');
+
     return (
         <>
             <InputField
-                label="Title"
+                label={t('appointmentTitle')}
                 value={form.title}
                 onChangeText={
                     form.onTitleChange
                 }
-                placeholder="Appointment title"
+                placeholder={t('enterAppointmentTitle')}
                 icon={
                     <CalendarDays
                         size={21}
@@ -121,12 +128,12 @@ export function AppointmentReminderForm({
             />
 
             <InputField
-                label="Provider"
+                label={t('provider')}
                 value={form.detail}
                 onChangeText={
                     form.onDetailChange
                 }
-                placeholder="Doctor or clinic (optional)"
+                placeholder={t('enterProviderOptional')}
                 icon={
                     <Stethoscope
                         size={21}

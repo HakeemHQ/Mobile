@@ -6,6 +6,8 @@ import {
     formatDatabaseDate,
 } from '@/lib/reminder-utils';
 
+import i18n from '@/localization/i18n';
+
 export function validateRequiredText(
     value: string,
     message: string,
@@ -19,6 +21,7 @@ export function validateMedicationFirstDose(
     input: MedicationDraftInput,
     referenceDate = new Date(),
 ): string | undefined {
+    const isArabic = i18n.language === 'ar';
     const firstDoseAt =
         new Date(input.firstDoseTime);
 
@@ -27,14 +30,14 @@ export function validateMedicationFirstDose(
             firstDoseAt.getTime(),
         )
     ) {
-        return 'Select a valid first dose date and time.';
+        return isArabic ? 'اختر تاريخاً ووقتاً صالحين للجرعة الأولى.' : 'Select a valid first dose date and time.';
     }
 
     if (
         firstDoseAt.getTime() <=
         referenceDate.getTime()
     ) {
-        return 'Select a future first dose date and time.';
+        return isArabic ? 'اختر تاريخاً ووقتاً مستقبليين للجرعة الأولى.' : 'Select a future first dose date and time.';
     }
 
     const firstDoseDate =
@@ -46,7 +49,7 @@ export function validateMedicationFirstDose(
         firstDoseDate <
         input.startDate
     ) {
-        return 'The first dose cannot be before the treatment start date.';
+        return isArabic ? 'لا يمكن أن تكون الجرعة الأولى قبل تاريخ بدء العلاج.' : 'The first dose cannot be before the treatment start date.';
     }
 
     if (
@@ -56,7 +59,7 @@ export function validateMedicationFirstDose(
         firstDoseDate >
         input.endDate
     ) {
-        return 'The first dose cannot be after the treatment end date.';
+        return isArabic ? 'لا يمكن أن تكون الجرعة الأولى بعد تاريخ انتهاء العلاج.' : 'The first dose cannot be after the treatment end date.';
     }
 
     return undefined;
@@ -65,6 +68,8 @@ export function validateMedicationFirstDose(
 export function validateMedicationDraft(
     input: MedicationDraftInput,
 ): string | undefined {
+    const isArabic = i18n.language === 'ar';
+
     if (
         input.durationType ===
         'FINITE' &&
@@ -72,7 +77,7 @@ export function validateMedicationDraft(
         input.endDate <
         input.startDate
     ) {
-        return 'End date cannot be before the start date.';
+        return isArabic ? 'تاريخ الانتهاء لا يمكن أن يكون قبل تاريخ البدء.' : 'End date cannot be before the start date.';
     }
 
     if (
@@ -80,7 +85,7 @@ export function validateMedicationDraft(
         'WEEKLY' &&
         input.weekdays.length === 0
     ) {
-        return 'Select at least one weekday.';
+        return isArabic ? 'اختر يوماً واحداً على الأقل من أيام الأسبوع.' : 'Select at least one weekday.';
     }
 
     if (
@@ -88,7 +93,7 @@ export function validateMedicationDraft(
         'MONTHLY' &&
         input.monthDays.length === 0
     ) {
-        return 'Select at least one day of the month.';
+        return isArabic ? 'اختر يوماً واحداً على الأقل من أيام الشهر.' : 'Select at least one day of the month.';
     }
 
     if (
@@ -97,7 +102,7 @@ export function validateMedicationDraft(
         (input.timesPerDay < 1 ||
             input.timesPerDay > 4)
     ) {
-        return 'Times per day must be between 1 and 4.';
+        return isArabic ? 'عدد المرات في اليوم يجب أن يكون بين 1 و 4.' : 'Times per day must be between 1 and 4.';
     }
 
     if (
@@ -105,7 +110,7 @@ export function validateMedicationDraft(
             input.firstDoseTime,
         )
     ) {
-        return 'Select a valid medication time.';
+        return isArabic ? 'اختر وقتاً صالحاً للدواء.' : 'Select a valid medication time.';
     }
 
     return undefined;

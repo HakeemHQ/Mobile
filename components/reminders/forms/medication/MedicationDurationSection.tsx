@@ -14,9 +14,13 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 
 import {
+    useTranslation,
+} from 'react-i18next';
+
+import {
     CalendarDays,
+    ChevronLeft,
     ChevronRight,
-    Info,
 } from 'lucide-react-native';
 
 import {
@@ -57,18 +61,6 @@ interface MedicationDurationSectionProps {
     ) => void;
 }
 
-const durationOptions: readonly ReminderSegmentOption<MedicationDurationType>[] =
-    [
-        {
-            label: 'Lifelong',
-            value: 'LIFELONG',
-        },
-        {
-            label: 'Set Duration',
-            value: 'FINITE',
-        },
-    ];
-
 function CompactDateField({
     label,
     value,
@@ -78,16 +70,20 @@ function CompactDateField({
     value: string;
     onPress: () => void;
 }) {
+    const { i18n } = useTranslation('reminders');
+    const isRTL = i18n.language === 'ar';
+    const ChevronIcon = isRTL ? ChevronLeft : ChevronRight;
+
     return (
         <View className="flex-1">
-            <Text className="mb-2 font-jakarta-semibold text-[12px] text-text2-500">
+            <Text className={`mb-2 font-jakarta-semibold text-[12px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
                 {label}
             </Text>
 
             <Pressable
                 accessibilityLabel={`${label}: ${value}`}
                 accessibilityRole="button"
-                className="h-12 flex-row items-center rounded-xl border bg-surface px-3"
+                className={`h-12 flex-row items-center rounded-xl border bg-surface px-3 ${isRTL ? 'flex-row-reverse' : ''}`}
                 onPress={onPress}
                 style={({ pressed }: { pressed: boolean }) => ({
                     borderColor:
@@ -107,13 +103,13 @@ function CompactDateField({
                 />
 
                 <Text
-                    className="ml-2 flex-1 font-jakarta-semibold text-[13px] text-text2-500"
+                    className={`${isRTL ? 'mr-2 text-right' : 'ml-2 text-left'} flex-1 font-jakarta-semibold text-[13px] text-text2-500`}
                     numberOfLines={1}
                 >
                     {value}
                 </Text>
 
-                <ChevronRight
+                <ChevronIcon
                     size={19}
                     color={
                         colors.text2[400]
@@ -133,6 +129,20 @@ export function MedicationDurationSection({
     onStartDateChange,
     onEndDateChange,
 }: MedicationDurationSectionProps) {
+    const { t, i18n } = useTranslation('reminders');
+    const isRTL = i18n.language === 'ar';
+
+    const durationOptions: readonly ReminderSegmentOption<MedicationDurationType>[] = [
+        {
+            label: t('lifelong'),
+            value: 'LIFELONG',
+        },
+        {
+            label: t('setDuration'),
+            value: 'FINITE',
+        },
+    ];
+
     const [
         pickerTarget,
         setPickerTarget,
@@ -193,9 +203,9 @@ export function MedicationDurationSection({
 
     return (
         <View className="mb-5">
-            <View className="mb-2 flex-row items-center">
-                <Text className="font-jakarta-semibold text-[13px] text-text2-500">
-                    Treatment Duration
+            <View className={`mb-2 flex-row items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <Text className={`font-jakarta-semibold text-[13px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {t('treatmentDuration')}
                 </Text>
             </View>
 
@@ -211,16 +221,17 @@ export function MedicationDurationSection({
             />
 
             <View
-                className="mt-3 flex-row gap-3 rounded-2xl border bg-surface p-3"
+                className={`mt-3 flex-row gap-3 rounded-2xl border bg-surface p-3 ${isRTL ? 'flex-row-reverse' : ''}`}
                 style={{
                     borderColor:
                         colors.text2[50],
                 }}
             >
                 <CompactDateField
-                    label="Start Date"
+                    label={t('startDate')}
                     value={formatDateForDisplay(
                         startDate,
+                        i18n.language,
                     )}
                     onPress={() =>
                         setPickerTarget(
@@ -232,9 +243,10 @@ export function MedicationDurationSection({
                 {durationType ===
                     'FINITE' ? (
                     <CompactDateField
-                        label="End Date"
+                        label={t('endDate')}
                         value={formatDateForDisplay(
                             endDate,
+                            i18n.language,
                         )}
                         onPress={() =>
                             setPickerTarget(

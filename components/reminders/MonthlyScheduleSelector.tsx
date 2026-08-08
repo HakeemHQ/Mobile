@@ -5,6 +5,10 @@ import {
 } from 'react-native';
 
 import {
+    useTranslation,
+} from 'react-i18next';
+
+import {
     ReminderInfoCard,
 } from '@/components/reminders/ReminderInfoCard';
 
@@ -30,12 +34,19 @@ export function MonthlyScheduleSelector({
     value,
     onToggle,
 }: MonthlyScheduleSelectorProps) {
+    const { t, i18n } = useTranslation('reminders');
+    const isRTL = i18n.language === 'ar';
+
+    const infoCardTitle =
+        value.length === 0
+            ? t('noDatesSelected')
+            : t('datesSelected', { count: value.length });
 
     return (
         <View className="mb-5">
-            <View className="mb-3 flex-row items-center justify-between">
+            <View className={`mb-3 flex-row items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Text className="font-jakarta-semibold text-[13px] text-text2-500">
-                    Monthly Schedule
+                    {t('monthlySchedule')}
                 </Text>
             </View>
 
@@ -46,7 +57,7 @@ export function MonthlyScheduleSelector({
                 }}
             >
                 <View
-                    className="flex-row flex-wrap"
+                    className={`flex-row flex-wrap ${isRTL ? 'flex-row-reverse' : ''}`}
                     style={{
                         columnGap: gridGap,
                         rowGap: gridGap,
@@ -112,11 +123,11 @@ export function MonthlyScheduleSelector({
                                             style={{
                                                 color:
                                                     isSelected
-                                                        ? colors
-                                                            .surface
-                                                            .DEFAULT
-                                                        : colors
-                                                            .text2[500],
+                                                ? colors
+                                                    .surface
+                                                    .DEFAULT
+                                                : colors
+                                                    .text2[500],
                                             }}
                                         >
                                             {monthDay}
@@ -129,15 +140,8 @@ export function MonthlyScheduleSelector({
                 </View>
             </View>
             <ReminderInfoCard
-                title={
-                    value.length === 0
-                        ? 'No dates selected'
-                        : `${value.length} ${value.length === 1
-                            ? 'date'
-                            : 'dates'
-                        } selected`
-                }
-                description="The reminder repeats monthly on the selected dates."
+                title={infoCardTitle}
+                description={t('remindedMonthlyDesc')}
             />
         </View>
     );
