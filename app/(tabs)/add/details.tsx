@@ -197,7 +197,7 @@ export default function AddDetailsScreen() {
 
     setShowConfirmModal(false);
     startUploadAndExtraction(requestPayload);
-    
+
     router.push('/add/processing');
   };
 
@@ -217,7 +217,7 @@ export default function AddDetailsScreen() {
   };
 
   const CalendarInputIcon = ({ size = 20 }: { size?: number }) => (
-    <HugeiconsIcon icon={Calendar03Icon} size={size} color={colors.secondary[800]} />
+    <HugeiconsIcon icon={Calendar03Icon} size={size} color={colors.primary[800]} />
   );
 
   return (
@@ -230,7 +230,7 @@ export default function AddDetailsScreen() {
           <BackButton onPress={() => router.back()} />
         </View>
 
-        <Text className={`text-[24px] font-jakarta-bold text-secondary-900 mb-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+        <Text className={`text-[24px] font-jakarta-bold text-primary-900 mb-1 ${isRTL ? 'text-right' : 'text-left'}`}>
           {t('details.title')}
         </Text>
         <Text className={`text-[16px] font-jakarta-regular text-bg-800 mb-6 ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -293,6 +293,7 @@ export default function AddDetailsScreen() {
                 }}
                 error={errors.documentTitle?.message}
                 containerClassName="mb-4"
+                bgClassName="bg-primary-50"
               />
             )}
           />
@@ -312,6 +313,7 @@ export default function AddDetailsScreen() {
                     rightIcon={CalendarInputIcon}
                     error={errors.documentDate?.message}
                     containerClassName="mb-2"
+                    bgClassName="bg-primary-50"
                   />
                 </View>
               </Pressable>
@@ -339,9 +341,9 @@ export default function AddDetailsScreen() {
             <View className="flex-1 justify-end bg-black/40">
               <View className="bg-white p-4 rounded-t-3xl border-t border-gray-100">
                 <View className={`flex-row ${isRTL ? 'flex-row-reverse' : 'flex-row'} justify-between items-center mb-2 px-2`}>
-                  <Text className="text-base font-jakarta-bold text-secondary-900">{t('details.selectDateHeader')}</Text>
+                  <Text className="text-base font-jakarta-bold text-primary-900">{t('details.selectDateHeader')}</Text>
                   <Pressable onPress={() => setShowDatePicker(false)}>
-                    <Text className="text-base font-jakarta-semibold text-secondary-900">{t('details.dateDone')}</Text>
+                    <Text className="text-base font-jakarta-semibold text-primary-900">{t('details.dateDone')}</Text>
                   </Pressable>
                 </View>
                 <DateTimePicker
@@ -349,7 +351,7 @@ export default function AddDetailsScreen() {
                   mode="date"
                   display="spinner"
                   textColor="#1F2937"
-                  accentColor={colors.secondary[900]}
+                  accentColor={colors.primary[900]}
                   maximumDate={new Date()}
                   onValueChange={handleDateChange}
                   onDismiss={() => setShowDatePicker(false)}
@@ -362,9 +364,9 @@ export default function AddDetailsScreen() {
             value={pickerDate}
             mode="date"
             display="default"
-            accentColor={colors.secondary[900]}
+            accentColor={colors.primary[900]}
             maximumDate={new Date()}
-            positiveButton={{ label: t('details.dateOk'), textColor: colors.secondary[900] }}
+            positiveButton={{ label: t('details.dateOk'), textColor: colors.primary[900] }}
             negativeButton={{ label: t('details.dateCancel'), textColor: colors.text2[600] }}
             onValueChange={handleDateChange}
             onDismiss={() => setShowDatePicker(false)}

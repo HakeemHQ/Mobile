@@ -31,7 +31,7 @@ export default function AddCategoryScreen() {
           <BackButton />
         </View>
 
-        <Text className={`text-[24px] font-jakarta-bold text-secondary-900 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+        <Text className={`text-[24px] font-jakarta-bold text-primary-900 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>
           {t('category.title')}
         </Text>
         <Text className={`text-[14px] font-jakarta-regular text-bg-800 mb-8 leading-5 ${isRTL ? 'text-right pl-4' : 'text-left pr-4'}`}>
@@ -69,7 +69,7 @@ export default function AddCategoryScreen() {
             activeBorderColor="border-secondary border-[1px]"
             activeCircleColor="bg-secondary-200"
             activeTextColor="text-secondary-900"
-            inactiveCircleColor="bg-[#E8F8F0]"
+            inactiveCircleColor="bg-secondary-50"
             inactiveTextColor="text-secondary-900"
             onPress={() => setCategoryId(2)}
           />
@@ -77,7 +77,7 @@ export default function AddCategoryScreen() {
 
         <InfoBanner
           text={t('category.infoBanner')}
-          icon={<HugeiconsIcon icon={Clock01Icon} size={24} color="#06432E" />}
+          icon={<HugeiconsIcon icon={Clock01Icon} size={24} color={colors.secondary.DEFAULT} />}
         />
 
         <View className="mt-auto pb-8">
