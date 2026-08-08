@@ -1,3 +1,4 @@
+import i18n from '@/localization/i18n';
 import type {
     MedicationDraft,
     MedicationReminder,
@@ -306,9 +307,13 @@ export function parseDatabaseDate(
 
 export function formatDateForDisplay(
     value: Date,
+    language?: string,
 ): string {
+    const currentLang = language || i18n.language || 'en';
+    const locale = currentLang === 'ar' ? 'ar-EG' : 'en-US';
+
     return value.toLocaleDateString(
-        undefined,
+        locale,
         {
             month: 'short',
             day: 'numeric',
@@ -319,9 +324,13 @@ export function formatDateForDisplay(
 
 export function formatDateTimeDate(
     value: Date,
+    language?: string,
 ): string {
+    const currentLang = language || i18n.language || 'en';
+    const locale = currentLang === 'ar' ? 'ar-EG' : 'en-US';
+
     return value.toLocaleDateString(
-        undefined,
+        locale,
         {
             weekday: 'short',
             month: 'short',
@@ -333,18 +342,19 @@ export function formatDateTimeDate(
 
 export function formatDateTimeTime(
     value: Date,
+    language?: string,
 ): string {
-    return value.toLocaleTimeString(
-        undefined,
-        {
-            hour: '2-digit',
-            minute: '2-digit',
-        },
+    return formatLocalTime(
+        `${String(value.getHours()).padStart(2, '0')}:${String(
+            value.getMinutes(),
+        ).padStart(2, '0')}`,
+        language,
     );
 }
 
 export function formatLocalTime(
     localTime: string | undefined,
+    language?: string,
 ): string {
     if (!localTime) {
         return 'No time';
@@ -365,8 +375,12 @@ export function formatLocalTime(
         return localTime;
     }
 
-    const period =
-        hours >= 12 ? 'PM' : 'AM';
+    const currentLang = language || i18n.language || 'en';
+    const isArabic = currentLang === 'ar';
+
+    const period = hours >= 12 
+        ? (isArabic ? 'م' : 'PM')
+        : (isArabic ? 'ص' : 'AM');
 
     const displayHours =
         hours % 12 || 12;
@@ -396,7 +410,11 @@ export function localTimeToDate(
 
 export function formatReminderDate(
     isoDate: string,
+    language?: string,
 ): string {
+    const currentLang = language || i18n.language || 'en';
+    const locale = currentLang === 'ar' ? 'ar-EG' : 'en-US';
+
     const date = new Date(isoDate);
 
     if (
@@ -417,7 +435,7 @@ export function formatReminderDate(
     }
 
     return date.toLocaleDateString(
-        undefined,
+        locale,
         {
             month: 'short',
             day: 'numeric',
@@ -552,9 +570,21 @@ type MedicationScheduleSummarySource =
         | 'schedules'
     >;
 
+const WEEKDAY_ARABIC_LABELS: Record<MedicationWeekdayCode, string> = {
+    SUN: 'الأحد',
+    MON: 'الإثنين',
+    TUE: 'الثلاثاء',
+    WED: 'الأربعاء',
+    THU: 'الخميس',
+    FRI: 'الجمعة',
+    SAT: 'السبت',
+};
+
 export function formatMedicationFrequencySummary(
     medication: MedicationScheduleSummarySource,
 ): string {
+    const isArabic = i18n.language === 'ar';
+
     if (
         medication.frequencyType ===
         'WEEKLY'
@@ -562,14 +592,18 @@ export function formatMedicationFrequencySummary(
         const labels =
             medication.weekdays.map(
                 (weekday) =>
-                    WEEKDAY_SHORT_LABELS[
-                    weekday
-                    ],
+                    isArabic
+                        ? WEEKDAY_ARABIC_LABELS[weekday]
+                        : WEEKDAY_SHORT_LABELS[weekday],
             );
 
-        return labels.length > 0
-            ? `Every ${labels.join(', ')}`
-            : 'Weekly schedule';
+        if (labels.length === 0) {
+            return isArabic ? 'جدول أسبوعي' : 'Weekly schedule';
+        }
+
+        return isArabic
+            ? `كل ${labels.join('، ')}`
+            : `Every ${labels.join(', ')}`;
     }
 
     if (
@@ -579,6 +613,10 @@ export function formatMedicationFrequencySummary(
         const count =
             medication.monthDays.length;
 
+        if (isArabic) {
+            return `${count} ${count === 1 ? 'يوم' : 'أيام'} كل شهر`;
+        }
+
         return `${count} ${count === 1
             ? 'date'
             : 'dates'
@@ -587,6 +625,10 @@ export function formatMedicationFrequencySummary(
 
     const count =
         medication.schedules.length;
+
+    if (isArabic) {
+        return `${count} ${count === 1 ? 'مرة' : 'مرات'} يومياً`;
+    }
 
     return `${count} ${count === 1
         ? 'time'

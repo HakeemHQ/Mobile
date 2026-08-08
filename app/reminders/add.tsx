@@ -39,6 +39,10 @@ import type {
     ReminderType,
 } from '@/types/reminder';
 
+import {
+    useTranslation,
+} from 'react-i18next';
+
 function getFirstParam(
     value:
         | string
@@ -53,6 +57,9 @@ function getFirstParam(
 export default function AddReminderScreen() {
     const router =
         useRouter();
+
+    const { t } =
+        useTranslation('reminders');
 
     const params =
         useLocalSearchParams<{
@@ -102,12 +109,6 @@ export default function AddReminderScreen() {
                 state.updateDraft,
         );
 
-    const draftCount =
-        useMedicationDraftStore(
-            (state) =>
-                state.drafts.length,
-        );
-
     const isMutating =
         useReminderStore(
             (state) =>
@@ -145,7 +146,11 @@ export default function AddReminderScreen() {
     const finishMedicationForm =
         () => {
             if (batchMode) {
-                router.back();
+                if (router.canGoBack()) {
+                    router.back();
+                } else {
+                    router.replace('/reminders/medications');
+                }
                 return;
             }
 
@@ -209,20 +214,28 @@ export default function AddReminderScreen() {
         selectedType ===
             'MEDICATION'
             ? existingDraft
-                ? 'Update Medication'
-                : 'Add Medication'
+                ? t('updateMedication')
+                : t('addMedication')
             : selectedType ===
                 'APPOINTMENT'
-                ? 'Add Appointment'
-                : 'Add Lab Test';
+                ? t('addAppointment')
+                : t('addLabTest');
 
     const handleBack = () => {
         if (batchMode) {
-            router.back();
+            if (router.canGoBack()) {
+                router.back();
+            } else {
+                router.replace('/reminders/medications');
+            }
             return;
         }
 
-        router.back();
+        if (router.canGoBack()) {
+            router.back();
+        } else {
+            router.replace('/reminders');
+        }
     };
 
     return (

@@ -59,6 +59,8 @@ interface ScheduleRow {
     trigger_at_utc: string | null;
     delivery_mode:
         ReminderDeliveryMode;
+    native_alarm_id:
+        number | null;
     created_at: string;
 }
 
@@ -240,6 +242,8 @@ function mapSchedule(
             row.trigger_at_utc,
         deliveryMode:
             row.delivery_mode,
+        nativeAlarmId:
+            row.native_alarm_id,
         createdAt:
             row.created_at,
     };
@@ -258,6 +262,12 @@ async function insertSchedules(
             schedule,
         ] of schedules.entries()
     ) {
+        const nativeAlarmId =
+            schedule.nativeAlarmId ??
+            Math.floor(
+                Math.random() * 2147483647,
+            );
+
         await database.runAsync(
             `
                 INSERT INTO reminder_schedules (
@@ -267,9 +277,10 @@ async function insertSchedules(
                     local_time,
                     trigger_at_utc,
                     delivery_mode,
+                    native_alarm_id,
                     created_at
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?);
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             `,
             [
                 createUuid(),
@@ -283,6 +294,7 @@ async function insertSchedules(
                     null,
                 schedule.deliveryMode ??
                     'NOTIFICATION',
+                nativeAlarmId,
                 createdAt,
             ],
         );

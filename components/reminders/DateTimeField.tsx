@@ -5,9 +5,11 @@ import {
 } from 'react-native';
 import {
     CalendarDays,
+    ChevronLeft,
     ChevronRight,
     Clock3,
 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '@/lib/theme';
 
@@ -26,6 +28,10 @@ export function DateTimeField({
     onPress,
     containerClassName = 'mb-5',
 }: DateTimeFieldProps) {
+    const { i18n } = useTranslation('reminders');
+    const isRTL = i18n.language === 'ar';
+    const ChevronIcon = isRTL ? ChevronLeft : ChevronRight;
+
     const LeadingIcon =
         mode === 'date'
             ? CalendarDays
@@ -37,14 +43,14 @@ export function DateTimeField({
                 containerClassName
             }
         >
-            <Text className="mb-2 font-jakarta-semibold text-[13px] text-text2-500">
+            <Text className={`mb-2 font-jakarta-semibold text-[13px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
                 {label}
             </Text>
 
             <Pressable
                 accessibilityLabel={`${label}: ${value}`}
                 accessibilityRole="button"
-                className="h-14 flex-row items-center rounded-2xl border bg-surface px-4"
+                className={`h-14 flex-row items-center rounded-2xl border bg-surface px-4 ${isRTL ? 'flex-row-reverse' : ''}`}
                 onPress={onPress}
                 style={({ pressed }: { pressed: boolean }) => ({
                     borderColor:
@@ -62,11 +68,11 @@ export function DateTimeField({
                     strokeWidth={2}
                 />
 
-                <Text className="ml-3 flex-1 font-jakarta-semibold text-[15px] text-text2-500">
+                <Text className={`${isRTL ? 'mr-3 text-right' : 'ml-3 text-left'} flex-1 font-jakarta-semibold text-[15px] text-text2-500`}>
                     {value}
                 </Text>
 
-                <ChevronRight
+                <ChevronIcon
                     size={21}
                     color={
                         colors.text2[400]

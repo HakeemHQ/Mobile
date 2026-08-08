@@ -1,6 +1,7 @@
 import {
     useEffect,
     useMemo,
+    useState,
 } from 'react';
 
 import {
@@ -14,8 +15,17 @@ import {
 } from 'react-native';
 
 import {
+    useTranslation,
+} from 'react-i18next';
+
+import {
+    BellRing,
+    CalendarDays,
+    Pill,
     Plus,
 } from 'lucide-react-native';
+
+import { AlarmEngine } from '@/lib/alarm-engine';
 
 import {
     useRouter,
@@ -25,13 +35,27 @@ import {
     SafeAreaView,
 } from 'react-native-safe-area-context';
 
+import BackButton from '@/components/ui/BackButton';
+
 import {
     ArrowLeft02Icon,
 } from '@/components/icons/ArrowLeft02Icon';
 
 import {
-    ReminderListCard,
-} from '@/components/reminders/ReminderListCard';
+    EmptyRemindersState,
+} from '@/components/reminders/EmptyRemindersState';
+
+import {
+    SwipeableReminderCard,
+} from '@/components/reminders/SwipeableReminderCard';
+
+import {
+    DeleteReminderModal,
+} from '@/components/reminders/DeleteReminderModal';
+
+import {
+    EditReminderModal,
+} from '@/components/reminders/EditReminderModal';
 
 import {
     selectTodayMedicationReminders,
@@ -46,9 +70,17 @@ import {
     useReminderStore,
 } from '@/store/useReminderStore';
 
+import type { Reminder } from '@/types/reminder';
+
 export default function RemindersScreen() {
     const router =
         useRouter();
+
+    const { t, i18n } =
+        useTranslation('reminders');
+
+    const isRTL =
+        i18n.language === 'ar';
 
     const reminders =
         useReminderStore(
@@ -98,6 +130,10 @@ export default function RemindersScreen() {
                 state.deleteReminder,
         );
 
+    const [deletingReminder, setDeletingReminder] = useState<Reminder | null>(null);
+    const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
     useEffect(() => {
         void loadReminders();
     }, [loadReminders]);
@@ -120,45 +156,26 @@ export default function RemindersScreen() {
             [reminders],
         );
 
-    const handleDelete = (
-        reminderId: string,
-        title: string,
-    ) => {
-        Alert.alert(
-            'Delete reminder?',
-            `This will remove “${title}” from this device.`,
-            [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Delete',
-                    style: 'destructive',
-                    onPress: () => {
-                        void deleteReminder(
-                            reminderId,
-                        ).catch(
-                            (
-                                deleteError:
-                                    unknown,
-                            ) => {
-                                const message =
-                                    deleteError instanceof
-                                        Error
-                                        ? deleteError.message
-                                        : 'The reminder could not be deleted.';
+    const handleConfirmDelete = async () => {
+        if (!deletingReminder) return;
+        setIsDeleting(true);
 
-                                Alert.alert(
-                                    'Unable to delete reminder',
-                                    message,
-                                );
-                            },
-                        );
-                    },
-                },
-            ],
-        );
+        try {
+            await deleteReminder(deletingReminder.reminderId);
+            setIsDeleting(false);
+            setDeletingReminder(null);
+        } catch (deleteError: unknown) {
+            setIsDeleting(false);
+            const message =
+                deleteError instanceof Error
+                    ? deleteError.message
+                    : 'The reminder could not be deleted.';
+
+            Alert.alert(
+                'Unable to delete reminder',
+                message,
+            );
+        }
     };
 
     return (
@@ -167,38 +184,40 @@ export default function RemindersScreen() {
                 className="flex-1 bg-bg"
                 edges={['top']}
             >
-                <View className="mb-6 mt-2 flex-row items-center px-6">
+                <View className={`mb-6 mt-2 flex-row items-center justify-between px-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <View className={`flex-row items-center flex-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <BackButton />
+                        <Text className={`mx-3 font-jakarta-bold text-[21px] text-primary-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('title')}
+                        </Text>
+                    </View>
+
                     <Pressable
-                        accessibilityLabel="Go back"
+                        accessibilityLabel="Test alerts"
                         accessibilityRole="button"
-                        className="mr-4 h-10 w-10 items-center justify-center rounded-full border border-bg-600 bg-surface"
-                        hitSlop={8}
-                        onPress={() =>
-                            router.back()
-                        }
+                        className={`h-9 flex-row items-center justify-center rounded-full bg-amber-500/15 border border-amber-500/30 px-3 ${isRTL ? 'ml-2' : 'mr-2'}`}
+                        hitSlop={6}
+                        onPress={() => {
+                            void AlarmEngine.testNotificationAndAlarm();
+                            Alert.alert(
+                                t('testAlertsTitle'),
+                                t('testAlertsMessage')
+                            );
+                        }}
                         style={({ pressed }: { pressed: boolean }) => ({
-                            opacity:
-                                pressed
-                                    ? 0.7
-                                    : 1,
+                            opacity: pressed ? 0.75 : 1,
                         })}
                     >
-                        <ArrowLeft02Icon
-                            size={20}
-                            color={
-                                colors.text[800]
-                            }
-                        />
+                        <BellRing size={15} color="#D97706" />
+                        <Text className={`${isRTL ? 'mr-1.5' : 'ml-1.5'} font-jakarta-semibold text-[12px] text-amber-700`}>
+                            {t('testAlerts')}
+                        </Text>
                     </Pressable>
-
-                    <Text className="flex-1 font-jakarta-bold text-[22px] text-primary-900">
-                        Reminders
-                    </Text>
 
                     <Pressable
                         accessibilityLabel="Add reminder"
                         accessibilityRole="button"
-                        className="h-9 flex-row items-center justify-center rounded-full bg-primary px-3"
+                        className={`h-9 flex-row items-center justify-center rounded-full bg-primary px-3.5 ${isRTL ? 'flex-row-reverse' : ''}`}
                         hitSlop={6}
                         onPress={() =>
                             router.push(
@@ -220,8 +239,8 @@ export default function RemindersScreen() {
                             strokeWidth={2}
                         />
 
-                        <Text className="ml-1 font-jakarta-semibold text-[13px] text-surface">
-                            Add
+                        <Text className={`${isRTL ? 'mr-1' : 'ml-1'} font-jakarta-semibold text-[13px] text-surface`}>
+                            {t('add')}
                         </Text>
                     </Pressable>
                 </View>
@@ -313,98 +332,124 @@ export default function RemindersScreen() {
                             }}
                         >
                             <Text className="font-jakarta-semibold text-[14px] text-primary-900">
-                                No device user is connected yet
+                                {t('noUserConnected')}
                             </Text>
 
                             <Text className="mt-1 font-inter-regular text-[12px] leading-5 text-text2-500">
-                                Save the authenticated user ID and email after login before creating reminders.
+                                {t('noUserConnectedDesc')}
                             </Text>
                         </View>
                     ) : null}
 
-                    <Text className="mb-3 mt-5 font-jakarta-semibold text-[13px] text-text2-500">
-                        TODAY
-                    </Text>
-
-                    {todayReminders.length >
-                        0 ? (
-                        todayReminders.map(
-                            (
-                                reminder,
-                            ) => (
-                                <ReminderListCard
-                                    key={
-                                        reminder.reminderId
-                                    }
-                                    reminder={
-                                        reminder
-                                    }
-                                    onToggleMedication={(
-                                        isEnabled,
-                                    ) => {
-                                        void toggleReminder(
-                                            reminder.reminderId,
-                                            isEnabled,
-                                        ).catch(
-                                            (
-                                                toggleError:
-                                                    unknown,
-                                            ) => {
-                                                const message =
-                                                    toggleError instanceof
-                                                        Error
-                                                        ? toggleError.message
-                                                        : 'The reminder could not be updated.';
-
-                                                Alert.alert(
-                                                    'Unable to update reminder',
-                                                    message,
-                                                );
-                                            },
-                                        );
-                                    }}
-                                />
-                            ),
-                        )
+                    {reminders.length === 0 && status !== 'loading' ? (
+                        <EmptyRemindersState
+                            onAddReminder={() =>
+                                router.push('/reminders/add')
+                            }
+                        />
                     ) : (
-                        <Text className="mb-5 font-inter-regular text-[13px] text-text2-400">
-                            No medication reminders are due today.
-                        </Text>
-                    )}
+                        <>
+                            <Text className={`mb-3 mt-5 font-jakarta-semibold text-[13px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                {t('today')}
+                            </Text>
 
-                    <Text className="mb-3 mt-1 font-jakarta-semibold text-[13px] text-text2-500">
-                        UPCOMING
-                    </Text>
+                            {todayReminders.length > 0 ? (
+                                todayReminders.map(
+                                    (reminder) => (
+                                        <SwipeableReminderCard
+                                            key={reminder.reminderId}
+                                            reminder={reminder}
+                                            onToggleMedication={(isEnabled) => {
+                                                void toggleReminder(
+                                                    reminder.reminderId,
+                                                    isEnabled,
+                                                ).catch((toggleError: unknown) => {
+                                                    const message =
+                                                        toggleError instanceof Error
+                                                            ? toggleError.message
+                                                            : 'The reminder could not be updated.';
 
-                    {upcomingReminders.length >
-                        0 ? (
-                        upcomingReminders.map(
-                            (
-                                reminder,
-                            ) => (
-                                <ReminderListCard
-                                    key={
-                                        reminder.reminderId
-                                    }
-                                    reminder={
-                                        reminder
-                                    }
-                                    onDelete={() =>
-                                        handleDelete(
-                                            reminder.reminderId,
-                                            reminder.title,
-                                        )
-                                    }
-                                />
-                            ),
-                        )
-                    ) : (
-                        <Text className="font-inter-regular text-[13px] text-text2-400">
-                            No upcoming appointments or lab tests.
-                        </Text>
+                                                    Alert.alert(
+                                                        'Unable to update reminder',
+                                                        message,
+                                                    );
+                                                });
+                                            }}
+                                            onPress={() => setEditingReminder(reminder)}
+                                            onDelete={() => setDeletingReminder(reminder)}
+                                        />
+                                    ),
+                                )
+                            ) : (
+                                <View className={`mb-5 flex-row items-center rounded-2xl border border-text2-50 bg-surface px-4 py-3.5 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                    <View className="h-9 w-9 items-center justify-center rounded-full bg-primary-50">
+                                        <Pill size={18} color={colors.primary.DEFAULT} strokeWidth={2} />
+                                    </View>
+                                    <View className={`${isRTL ? 'mr-3' : 'ml-3'} flex-1`}>
+                                        <Text className={`font-jakarta-semibold text-[13px] text-text-800 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                            {t('noTodayMedicationsTitle')}
+                                        </Text>
+                                        <Text className={`mt-0.5 font-inter-regular text-[11px] text-text2-400 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                            {t('noTodayMedicationsDesc')}
+                                        </Text>
+                                    </View>
+                                </View>
+                            )}
+
+                            <Text className={`mb-3 mt-1 font-jakarta-semibold text-[13px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                {t('upcoming')}
+                            </Text>
+
+                            {upcomingReminders.length > 0 ? (
+                                upcomingReminders.map(
+                                    (reminder) => (
+                                        <SwipeableReminderCard
+                                            key={reminder.reminderId}
+                                            reminder={reminder}
+                                            onPress={() => setEditingReminder(reminder)}
+                                            onDelete={() => setDeletingReminder(reminder)}
+                                        />
+                                    ),
+                                )
+                            ) : (
+                                <View className={`flex-row items-center rounded-2xl border border-text2-50 bg-surface px-4 py-3.5 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                    <View className="h-9 w-9 items-center justify-center rounded-full bg-secondary-50">
+                                        <CalendarDays size={18} color={colors.secondary.DEFAULT} strokeWidth={2} />
+                                    </View>
+                                    <View className={`${isRTL ? 'mr-3' : 'ml-3'} flex-1`}>
+                                        <Text className={`font-jakarta-semibold text-[13px] text-text-800 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                            {t('noUpcomingTitle')}
+                                        </Text>
+                                        <Text className={`mt-0.5 font-inter-regular text-[11px] text-text2-400 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                            {t('noUpcomingDesc')}
+                                        </Text>
+                                    </View>
+                                </View>
+                            )}
+                        </>
                     )}
                 </ScrollView>
             </SafeAreaView>
+
+            {/* Delete Confirmation Popup Modal */}
+            <DeleteReminderModal
+                visible={Boolean(deletingReminder)}
+                reminderTitle={deletingReminder?.title}
+                isDeleting={isDeleting}
+                onClose={() => setDeletingReminder(null)}
+                onConfirm={handleConfirmDelete}
+            />
+
+            {/* Edit Reminder Modal */}
+            <EditReminderModal
+                visible={Boolean(editingReminder)}
+                reminder={editingReminder}
+                onClose={() => setEditingReminder(null)}
+                onSaved={() => {
+                    void refreshReminders();
+                }}
+            />
         </>
     );
 }
+

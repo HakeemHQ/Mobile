@@ -5,6 +5,10 @@ import {
 } from 'lucide-react-native';
 
 import {
+    useTranslation,
+} from 'react-i18next';
+
+import {
     ReminderDateTimeFields,
 } from '@/components/reminders/ReminderDateTimeFields';
 
@@ -40,6 +44,7 @@ interface LabTestReminderFormProps {
 export function useLabTestReminderForm({
     onSuccess,
 }: UseLabTestReminderFormOptions): LabTestReminderFormController {
+    const { t } = useTranslation('reminders');
     const addLabTest =
         useReminderStore(
             (state) =>
@@ -48,11 +53,11 @@ export function useLabTestReminderForm({
 
     return useSingleEventReminderForm({
         titleRequiredMessage:
-            'Lab test title is required.',
+            t('labTestTitleRequired'),
         dateTimeMessage:
-            'Select a future lab-test date and time.',
+            t('labTestDateTimeMessage'),
         failureAlertTitle:
-            'Unable to add lab test',
+            t('unableToAddLabTest'),
         onSuccess,
         save: async ({
             title,
@@ -79,15 +84,17 @@ export function useLabTestReminderForm({
 export function LabTestReminderForm({
     form,
 }: LabTestReminderFormProps) {
+    const { t } = useTranslation('reminders');
+
     return (
         <>
             <InputField
-                label="Title"
+                label={t('labTestTitle')}
                 value={form.title}
                 onChangeText={
                     form.onTitleChange
                 }
-                placeholder="Lab test title"
+                placeholder={t('enterLabTestTitle')}
                 icon={
                     <FlaskConical
                         size={21}
@@ -121,12 +128,12 @@ export function LabTestReminderForm({
             />
 
             <InputField
-                label="Laboratory"
+                label={t('laboratory')}
                 value={form.detail}
                 onChangeText={
                     form.onDetailChange
                 }
-                placeholder="Laboratory name (optional)"
+                placeholder={t('enterLabOptional')}
                 icon={
                     <Building2
                         size={21}

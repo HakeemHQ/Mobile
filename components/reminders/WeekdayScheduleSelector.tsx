@@ -5,6 +5,10 @@ import {
 } from 'react-native';
 
 import {
+    useTranslation,
+} from 'react-i18next';
+
+import {
     ReminderInfoCard,
 } from '@/components/reminders/ReminderInfoCard';
 
@@ -62,46 +66,33 @@ const weekdayOptions: readonly WeekdayOption[] = [
     },
 ];
 
-function formatSelectedWeekdays(
-    values: readonly MedicationWeekdayCode[],
-): string {
-    const labels = weekdayOptions
-        .filter(({ code }) =>
-            values.includes(code),
-        )
-        .map(({ fullLabel }) =>
-            fullLabel,
-        );
-
-    if (labels.length === 0) {
-        return 'No days selected';
-    }
-
-    if (labels.length === 1) {
-        return `Every ${labels[0]}`;
-    }
-
-    if (labels.length === 2) {
-        return `Every ${labels.join(' and ')}`;
-    }
-
-    return `Every ${labels
-        .slice(0, -1)
-        .join(', ')}, and ${labels[labels.length - 1]}`;
-}
-
 export function WeekdayScheduleSelector({
     value,
     onToggle,
 }: WeekdayScheduleSelectorProps) {
-    const selectedSummary =
-        formatSelectedWeekdays(value);
+    const { t, i18n } = useTranslation('reminders');
+    const isRTL = i18n.language === 'ar';
+
+    const localWeekdayOptions = weekdayOptions.map((opt) => ({
+        ...opt,
+        shortLabel: t(opt.code.toLowerCase(), { defaultValue: opt.shortLabel }),
+        fullLabel: t(opt.fullLabel.toLowerCase(), { defaultValue: opt.fullLabel }),
+    }));
+
+    const labels = localWeekdayOptions
+        .filter(({ code }) => value.includes(code))
+        .map(({ fullLabel }) => fullLabel);
+
+    let selectedSummary = t('noDaysSelected', { defaultValue: 'No days selected' });
+    if (labels.length > 0) {
+        selectedSummary = `${t('every', { defaultValue: 'Every' })} ${labels.join(isRTL ? '، ' : ', ')}`;
+    }
 
     return (
         <View className="mb-5">
-            <View className="mb-3 flex-row items-center justify-between">
+            <View className={`mb-3 flex-row items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Text className="font-jakarta-semibold text-[13px] text-text2-500">
-                    Days of Week
+                    {t('daysOfWeek')}
                 </Text>
             </View>
 
@@ -111,8 +102,8 @@ export function WeekdayScheduleSelector({
                     borderColor: colors.text2[50],
                 }}
             >
-                <View className="flex-row gap-1.5">
-                    {weekdayOptions.map(
+                <View className={`flex-row gap-1.5 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    {localWeekdayOptions.map(
                         ({
                             code,
                             shortLabel,
@@ -175,7 +166,7 @@ export function WeekdayScheduleSelector({
             </View>
             <ReminderInfoCard
                 title={selectedSummary}
-                description="The reminder repeats weekly on the selected days."
+                description={t('remindedWeeklyDesc')}
             />
         </View>
     );

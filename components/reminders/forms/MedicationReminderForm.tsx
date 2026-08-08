@@ -3,6 +3,10 @@ import {
 } from 'react';
 
 import {
+    useTranslation,
+} from 'react-i18next';
+
+import {
     Platform,
     Pressable,
     Text,
@@ -14,6 +18,7 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 
 import {
+    ChevronLeft,
     ChevronRight,
     Clock3,
     Pill,
@@ -194,6 +199,8 @@ export function useMedicationReminderForm({
     initialValue,
     onSuccess,
 }: UseMedicationReminderFormOptions): MedicationReminderFormController {
+    const { t } = useTranslation('reminders');
+
     const [
         name,
         setName,
@@ -472,7 +479,7 @@ export function useMedicationReminderForm({
         const requiredError =
             validateRequiredText(
                 name,
-                'Medication name is required.',
+                t('medicationNameRequired'),
             );
 
         if (requiredError) {
@@ -597,6 +604,10 @@ export function useMedicationReminderForm({
 export function MedicationReminderForm({
     form,
 }: MedicationReminderFormProps) {
+    const { t, i18n } = useTranslation('reminders');
+    const isRTL = i18n.language === 'ar';
+    const ChevronIcon = isRTL ? ChevronLeft : ChevronRight;
+
     const [
         isTimePickerOpen,
         setIsTimePickerOpen,
@@ -643,12 +654,12 @@ export function MedicationReminderForm({
     return (
         <>
             <InputField
-                label="Name"
+                label={t('reminderTitle')}
                 value={form.name}
                 onChangeText={
                     form.onNameChange
                 }
-                placeholder="Medication name"
+                placeholder={t('enterTitle')}
                 icon={
                     <Pill
                         size={21}
@@ -682,13 +693,14 @@ export function MedicationReminderForm({
             />
 
             <View className="mb-5">
-                <Text className="mb-2 font-jakarta-semibold text-[13px] text-text2-500">
-                    Medication Time
+                <Text className={`mb-2 font-jakarta-semibold text-[13px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {t('medicationTime')}
                 </Text>
 
                 <Pressable
                     accessibilityLabel={`Medication Time: ${formatDateTimeTime(
                         form.medicationTime,
+                        i18n.language,
                     )}`}
                     accessibilityRole="button"
                     className="h-14 flex-row items-center rounded-2xl border bg-surface px-4 border border-text2-100"
@@ -718,13 +730,14 @@ export function MedicationReminderForm({
                         strokeWidth={2}
                     />
 
-                    <Text className="ml-3 flex-1 font-jakarta-semibold text-[15px] text-text2-500">
+                    <Text className={`${isRTL ? 'mr-3 text-right' : 'ml-3 text-left'} flex-1 font-jakarta-semibold text-[15px] text-text2-500`}>
                         {formatDateTimeTime(
                             form.medicationTime,
+                            i18n.language,
                         )}
                     </Text>
 
-                    <ChevronRight
+                    <ChevronIcon
                         size={21}
                         color={
                             colors.text2[400]

@@ -2,7 +2,7 @@ import type {
     SQLiteDatabase,
 } from 'expo-sqlite';
 
-const DATABASE_VERSION = 2;
+const DATABASE_VERSION = 3;
 
 interface TableInfoRow {
     name: string;
@@ -348,6 +348,21 @@ export async function migrateDatabase(
                             'Snack'
                         )
                     );
+            `);
+        }
+    }
+
+    if (currentVersion < 3) {
+        const hasNativeAlarmId = await hasColumn(
+            database,
+            'reminder_schedules',
+            'native_alarm_id',
+        );
+
+        if (!hasNativeAlarmId) {
+            await database.execAsync(`
+                ALTER TABLE reminder_schedules
+                ADD COLUMN native_alarm_id INTEGER;
             `);
         }
     }

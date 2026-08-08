@@ -9,6 +9,10 @@ import {
     View,
 } from 'react-native';
 
+import {
+    useTranslation,
+} from 'react-i18next';
+
 import DateTimePicker, {
     type DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
@@ -17,6 +21,7 @@ import {
     AlarmClock,
     Bell,
     ChevronDown,
+    ChevronLeft,
     ChevronRight,
     Pill,
 } from 'lucide-react-native';
@@ -74,6 +79,8 @@ function DeliveryModeButton({
     selected: boolean;
     onPress?: () => void;
 }) {
+    const { t, i18n } = useTranslation('reminders');
+    const isRTL = (i18n.language || '').startsWith('ar');
     const isNotification =
         mode === 'NOTIFICATION';
 
@@ -84,39 +91,40 @@ function DeliveryModeButton({
 
     const label =
         isNotification
-            ? 'Notifications'
-            : 'Alarm';
+            ? t('notifications')
+            : t('alarm');
 
     const activeColor =
         isNotification
             ? colors.primary[500]
             : colors.text2[400];
 
-    const buttonClassName =
+    const containerClassName =
         selected
             ? isNotification
-                ? 'h-9 flex-row items-center justify-center rounded-xl border border-primary-500 bg-primary-500 px-2.5'
-                : 'h-9 flex-row items-center justify-center rounded-xl border border-text2-400 bg-text2-400 px-2.5'
-            : 'h-9 flex-row items-center justify-center rounded-xl border border-text2-100 bg-surface px-2.5';
+                ? 'border-primary-500 bg-primary-500 flex-1'
+                : 'border-text2-400 bg-text2-400 flex-1'
+            : 'border-text2-100 bg-surface flex-1';
 
     const textClassName =
         selected
-            ? 'ml-1 font-jakarta-bold text-[11px] text-surface'
+            ? 'font-jakarta-bold text-[11px] text-surface'
             : isNotification
-                ? 'ml-1 font-jakarta-bold text-[11px] text-primary-500'
-                : 'ml-1 font-jakarta-bold text-[11px] text-text2-400';
+                ? 'font-jakarta-bold text-[11px] text-primary-500'
+                : 'font-jakarta-bold text-[11px] text-text2-400';
 
     return (
         <Pressable
+            accessibilityLabel={`${label} ${selected
+                ? 'selected'
+                : 'not selected'
+                }`}
             accessibilityRole="radio"
             accessibilityState={{
                 checked: selected,
             }}
-            disabled={!onPress}
+            className={`h-9 flex-row items-center justify-center rounded-xl border px-2.5 ${isRTL ? 'flex-row-reverse' : ''} ${containerClassName}`}
             onPress={onPress}
-            className={
-                buttonClassName
-            }
             style={({
                 pressed,
             }: {
@@ -124,13 +132,12 @@ function DeliveryModeButton({
             }) => ({
                 opacity:
                     pressed
-                        ? 0.75
+                        ? 0.8
                         : 1,
             })}
         >
             <Icon
-                size={16}
-                strokeWidth={2}
+                size={14}
                 color={
                     selected
                         ? colors.surface.DEFAULT
@@ -139,9 +146,7 @@ function DeliveryModeButton({
             />
 
             <Text
-                className={
-                    textClassName
-                }
+                className={`${isRTL ? 'mr-1.5' : 'ml-1.5'} ${textClassName}`}
                 numberOfLines={1}
             >
                 {label}
@@ -161,6 +166,10 @@ export function MedicationScheduleCard({
     onTimeChange,
     onDeliveryModeChange,
 }: MedicationScheduleCardProps) {
+    const { t, i18n } = useTranslation('reminders');
+    const isRTL = (i18n.language || '').startsWith('ar');
+    const ChevronIcon = isRTL ? ChevronLeft : ChevronRight;
+
     const [
         editingDoseSequence,
         setEditingDoseSequence,
@@ -183,7 +192,7 @@ export function MedicationScheduleCard({
     const subtitle = [
         frequencySummary,
         startDateLabel
-            ? `Starting ${startDateLabel}`
+            ? `${t('starting')} ${startDateLabel}`
             : undefined,
     ]
         .filter(Boolean)
@@ -245,7 +254,7 @@ export function MedicationScheduleCard({
                 accessibilityState={{
                     expanded,
                 }}
-                className="flex-row items-center px-5 py-5"
+                className={`flex-row items-center px-5 py-5 ${isRTL ? 'flex-row-reverse' : ''}`}
                 onPress={
                     onToggleExpanded
                 }
@@ -279,15 +288,15 @@ export function MedicationScheduleCard({
                     />
                 </View>
 
-                <View className="ml-4 flex-1">
+                <View className={`${isRTL ? 'mr-4 text-right' : 'ml-4 text-left'} flex-1`}>
                     <Text
-                        className="font-jakarta-bold text-[16px] color-primary-900"
+                        className={`font-jakarta-bold text-[16px] color-primary-900 ${isRTL ? 'text-right' : 'text-left'}`}
                         numberOfLines={1}
                     >
                         {title}
                     </Text>
 
-                    <Text className="mt-1 font-inter-semibold text-[12px] leading-5 text-text2-400">
+                    <Text className={`mt-1 font-inter-semibold text-[12px] leading-5 text-text2-400 ${isRTL ? 'text-right' : 'text-left'}`}>
                         {subtitle}
                     </Text>
                 </View>
@@ -301,7 +310,7 @@ export function MedicationScheduleCard({
                         strokeWidth={2}
                     />
                 ) : (
-                    <ChevronRight
+                    <ChevronIcon
                         size={24}
                         color={
                             colors.text[800]
@@ -329,7 +338,7 @@ export function MedicationScheduleCard({
                                         : 'mb-3'
                                 }
                             >
-                                <View className="flex-row items-center">
+                                <View className={`flex-row items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                                     <View
                                         className="h-7 w-7 items-center justify-center rounded-full"
                                         style={{
@@ -354,7 +363,7 @@ export function MedicationScheduleCard({
                                         disabled={
                                             !onTimeChange
                                         }
-                                        className="ml-2 w-[76px] justify-center"
+                                        className={`${isRTL ? 'mr-2' : 'ml-2'} min-w-[82px] px-1 justify-center`}
                                         onPress={() =>
                                             setEditingDoseSequence(
                                                 schedule.doseSequence,
@@ -372,7 +381,7 @@ export function MedicationScheduleCard({
                                         })}
                                     >
                                         <Text
-                                            className="font-jakarta-bold text-[14px]"
+                                            className={`font-jakarta-bold text-[14px] ${isRTL ? 'text-right' : 'text-left'}`}
                                             style={{
                                                 color:
                                                     colors.primary[900],
@@ -381,11 +390,12 @@ export function MedicationScheduleCard({
                                         >
                                             {formatLocalTime(
                                                 schedule.localTime,
+                                                i18n.language,
                                             )}
                                         </Text>
                                     </Pressable>
 
-                                    <View className="ml-1 flex-1 flex-row items-center gap-1.5">
+                                    <View className={`${isRTL ? 'mr-1 flex-row-reverse' : 'ml-1'} flex-1 flex-row items-center gap-1.5`}>
                                         <DeliveryModeButton
                                             mode="NOTIFICATION"
                                             selected={

@@ -2,7 +2,6 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
-import { I18nManager } from 'react-native';
 
 // Import all locales
 import enOnboarding from './EN/onboarding.json';
@@ -23,6 +22,8 @@ import enTimeline from './EN/timeline.json';
 import arTimeline from './AR/timeline.json';
 import enMedicalCv from './EN/medical-cv.json';
 import arMedicalCv from './AR/medical-cv.json';
+import enReminders from './EN/reminders.json';
+import arReminders from './AR/reminders.json';
 
 const resources = {
   en: {
@@ -35,6 +36,7 @@ const resources = {
     profile: enProfile,
     timeline: enTimeline,
     medicalCv: enMedicalCv,
+    reminders: enReminders,
   },
   ar: {
     onboarding: arOnboarding,
@@ -46,16 +48,22 @@ const resources = {
     profile: arProfile,
     timeline: arTimeline,
     medicalCv: arMedicalCv,
+    reminders: arReminders,
   },
 };
 
 const LANGUAGE_KEY = 'APP_LANGUAGE';
 
 // Get system language or fallback to en
-const getSystemLanguage = () => {
-  const locales = Localization.getLocales();
-  const systemLanguage = locales[0]?.languageCode;
-  return systemLanguage === 'ar' ? 'ar' : 'en';
+const getSystemLanguage = (): 'ar' | 'en' => {
+  try {
+    const locales = Localization.getLocales();
+    const firstLocale = locales[0];
+    const langCode = (firstLocale?.languageCode || firstLocale?.languageTag || '').toLowerCase();
+    return langCode.startsWith('ar') ? 'ar' : 'en';
+  } catch (error) {
+    return 'en';
+  }
 };
 
 const languageDetector = {
@@ -64,14 +72,9 @@ const languageDetector = {
   detect: async (callback: (lng: string) => void) => {
     try {
       const storedLanguage = await AsyncStorage.getItem(LANGUAGE_KEY);
-      if (storedLanguage) {
-        if (storedLanguage === 'auto') {
-          callback(getSystemLanguage());
-        } else {
-          callback(storedLanguage);
-        }
+      if (storedLanguage && storedLanguage !== 'auto') {
+        callback(storedLanguage.startsWith('ar') ? 'ar' : 'en');
       } else {
-        // Default to auto (system language)
         callback(getSystemLanguage());
       }
     } catch (error) {
@@ -86,18 +89,28 @@ i18n
   .use(languageDetector)
   .use(initReactI18next)
   .init({
-    resources,
+    resources: {
+      ...resources,
+      'ar-EG': resources.ar,
+      'ar-SA': resources.ar,
+      'ar-AE': resources.ar,
+      'en-US': resources.en,
+      'en-GB': resources.en,
+    },
     fallbackLng: 'en',
+    load: 'languageOnly',
+    defaultNS: 'reminders',
+    fallbackNS: ['reminders', 'common', 'add', 'home', 'profile'],
     compatibilityJSON: 'v4',
     interpolation: {
-      escapeValue: false, 
+      escapeValue: false,
     },
   });
 
 export const setLanguage = async (lng: 'ar' | 'en' | 'auto') => {
   try {
     await AsyncStorage.setItem(LANGUAGE_KEY, lng);
-    const targetLanguage = lng === 'auto' ? getSystemLanguage() : lng;
+    const targetLanguage = lng === 'auto' ? getSystemLanguage() : (lng.startsWith('ar') ? 'ar' : 'en');
     await i18n.changeLanguage(targetLanguage);
   } catch (err) {
     console.warn('Error changing language:', err);

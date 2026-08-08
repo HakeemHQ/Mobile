@@ -5,6 +5,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import '../localization/i18n';
+import { AlarmEngine } from '@/lib/alarm-engine';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,6 +24,10 @@ export default function RootLayout() {
     'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
   });
+
+  useEffect(() => {
+    void AlarmEngine.init();
+  }, []);
 
   useEffect(() => {
     if (loaded || error) {

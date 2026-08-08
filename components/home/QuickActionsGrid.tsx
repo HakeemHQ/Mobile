@@ -65,7 +65,7 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
 
         {/* Reminders */}
         <FastAccessButton
-          title={t('Reminders', { defaultValue: 'Reminders' })}
+          title={t('reminders', { defaultValue: 'Reminders' })}
           icon={<HugeiconsIcon icon={Notification01Icon} size={22} color= {colors.primary[800]} />}
           active={false}
           inactiveCircleColor="bg-primary-100"

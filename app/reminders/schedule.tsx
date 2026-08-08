@@ -22,6 +22,10 @@ import {
 } from 'expo-status-bar';
 
 import {
+    useTranslation,
+} from 'react-i18next';
+
+import {
     Sparkles,
 } from 'lucide-react-native';
 
@@ -68,6 +72,7 @@ const medicationAccents = [
 
 function getStartDateLabel(
     value: string,
+    language?: string,
 ): string | undefined {
     const date =
         parseDatabaseDate(
@@ -77,6 +82,7 @@ function getStartDateLabel(
     return date
         ? formatDateForDisplay(
             date,
+            language,
         )
         : undefined;
 }
@@ -84,6 +90,11 @@ function getStartDateLabel(
 export default function MedicationScheduleScreen() {
     const router =
         useRouter();
+
+    const { t, i18n } =
+        useTranslation(['reminders', 'common']);
+    const isRTL =
+        (i18n.language || '').startsWith('ar');
 
     const drafts =
         useMedicationDraftStore(
@@ -176,8 +187,8 @@ export default function MedicationScheduleScreen() {
                 0
             ) {
                 Alert.alert(
-                    'No medications',
-                    'Add at least one medication before saving.',
+                    t('noMedications', { defaultValue: 'لا توجد أدوية' }),
+                    t('addMedicationBeforeSaving', { defaultValue: 'أضف دواءً واحداً على الأقل قبل الحفظ.' }),
                 );
 
                 return;
@@ -195,13 +206,21 @@ export default function MedicationScheduleScreen() {
                 );
             } catch (error) {
                 Alert.alert(
-                    'Unable to save reminders',
+                    t('unableToSave', { defaultValue: 'تعذر حفظ التذكيرات' }),
                     getErrorMessage(
                         error,
                     ),
                 );
             }
         };
+
+    const handleBack = () => {
+        if (router.canGoBack()) {
+            router.back();
+        } else {
+            router.replace('/reminders/medications');
+        }
+    };
 
     return (
         <>
@@ -215,10 +234,8 @@ export default function MedicationScheduleScreen() {
                 ]}
             >
                 <ReminderScreenHeader
-                    title="Set Reminder Times"
-                    onBack={() =>
-                        router.back()
-                    }
+                    title={t('setReminderTimes', { defaultValue: 'تحديد أوقات التذكير' })}
+                    onBack={handleBack}
                 />
 
                 <ScrollView
@@ -251,6 +268,7 @@ export default function MedicationScheduleScreen() {
                                 )}
                                 startDateLabel={getStartDateLabel(
                                     draft.startDate,
+                                    i18n.language,
                                 )}
                                 schedules={draft.schedules.map(
                                     (
@@ -308,7 +326,7 @@ export default function MedicationScheduleScreen() {
                     )}
 
                     <View
-                        className="mt-3 flex-row rounded-2xl border bg-surface px-4 py-4"
+                        className={`mt-3 flex-row items-center rounded-2xl border bg-surface px-4 py-4 ${isRTL ? 'flex-row-reverse' : ''}`}
                         style={{
                             borderColor:
                                 colors
@@ -336,8 +354,8 @@ export default function MedicationScheduleScreen() {
                             />
                         </View>
 
-                        <Text className="ml-3 flex-1 font-inter-semibold text-[12px] leading-5 text-text2-400">
-                            You can edit the saved times instead of these drafts with your medication log.
+                        <Text className={`${isRTL ? 'mr-3 text-right' : 'ml-3 text-left'} flex-1 font-inter-semibold text-[12px] leading-5 text-text2-400`}>
+                            {t('scheduleNote', { defaultValue: 'يمكنك تعديل الأوقات المحفوظة لاحقاً من خلال قائمة التذكيرات.' })}
                         </Text>
                     </View>
                 </ScrollView>
@@ -346,8 +364,8 @@ export default function MedicationScheduleScreen() {
                     <Button
                         title={
                             isMutating
-                                ? 'Saving...'
-                                : 'Save All Reminders'
+                                ? t('saving', { defaultValue: 'جاري الحفظ...' })
+                                : t('saveAllReminders', { defaultValue: 'حفظ جميع التذكيرات' })
                         }
                         variant="primary"
                         className="h-14"

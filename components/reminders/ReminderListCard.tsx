@@ -9,8 +9,10 @@ import {
     CalendarDays,
     FlaskConical,
     Pill,
-    Trash2,
 } from 'lucide-react-native';
+
+import { HugeiconsIcon } from '@hugeicons/react-native';
+import { Delete02Icon } from '@hugeicons/core-free-icons';
 
 import {
     colors,
@@ -20,6 +22,8 @@ import {
     formatLocalTime,
     formatReminderDate,
 } from '@/lib/reminder-utils';
+
+import { useTranslation } from 'react-i18next';
 
 import type {
     MedicationReminder,
@@ -32,6 +36,8 @@ interface ReminderListCardProps {
         isEnabled: boolean,
     ) => void;
     onDelete?: () => void;
+    onPress?: () => void;
+    isSwipeable?: boolean;
 }
 
 const reminderCardThemes = {
@@ -78,19 +84,20 @@ function getFirstTime(
 
 function getMedicationDetailText(
     reminder: MedicationReminder,
+    t?: (key: string) => string,
 ): string {
     const instructions =
         reminder.instructions?.trim();
 
-    const mealTiming =
-        reminder.mealRelation &&
-            reminder.mealName
-            ? `${reminder.mealRelation ===
-                'BEFORE'
-                ? 'Before'
-                : 'After'
-            } ${reminder.mealName}`
-            : null;
+    let mealTiming: string | null = null;
+    if (reminder.mealRelation && reminder.mealName) {
+        const relation = reminder.mealRelation === 'BEFORE'
+            ? (t ? t('before') : 'Before')
+            : (t ? t('after') : 'After');
+        const mealKey = reminder.mealName.toLowerCase();
+        const meal = (t ? t(mealKey) : null) || reminder.mealName;
+        mealTiming = `${relation} ${meal}`;
+    }
 
     return [
         reminder.dosage,
@@ -105,7 +112,12 @@ export function ReminderListCard({
     reminder,
     onToggleMedication,
     onDelete,
+    onPress,
+    isSwipeable = false,
 }: ReminderListCardProps) {
+    const { t, i18n } = useTranslation('reminders');
+    const isRTL = i18n.language === 'ar';
+
     const isMedication =
         reminder.reminderType ===
         'MEDICATION';
@@ -127,22 +139,25 @@ export function ReminderListCard({
         isMedication
             ? getMedicationDetailText(
                 reminder,
+                t,
             )
             : isAppointment
                 ? reminder.providerName ??
-                'No provider added'
+                (t ? t('enterProviderOptional') : 'No provider added')
                 : reminder.labName ??
-                'No laboratory added';
+                (t ? t('enterLabOptional') : 'No laboratory added');
 
     const reminderDate =
         isAppointment
             ? formatReminderDate(
                 reminder.appointmentDate,
+                i18n.language,
             )
             : reminder.reminderType ===
                 'LAB_TEST'
                 ? formatReminderDate(
                     reminder.dueDate,
+                    i18n.language,
                 )
                 : null;
 
@@ -152,9 +167,17 @@ export function ReminderListCard({
             ? 0.48
             : 1;
 
+    const schedulesCount = reminder.schedules?.length || 0;
+
     return (
-        <View
-            className="mb-4 min-h-[98px] flex-row items-center rounded-2xl border bg-surface px-3 py-3"
+        <Pressable
+            onPress={onPress}
+            disabled={!onPress}
+            className={`min-h-[98px] flex-row items-center rounded-2xl border bg-surface px-3 py-3 ${
+                isRTL ? 'flex-row-reverse' : ''
+            } ${
+                isSwipeable ? '' : 'mb-4'
+            }`}
             style={{
                 borderColor:
                     reminderCardTheme.borderColor,
@@ -184,7 +207,7 @@ export function ReminderListCard({
             </View>
 
             <View
-                className="ml-3 flex-1"
+                className={`${isRTL ? 'mr-3' : 'ml-3'} flex-1`}
                 style={{
                     opacity:
                         contentOpacity,
@@ -192,46 +215,103 @@ export function ReminderListCard({
             >
                 <Text
                     numberOfLines={1}
-                    className="font-jakarta-bold text-[14px] text-text-900"
+                    className={`font-jakarta-bold text-[14px] text-text-900 ${isRTL ? 'text-right' : 'text-left'}`}
                 >
                     {reminder.title}
                 </Text>
 
                 <Text
                     numberOfLines={1}
-                    className="mt-0.5 font-inter-regular text-[12px] text-text2-400"
+                    className={`mt-0.5 font-inter-regular text-[12px] text-text2-400 ${isRTL ? 'text-right' : 'text-left'}`}
                 >
                     {detailText ||
                         'No details added'}
                 </Text>
 
-                <View className="mt-2 flex-row items-center">
-                    <View
-                        className="rounded-lg px-2 py-1"
-                        style={{
-                            backgroundColor:
-                                reminderCardTheme.badgeBackgroundColor,
-                        }}
-                    >
-                        <Text
-                            className="font-jakarta-semibold text-[11px]"
+                <View className={`mt-2 flex-row flex-wrap items-center gap-1.5 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    {reminder.schedules?.slice(0, 3).map((schedule, index) => (
+                        <View
+                            key={`sched-${index}`}
+                            className="rounded-lg px-2 py-0.5"
                             style={{
-                                color:
+                                backgroundColor:
+                                    reminderCardTheme.badgeBackgroundColor,
+                            }}
+                        >
+                            <Text
+                                className="font-jakarta-semibold text-[11px]"
+                                style={{
+                                    color:
+                                        reminderCardTheme.accentColor,
+                                }}
+                            >
+                                {formatLocalTime(
+                                    schedule.localTime,
+                                    i18n.language,
+                                )}
+                            </Text>
+                        </View>
+                    ))}
+
+                    {schedulesCount > 3 ? (
+                        <View
+                            className="rounded-lg px-1.5 py-0.5 border"
+                            style={{
+                                backgroundColor:
+                                    reminderCardTheme.softBackgroundColor,
+                                borderColor:
                                     reminderCardTheme.accentColor,
                             }}
                         >
-                            {getFirstTime(
-                                reminder,
-                            )}
-                        </Text>
-                    </View>
+                            <Text
+                                className="font-jakarta-bold text-[10px]"
+                                style={{
+                                    color:
+                                        reminderCardTheme.accentColor,
+                                }}
+                            >
+                                +{schedulesCount - 3}
+                            </Text>
+                        </View>
+                    ) : null}
 
                     {reminderDate ? (
-                        <Text className="ml-3 font-inter-regular text-[11px] text-text2-300">
-                            {
-                                reminderDate
-                            }
-                        </Text>
+                        <View
+                            className={`flex-row items-center rounded-full border px-2.5 py-0.5 ${
+                                isRTL ? 'flex-row-reverse' : ''
+                            }`}
+                            style={{
+                                backgroundColor: isAppointment
+                                    ? colors.secondary[50]
+                                    : colors.tertiary[50],
+                                borderColor: isAppointment
+                                    ? colors.secondary[100]
+                                    : colors.tertiary[100],
+                            }}
+                        >
+                            <CalendarDays
+                                size={12}
+                                color={
+                                    isAppointment
+                                        ? colors.secondary.DEFAULT
+                                        : colors.tertiary.DEFAULT
+                                }
+                                strokeWidth={2.2}
+                                style={{
+                                    [isRTL ? 'marginLeft' : 'marginRight']: 4,
+                                }}
+                            />
+                            <Text
+                                className="font-jakarta-semibold text-[11px]"
+                                style={{
+                                    color: isAppointment
+                                        ? colors.secondary.DEFAULT
+                                        : colors.tertiary.DEFAULT,
+                                }}
+                            >
+                                {reminderDate}
+                            </Text>
+                        </View>
                     ) : null}
                 </View>
             </View>
@@ -269,7 +349,7 @@ export function ReminderListCard({
                     }}
                     accessibilityLabel={`${reminder.title} reminder`}
                 />
-            ) : onDelete ? (
+            ) : onDelete && !isSwipeable ? (
                 <Pressable
                     onPress={onDelete}
                     accessibilityRole="button"
@@ -280,15 +360,16 @@ export function ReminderListCard({
                             colors.danger[50],
                     }}
                 >
-                    <Trash2
-                        size={21}
+                    <HugeiconsIcon
+                        icon={Delete02Icon}
+                        size={20}
                         color={
                             colors.danger[700]
                         }
-                        strokeWidth={2}
                     />
                 </Pressable>
             ) : null}
-        </View>
+        </Pressable>
     );
 }
+

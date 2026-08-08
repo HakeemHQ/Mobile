@@ -4,6 +4,10 @@ import {
 } from 'react-native';
 
 import {
+    useTranslation,
+} from 'react-i18next';
+
+import {
     MonthlyScheduleSelector,
 } from '@/components/reminders/MonthlyScheduleSelector';
 
@@ -53,22 +57,6 @@ interface MedicationFrequencySectionProps {
     ) => void;
 }
 
-const frequencyOptions: readonly ReminderSegmentOption<MedicationFrequencyType>[] =
-    [
-        {
-            label: 'Daily',
-            value: 'DAILY',
-        },
-        {
-            label: 'Weekly',
-            value: 'WEEKLY',
-        },
-        {
-            label: 'Monthly',
-            value: 'MONTHLY',
-        },
-    ];
-
 const timesPerDayOptions: readonly ReminderSegmentOption<number>[] =
     [
         {
@@ -100,11 +88,29 @@ export function MedicationFrequencySection({
     onToggleWeekday,
     onToggleMonthDay,
 }: MedicationFrequencySectionProps) {
+    const { t, i18n } = useTranslation('reminders');
+    const isRTL = i18n.language === 'ar';
+
+    const frequencyOptions: readonly ReminderSegmentOption<MedicationFrequencyType>[] = [
+        {
+            label: t('daily'),
+            value: 'DAILY',
+        },
+        {
+            label: t('weekly'),
+            value: 'WEEKLY',
+        },
+        {
+            label: t('monthly'),
+            value: 'MONTHLY',
+        },
+    ];
+
     return (
         <>
             <View className="mb-5">
-                <Text className="mb-2 font-jakarta-semibold text-[13px] text-text2-500">
-                    Frequency
+                <Text className={`mb-2 font-jakarta-semibold text-[13px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {t('frequency')}
                 </Text>
 
                 <ReminderSegmentedControl
@@ -124,8 +130,8 @@ export function MedicationFrequencySection({
             {frequencyType ===
                 'DAILY' ? (
                 <View className="mb-5">
-                    <Text className="mb-2 font-jakarta-semibold text-[13px] text-text2-500">
-                        Times Per Day
+                    <Text className={`mb-2 font-jakarta-semibold text-[13px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+                        {t('timesPerDay')}
                     </Text>
 
                     <ReminderSegmentedControl
@@ -143,12 +149,8 @@ export function MedicationFrequencySection({
                     />
 
                     <ReminderInfoCard
-                        title={`You'll be reminded ${timesPerDay} ${timesPerDay ===
-                            1
-                            ? 'time'
-                            : 'times'
-                            } every day`}
-                        description="You'll set the exact time and choose notification or alarm on the next step."
+                        title={t('remindedDaily', { count: timesPerDay })}
+                        description={t('remindedDailyDesc')}
                     />
                 </View>
             ) : null}
@@ -177,7 +179,7 @@ export function MedicationFrequencySection({
 
             {scheduleError ? (
                 <Text
-                    className="-mt-2 mb-4 font-inter-medium text-[12px]"
+                    className={`-mt-2 mb-4 font-inter-medium text-[12px] ${isRTL ? 'text-right' : 'text-left'}`}
                     style={{
                         color:
                             colors.primary[700],

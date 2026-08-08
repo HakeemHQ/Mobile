@@ -12,11 +12,22 @@ export default function BackButton({ onPress }: BackButtonProps = {}) {
   const router = useRouter();
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const handlePress = onPress || (() => router.back());
+
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    } else if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)');
+    }
+  };
 
   return (
     <Pressable
       onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel={isRTL ? 'رجوع' : 'Back'}
       className="w-10 h-10 rounded-full bg-white items-center justify-center"
       style={({ pressed }) => ({
         opacity: pressed ? 0.7 : 1,

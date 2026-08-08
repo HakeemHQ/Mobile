@@ -61,10 +61,12 @@ export function ReminderFormScaffold({
     children,
     showTypeSelector = true,
 }: ReminderFormScaffoldProps) {
-    const { t } =
+    const { t, i18n } =
         useTranslation(
             'reminders',
         );
+    const isRTL =
+        i18n.language === 'ar';
 
     return (
         <>
@@ -87,13 +89,7 @@ export function ReminderFormScaffold({
                     }
                 >
                     <ReminderScreenHeader
-                        title={t(
-                            'add.title',
-                            {
-                                defaultValue:
-                                    'Add Reminder',
-                            },
-                        )}
+                        title={t('addTitle')}
                         onBack={onBack}
                     />
 
@@ -112,14 +108,8 @@ export function ReminderFormScaffold({
                     >
                         {showTypeSelector ? (
                             <>
-                                <Text className="mb-3 font-jakarta-semibold text-[13px] text-text2-500">
-                                    {t(
-                                        'add.reminderType',
-                                        {
-                                            defaultValue:
-                                                'Reminder Type',
-                                        },
-                                    )}
+                                <Text className={`mb-3 font-jakarta-semibold text-[13px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                    {t('reminderType')}
                                 </Text>
 
                                 <ReminderTypeSelector
@@ -148,13 +138,7 @@ export function ReminderFormScaffold({
                         <Button
                             title={
                                 isSubmitting
-                                    ? t(
-                                        'actions.saving',
-                                        {
-                                            defaultValue:
-                                                'Saving...',
-                                        },
-                                    )
+                                    ? t('saving')
                                     : submitTitle
                             }
                             className="h-[56px] rounded-2xl"
