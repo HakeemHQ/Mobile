@@ -32,7 +32,7 @@ export default function LoginScreen() {
         method: 'POST',
         body: JSON.stringify(data),
       });
-      
+
       if (response && response.success && response.data) {
         const token =
           response.data.accessToken ||
@@ -67,31 +67,31 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
-      <ScrollView 
-        className="flex-1 px-6 pt-2" 
+      <ScrollView
+        className="flex-1 px-6 pt-2"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
       >
         <View className="gap-8 py-8">
           {/* Back Button */}
-          <Pressable 
+          <Pressable
             className="w-10 h-10 rounded-full border border-bg-600 items-center justify-center"
             onPress={() => router.back()}
           >
-            <ArrowLeft02Icon size={20} color="secondary.900" />
+            <ArrowLeft02Icon size={20} color="primary.900" />
           </Pressable>
 
           {/* Logo */}
           <View className="flex-row items-center">
-            <View className="w-8 h-8 rounded-lg bg-secondary-50 items-center justify-center mr-3">
-              <AddIcon size={20} color="secondary.900" />
+            <View className="w-8 h-8 rounded-lg bg-primary-50 items-center justify-center mr-3">
+              <AddIcon size={20} color="primary.900" />
             </View>
-            <Text className="text-2xl font-jakarta-bold text-secondary-900">Hakeem</Text>
+            <Text className="text-2xl font-jakarta-bold text-primary-900">Hakeem</Text>
           </View>
 
           {/* Header */}
           <View>
-            <Text className="text-[28px] font-jakarta-bold text-secondary-900 mb-2">Welcome back</Text>
+            <Text className="text-[28px] font-jakarta-bold text-primary-900 mb-2">Welcome back</Text>
             <Text className="text-sm font-inter-regular text-text2-500">
               Sign in to access your medical records
             </Text>
@@ -104,21 +104,22 @@ export default function LoginScreen() {
           <Controller
             control={control}
             name="email"
-            rules={{ 
+            rules={{
               required: 'Email is required',
               pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Please enter a valid email address' }
             }}
             render={({ field: { onChange, value } }) => (
-              <InputField 
-                label="Email Address" 
-                icon={Mail01Icon} 
-                placeholder="you@example.com" 
+              <InputField
+                label="Email Address"
+                icon={Mail01Icon}
+                placeholder="you@example.com"
                 keyboardType="email-address"
                 value={value}
                 onChangeText={onChange}
                 error={errors.email?.message as string}
                 autoCapitalize="none"
                 containerClassName=""
+                bgClassName="bg-primary-50"
               />
             )}
           />
@@ -126,15 +127,15 @@ export default function LoginScreen() {
           <Controller
             control={control}
             name="password"
-            rules={{ 
+            rules={{
               required: 'Password is required',
               minLength: { value: 8, message: 'Password must be at least 8 characters' }
             }}
             render={({ field: { onChange, value } }) => (
-              <InputField 
-                label="Password" 
-                icon={LockOpenIcon} 
-                placeholder="At least 8 characters" 
+              <InputField
+                label="Password"
+                icon={LockOpenIcon}
+                placeholder="At least 8 characters"
                 secureTextEntry={!isPasswordVisible}
                 rightIcon={isPasswordVisible ? ViewIcon : EyeOffIcon}
                 onRightIconPress={() => setIsPasswordVisible(!isPasswordVisible)}
@@ -142,20 +143,21 @@ export default function LoginScreen() {
                 onChangeText={onChange}
                 error={errors.password?.message as string}
                 containerClassName=""
+                bgClassName="bg-primary-50"
               />
             )}
           />
-          
+
           {/* Forgot password */}
           <View className="items-end">
             <Pressable onPress={() => router.push('/(auth)/reset-password')}>
-              <Text className="text-sm font-jakarta-bold text-secondary-900">Forgot password?</Text>
+              <Text className="text-sm font-jakarta-bold text-primary-900">Forgot password?</Text>
             </Pressable>
           </View>
 
           {/* Continue Button */}
-          <Pressable 
-            className={`bg-secondary-900 h-14 rounded-2xl items-center justify-center ${isLoading ? 'opacity-70' : ''}`}
+          <Pressable
+            className={`bg-primary h-14 rounded-2xl items-center justify-center ${isLoading ? 'opacity-70' : ''}`}
             onPress={handleSubmit(onSubmit)}
             disabled={isLoading}
           >
@@ -178,9 +180,9 @@ export default function LoginScreen() {
           </Pressable>
 
           {/* Encryption Banner */}
-          <View className="bg-[#E6F4EA] h-12 rounded-xl flex-row items-center justify-center px-4">
-            <ShieldIcon size={20} color="secondary.900" />
-            <Text className="text-[11px] font-jakarta-bold text-secondary-900 ml-2">
+          <View className="bg-primary-50 h-12 rounded-xl flex-row items-center justify-center px-4">
+            <ShieldIcon size={20} color="primary.900" />
+            <Text className="text-[11px] font-jakarta-bold text-primary-900 ml-2">
               256-bit encrypted, Your data is never sold or shared
             </Text>
           </View>
@@ -191,7 +193,7 @@ export default function LoginScreen() {
               Don't have account?{' '}
             </Text>
             <Pressable onPress={() => router.replace('/(auth)/register')}>
-              <Text className="text-sm font-jakarta-bold text-secondary-900">Sign up free</Text>
+              <Text className="text-sm font-jakarta-bold text-primary-900">Sign up free</Text>
             </Pressable>
           </View>
         </View>

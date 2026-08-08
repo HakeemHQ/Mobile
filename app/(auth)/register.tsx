@@ -98,11 +98,11 @@ export default function RegisterScreen() {
           className="w-10 h-10 rounded-full border border-bg-600 items-center justify-center mb-6"
           onPress={() => router.back()}
         >
-          <ArrowLeft02Icon size={20} color="secondary.900" />
+          <ArrowLeft02Icon size={20} color="primary.900" />
         </Pressable>
 
         {/* Header */}
-        <Text className="text-[28px] font-jakarta-bold text-secondary-900 mb-2">Create account</Text>
+        <Text className="text-[28px] font-jakarta-bold text-primary-900 mb-2">Create account</Text>
         <Text className={`text-sm font-inter-regular text-text2-500 ${globalError ? 'mb-2' : 'mb-8'}`}>
           Start organizing your medical history for free
         </Text>
@@ -124,6 +124,7 @@ export default function RegisterScreen() {
                   value={value}
                   onChangeText={onChange}
                   error={errors.firstName?.message as string}
+                  bgClassName="bg-primary-50"
                 />
               )}
             />
@@ -141,6 +142,7 @@ export default function RegisterScreen() {
                   value={value}
                   onChangeText={onChange}
                   error={errors.lastName?.message as string}
+                  bgClassName="bg-primary-50"
                 />
               )}
             />
@@ -164,6 +166,7 @@ export default function RegisterScreen() {
               onChangeText={onChange}
               autoCapitalize="none"
               error={errors.email?.message as string}
+              bgClassName="bg-primary-50"
             />
           )}
         />
@@ -179,17 +182,17 @@ export default function RegisterScreen() {
               <View className="flex-row justify-between">
                 <Pressable 
                   onPress={() => onChange('Male')}
-                  className={`flex-1 h-14 rounded-2xl flex-row items-center justify-center mr-2 border ${value === 'Male' ? 'bg-[#D1F1E3] border-secondary-900' : errors.gender ? 'bg-bg border-red-500' : 'bg-bg border-transparent'}`}
+                  className={`flex-1 h-14 rounded-2xl flex-row items-center justify-center mr-2 border ${value === 'Male' ? 'bg-primary-50 border-primary-900' : errors.gender ? 'bg-bg border-red-500' : 'bg-bg border-transparent'}`}
                 >
-                  <MaleIcon size={20} color={value === 'Male' ? '#111827' : '#6B7280'} className="mr-2" />
-                  <Text className={`text-base font-inter-regular ${value === 'Male' ? 'text-secondary-900 font-inter-bold' : 'text-text-500'}`}>Male</Text>
+                  <MaleIcon size={20} color={value === 'Male' ? 'primary-900' : 'text-text-500'} className="mr-2" />
+                  <Text className={`text-base font-inter-regular ${value === 'Male' ? 'text-primary-900 font-inter-bold' : 'text-text-500'}`}>Male</Text>
                 </Pressable>
                 <Pressable 
                   onPress={() => onChange('Female')}
-                  className={`flex-1 h-14 rounded-2xl flex-row items-center justify-center ml-2 border ${value === 'Female' ? 'bg-[#D1F1E3] border-secondary-900' : errors.gender ? 'bg-bg border-red-500' : 'bg-bg border-transparent'}`}
+                  className={`flex-1 h-14 rounded-2xl flex-row items-center justify-center ml-2 border ${value === 'Female' ? 'bg-primary-50 border-primary-900' : errors.gender ? 'bg-bg border-red-500' : 'bg-bg border-transparent'}`}
                 >
-                  <FemaleIcon size={20} color={value === 'Female' ? '#111827' : '#6B7280'} className="mr-2" />
-                  <Text className={`text-base font-inter-regular ${value === 'Female' ? 'text-secondary-900 font-inter-bold' : 'text-text-500'}`}>Female</Text>
+                  <FemaleIcon size={20} color={value === 'Female' ? 'text2-500' : 'text-text-500'} className="mr-2" />
+                  <Text className={`text-base font-inter-regular ${value === 'Female' ? 'text-primary-900 font-inter-bold' : 'text-text-500'}`}>Female</Text>
                 </Pressable>
               </View>
               {errors.gender ? (
@@ -211,6 +214,7 @@ export default function RegisterScreen() {
               value={value}
               onChangeText={onChange}
               error={errors.phoneNumber?.message as string}
+              bgClassName="bg-primary-50"
             />
           )}
         />
@@ -229,6 +233,7 @@ export default function RegisterScreen() {
                     value={value}
                     error={errors.birthDate?.message as string}
                     editable={false}
+                    bgClassName="bg-primary-50"
                   />
                 </View>
               </Pressable>
@@ -252,10 +257,10 @@ export default function RegisterScreen() {
               )}
               {Platform.OS === 'ios' && showDatePicker && (
                 <Pressable 
-                  className="bg-secondary-100 rounded-xl py-2 px-4 self-end mb-4 mr-2" 
+                  className="bg-primary-100 rounded-xl py-2 px-4 self-end mb-4 mr-2" 
                   onPress={() => setShowDatePicker(false)}
                 >
-                  <Text className="text-secondary-900 font-jakarta-bold">Done</Text>
+                  <Text className="text-primary-900 font-jakarta-bold">Done</Text>
                 </Pressable>
               )}
             </View>
@@ -279,6 +284,7 @@ export default function RegisterScreen() {
               value={value}
               onChangeText={onChange}
               error={errors.password?.message as string}
+              bgClassName="bg-primary-50"
             />
           )}
         />
@@ -295,12 +301,12 @@ export default function RegisterScreen() {
                 onPress={() => onChange(!value)}
               >
                 <View 
-                  className={`w-5 h-5 rounded-md border-2 mr-3 items-center justify-center ${value ? 'bg-secondary-900 border-secondary-900' : errors.isChecked ? 'border-red-500' : 'border-text2-200'}`}
+                  className={`w-5 h-5 rounded-md border-2 mr-3 items-center justify-center ${value ? 'bg-primary-900 border-primary-900' : errors.isChecked ? 'border-red-500' : 'border-text2-200'}`}
                 >
                   {value && <Text className="text-white text-xs">✓</Text>}
                 </View>
                 <Text className="text-sm font-inter-regular text-text2-500 leading-5 flex-1">
-                  I agree to Hakeem's <Text className="font-inter-bold text-secondary-900">Terms of Service</Text> and <Text className="font-inter-bold text-secondary-900">Privacy Policy.</Text> My data is never sold or used for advertising.
+                  I agree to Hakeem's <Text className="font-inter-bold text-primary-900">Terms of Service</Text> and <Text className="font-inter-bold text-primary-900">Privacy Policy.</Text> My data is never sold or used for advertising.
                 </Text>
               </Pressable>
               {errors.isChecked ? (
@@ -312,7 +318,7 @@ export default function RegisterScreen() {
 
         {/* Create Account Button */}
         <Pressable 
-          className={`bg-secondary-900 h-14 rounded-2xl items-center justify-center mb-6 ${isLoading ? 'opacity-70' : ''}`}
+          className={`bg-primary h-14 rounded-2xl items-center justify-center mb-6 ${isLoading ? 'opacity-70' : ''}`}
           onPress={handleSubmit(onSubmit)}
           disabled={isLoading}
         >
@@ -329,7 +335,7 @@ export default function RegisterScreen() {
             Already have an account?{' '}
           </Text>
           <Pressable onPress={() => router.replace('/(auth)/login')}>
-            <Text className="text-sm font-jakarta-bold text-secondary-900">Sign in</Text>
+            <Text className="text-sm font-jakarta-bold text-primary-900">Sign in</Text>
           </Pressable>
         </View>
       </ScrollView>

@@ -12,10 +12,10 @@ export default function ForgotPasswordScreen() {
           className="w-10 h-10 rounded-full border border-bg-600 items-center justify-center mb-6"
           onPress={() => router.back()}
         >
-          <ArrowLeft02Icon size={20} color="secondary.900" />
+          <ArrowLeft02Icon size={20} color="primary.900" />
         </Pressable>
 
-        <Text className="text-[28px] font-jakarta-bold text-secondary-900 mb-2">Forgot Password</Text>
+        <Text className="text-[28px] font-jakarta-bold text-primary-900 mb-2">Forgot Password</Text>
       </View>
     </SafeAreaView>
   );

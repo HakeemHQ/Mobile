@@ -20,7 +20,7 @@ function InputField({
   return (
     <View className="mb-4 mt-6">
       <Text className="text-[10px] font-jakarta-bold text-text-500 mb-2 uppercase">{label}</Text>
-      <View className={`flex-row items-center bg-[#F1F5F4] rounded-2xl px-4 h-14 ${error ? 'border border-red-500' : 'border border-transparent'}`}>
+      <View className={`flex-row items-center bg-primary-50 rounded-2xl px-4 h-14 ${error ? 'border border-red-500' : 'border border-transparent'}`}>
         <Icon size={20} color="text2.500" />
         <TextInput 
           className="flex-1 ml-3 text-base font-inter-regular text-text-500 placeholder:text-text2-400"
@@ -95,12 +95,12 @@ export default function ResetPasswordScreen() {
       >
         <View className="-mt-10">
           {/* Mail Icon Box */}
-          <View className="w-12 h-12 bg-[#D1F1E3] rounded-xl items-center justify-center mb-6">
-            <Mail01Icon size={24} color="secondary.900" />
+          <View className="w-12 h-12 bg-primary-50 rounded-xl items-center justify-center mb-6">
+            <Mail01Icon size={24} color="primary.900" />
           </View>
 
           {/* Header */}
-          <Text className="text-[28px] font-jakarta-bold text-secondary-900 mb-2">Reset password</Text>
+          <Text className="text-[28px] font-jakarta-bold text-primary-900 mb-2">Reset password</Text>
           <Text className={`text-sm font-inter-regular text-text2-500 ${globalError ? 'mb-2' : 'mb-2'}`}>
             Enter your email and we'll send a secure link. The link expires in 15 minutes.
           </Text>
@@ -132,7 +132,7 @@ export default function ResetPasswordScreen() {
 
           {/* Send Reset Link Button */}
           <Pressable 
-            className={`bg-secondary-900 h-14 rounded-2xl items-center justify-center mb-8 ${isLoading ? 'opacity-70' : ''}`}
+            className={`bg-primary h-14 rounded-2xl items-center justify-center mb-8 ${isLoading ? 'opacity-70' : ''}`}
             onPress={handleSubmit(onSubmit)}
             disabled={isLoading}
           >
