@@ -4,6 +4,10 @@ import {
     View,
 } from 'react-native';
 
+import {
+    useTranslation,
+} from 'react-i18next';
+
 import { colors } from '@/lib/theme/colors';
 
 type SegmentValue =
@@ -47,12 +51,15 @@ export function ReminderSegmentedControl<
     selectedTextColor =
     colors.surface.DEFAULT,
 }: ReminderSegmentedControlProps<TValue>) {
+    const { i18n } = useTranslation();
+    const isRTL = i18n.language === 'ar';
+
     return (
         <View
             accessibilityLabel={
                 accessibilityLabel
             }
-            className="flex-row rounded-2xl border bg-surface p-0.5"
+            className={`flex-row rounded-2xl border bg-surface p-0.5 ${isRTL ? 'flex-row-reverse' : ''}`}
             style={{
                 borderColor:
                     colors.text2[100],
