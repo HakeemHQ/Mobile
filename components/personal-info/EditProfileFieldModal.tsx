@@ -172,7 +172,7 @@ export function EditProfileFieldModal({
 
                         <Pressable
                             accessibilityRole="button"
-                            className={`mt-6 h-14 items-center justify-center rounded-[28px] bg-primary-900 ${isSaving ? 'opacity-70' : ''
+                            className={`mt-6 h-14 items-center justify-center rounded-[28px] bg-primary ${isSaving ? 'opacity-70' : ''
                                 }`}
                             disabled={isSaving}
                             onPress={() => {

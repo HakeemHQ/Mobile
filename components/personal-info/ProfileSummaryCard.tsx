@@ -18,8 +18,8 @@ export function ProfileSummaryCard({
     const initials = getInitials(displayName);
 
     return (
-        <View className="mb-6 flex-row items-center rounded-[28px] bg-primary-900 p-5">
-            <View className="mr-4 h-[68px] w-[68px] items-center justify-center rounded-[20px] bg-primary-800">
+        <View className="mb-6 flex-row items-center rounded-[28px] bg-primary p-5">
+            <View className="mr-4 h-[68px] w-[68px] items-center justify-center rounded-[20px] bg-primary-400">
                 <Text className="font-jakarta-bold text-2xl text-surface">
                     {initials}
                 </Text>
@@ -34,25 +34,25 @@ export function ProfileSummaryCard({
                 </Text>
 
                 <Text
-                    className="mt-1 font-inter-regular text-[11px] text-surface opacity-70"
+                    className="mt-1 font-inter-regular text-[11px] text-surface opacity-90"
                     ellipsizeMode="middle"
                     numberOfLines={1}
                 >
-                    ID: {profile.userId.slice(0,20)}
+                    ID: {profile.userId.slice(0,18)}
                 </Text>
 
                 <View
                     className="mt-2 self-start rounded-full border px-3 py-1.5"
                     style={{
-                        backgroundColor: colors.primary[700],
-                        borderColor: colors.primary[600],
+                        backgroundColor: colors.primary[400],
+                        borderColor: colors.primary[300],
                     }}
                 >
                     <View className="flex-row items-center">
                         <View
                             className="mr-2 h-2 w-2 rounded-full"
                             style={{
-                                backgroundColor: colors.primary[300],
+                                backgroundColor: colors.secondary[300],
                             }}
                         />
 

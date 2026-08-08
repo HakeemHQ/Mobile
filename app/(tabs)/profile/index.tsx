@@ -139,7 +139,7 @@ export default function ProfileScreen() {
                   backgroundColor: pressed ? colors.bg[100] : colors.surface.DEFAULT,
                 })}
               >
-                <View className={`w-[42px] h-[42px] rounded-full bg-bg-600/30 items-center justify-center ${isRTL ? 'ml-4' : 'mr-4'}`}>
+                <View className={`w-[42px] h-[42px] rounded-full bg-primary-50 items-center justify-center ${isRTL ? 'ml-4' : 'mr-4'}`}>
                   {CustomIconComponent ? (
                     <CustomIconComponent size={20} color={colors.primary[900]} />
                   ) : IconComponent ? (
@@ -147,7 +147,7 @@ export default function ProfileScreen() {
                   ) : null}
                 </View>
 
-                <Text className={`flex-1 text-[15px] font-jakarta-semibold text-primary-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+                <Text className={`flex-1 text-[15px] font-jakarta-semibold text-text-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                   {item.title}
                 </Text>
 
@@ -160,9 +160,9 @@ export default function ProfileScreen() {
                 )}
 
                 {isRTL ? (
-                  <ChevronLeft size={20} color={colors.text2[500]} />
+                  <ChevronLeft size={20} color={colors.primary[900]} />
                 ) : (
-                  <ChevronRight size={20} color={colors.text2[500]} />
+                  <ChevronRight size={20} color={colors.primary[900]} />
                 )}
               </Pressable>
             );

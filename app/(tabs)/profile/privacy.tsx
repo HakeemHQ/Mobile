@@ -46,7 +46,7 @@ export default function PrivacyScreen() {
             backgroundColor: pressed ? colors.bg[100] : colors.surface.DEFAULT,
           })}
         >
-          <View className="w-12 h-12 rounded-[18px] bg-bg-600/40 items-center justify-center mr-4">
+          <View className="w-12 h-12 rounded-[18px] bg-primary-50 items-center justify-center mr-4">
             <LockIcon size={22} color={colors.primary[900]} />
           </View>
           <View className="flex-1">
@@ -60,7 +60,7 @@ export default function PrivacyScreen() {
         <Text className="text-xs font-jakarta-bold text-text2-500 mb-3 ml-2 uppercase tracking-wider">Authentication</Text>
         <View className="bg-surface rounded-[28px] border border-bg-600 overflow-hidden mb-8 shadow-sm">
           <View className="flex-row items-center px-5 py-[18px] border-b border-bg-600/40">
-            <View className="w-12 h-12 rounded-[18px] bg-bg-600/40 items-center justify-center mr-4">
+            <View className="w-12 h-12 rounded-[18px] bg-primary-50 items-center justify-center mr-4">
               <FaceIdIcon size={22} color={colors.primary[900]} />
             </View>
             <Text className="flex-1 text-[15px] font-jakarta-semibold text-primary-900">Enable Face ID / Biometrics</Text>
@@ -72,7 +72,7 @@ export default function PrivacyScreen() {
             />
           </View>
           <View className="flex-row items-center px-5 py-[18px]">
-            <View className="w-12 h-12 rounded-[18px] bg-bg-600/40 items-center justify-center mr-4">
+            <View className="w-12 h-12 rounded-[18px] bg-primary-50 items-center justify-center mr-4">
               <SecurityCheckIcon size={22} color={colors.primary[900]} />
             </View>
             <View className="flex-1">
@@ -96,7 +96,7 @@ export default function PrivacyScreen() {
             backgroundColor: pressed ? colors.bg[100] : colors.surface.DEFAULT,
           })}
         >
-          <View className="w-12 h-12 rounded-[18px] bg-bg-600/40 items-center justify-center mr-4">
+          <View className="w-12 h-12 rounded-[18px] bg-primary-50 items-center justify-center mr-4">
             <LaptopIcon size={22} color={colors.primary[900]} />
           </View>
           <View className="flex-1">
@@ -120,19 +120,19 @@ export default function PrivacyScreen() {
         {/* Delete Account */}
         <Pressable 
           onPress={() => router.push('/profile/delete-account')}
-          className="bg-[#FEF2F2] rounded-[28px] border border-[#FECACA] flex-row items-center px-5 py-5 mb-8"
+          className="bg-danger-50 rounded-[28px] border border-danger-200 flex-row items-center px-5 py-5 mb-8"
           style={({ pressed }) => ({
             opacity: pressed ? 0.85 : 1,
           })}
         >
-          <View className="w-12 h-12 rounded-[18px] bg-[#FEE2E2] items-center justify-center mr-4">
-            <Delete02Icon size={22} color="#DC2626" />
+          <View className="w-12 h-12 rounded-[18px] bg-danger-100 items-center justify-center mr-4">
+            <Delete02Icon size={22} color={colors.danger.DEFAULT} />
           </View>
           <View className="flex-1">
-            <Text className="text-[15px] font-jakarta-bold text-[#DC2626]">Delete Account</Text>
+            <Text className="text-[15px] font-jakarta-bold text-danger">Delete Account</Text>
             <Text className="text-[12px] font-inter-regular text-gray-500 mt-1">Permanently remove all your data</Text>
           </View>
-          <Alert01Icon size={22} color="#DC2626" />
+          <Alert01Icon size={22} color={colors.danger.DEFAULT} />
         </Pressable>
 
         <View className="h-6" />

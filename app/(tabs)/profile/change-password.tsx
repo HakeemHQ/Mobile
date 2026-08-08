@@ -24,7 +24,7 @@ export default function ChangePasswordScreen() {
     <SafeAreaView className="flex-1 bg-bg" edges={['top']}>
       {/* Header */}
       <View className="flex-row items-center px-6 mt-2 mb-6">
-        <Pressable 
+        <Pressable
           accessibilityLabel="Return to Privacy"
           accessibilityRole="button"
           className="w-10 h-10 rounded-full border border-bg-600 items-center justify-center mr-4 bg-surface"
@@ -40,39 +40,41 @@ export default function ChangePasswordScreen() {
 
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Banner Card */}
-        <View className="bg-primary-900 rounded-[28px] py-8 px-6 items-center justify-center mb-8">
-          <View className="w-[52px] h-[52px] rounded-full bg-primary-800 items-center justify-center mb-4">
+        <View className="bg-primary rounded-[28px] py-8 px-6 items-center justify-center mb-8">
+          <View className="w-[65px] h-[65px] rounded-full bg-primary-400 items-center justify-center mb-4">
             <View className="w-10 h-10 rounded-full bg-surface items-center justify-center">
               <SecurityCheckIcon size={20} color={colors.primary[900]} />
             </View>
           </View>
-          <Text className="text-[13px] font-inter-medium text-surface/90 text-center leading-5 px-4">
+          <Text className="text-[13px] font-inter-medium text-surface/70 text-center leading-5 px-4">
             Update your password to keep your medical data secure.
           </Text>
         </View>
 
         {/* Form Fields */}
-        <InputField 
+        <InputField
           label="Current Password"
-          icon={LockOpenIcon} 
-          placeholder="Enter current password" 
+          icon={LockOpenIcon}
+          placeholder="Enter current password"
           secureTextEntry={!showCurrent}
           rightIcon={showCurrent ? ViewIcon : EyeOffIcon}
           onRightIconPress={() => setShowCurrent(!showCurrent)}
           value={currentPassword}
           onChangeText={setCurrentPassword}
+          bgClassName="bg-primary-50"
         />
 
-        <InputField 
+        <InputField
           label="New Password"
-          icon={LockOpenIcon} 
-          placeholder="Min. 8 characters" 
+          icon={LockOpenIcon}
+          placeholder="Min. 8 characters"
           secureTextEntry={!showNew}
           rightIcon={showNew ? ViewIcon : EyeOffIcon}
           onRightIconPress={() => setShowNew(!showNew)}
           value={newPassword}
           onChangeText={setNewPassword}
           containerClassName="mb-1"
+          bgClassName="bg-primary-50"
         />
 
         {/* Password Strength */}
@@ -86,28 +88,32 @@ export default function ChangePasswordScreen() {
           </View>
         </View>
 
-        <InputField 
+        <InputField
           label="Confirm New Password"
-          icon={SecurityCheckIcon} 
-          placeholder="Re-type new password" 
+          icon={SecurityCheckIcon}
+          placeholder="Re-type new password"
           secureTextEntry={!showNew}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
+          bgClassName="bg-primary-50"
         />
 
         {/* Info Box */}
-        <View className="bg-surface rounded-[20px] p-5 flex-row items-start mb-8 border border-bg-600 mt-2 shadow-sm">
+        <View className="bg-bg-500 rounded-[20px] p-5 flex-row items-start mb-8 border border-bg-600 mt-2 shadow-sm">
           <View className="mr-3 mt-0.5">
             <InfoCircleIcon size={20} color={colors.text2[500]} />
           </View>
-          <Text className="flex-1 text-[12px] font-inter-regular text-text2-500 leading-5">
+          <Text
+            className="flex-1 text-[12px] font-inter-regular text-text2-500 leading-5"
+            style={{ backgroundColor: 'transparent' }}
+          >
             Ensure your new password uses a combination of letters, numbers, and symbols for maximum clinical-grade security.
           </Text>
         </View>
 
         {/* Update Button */}
-        <Pressable 
-          className="bg-primary-900 h-[56px] rounded-[28px] flex-row items-center justify-center mb-8 shadow-sm"
+        <Pressable
+          className="bg-primary h-[56px] rounded-[28px] flex-row items-center justify-center mb-8 shadow-sm"
           onPress={() => router.back()}
           style={({ pressed }) => ({
             opacity: pressed ? 0.9 : 1,

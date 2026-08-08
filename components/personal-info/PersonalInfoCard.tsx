@@ -53,17 +53,17 @@ function PersonalInfoRow({
                 : ''
                 }`}
         >
-            <View className="mr-4 h-[42px] w-[42px] items-center justify-center rounded-[16px] bg-primary-50/40">
+            <View className="mr-4 h-[42px] w-[42px] items-center justify-center rounded-[16px] bg-primary-50">
                 {leadingIcon}
             </View>
 
             <View className="flex-1">
-                <Text className="font-jakarta-semibold text-[10px] uppercase tracking-wider text-primary-700">
+                <Text className="font-jakarta-semibold text-[12px] uppercase tracking-wider text-primary-900">
                     {label}
                 </Text>
 
                 <Text
-                    className="mt-1 font-inter-regular text-[13px] leading-[18px] text-text-500"
+                    className="mt-1 font-inter-regular text-[14px] leading-[18px] text-text-500"
                     numberOfLines={1}
                 >
                     {value}

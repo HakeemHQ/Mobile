@@ -125,7 +125,7 @@ export default function HelpScreen() {
                                             .DEFAULT,
                                 })}
                             >
-                                <View className="h-9 w-9 items-center justify-center rounded-[10px] bg-bg-600/30">
+                                <View className="h-10 w-10 items-center justify-center rounded-[10px] bg-primary-50">
                                     <ItemIcon
                                         size={20}
                                         color={
@@ -142,7 +142,7 @@ export default function HelpScreen() {
                                 >
                                     <View className="flex-1 justify-center">
                                         <Text
-                                            className="font-jakarta-regular text-[14px] leading-[19px] text-text"
+                                            className="font-jakarta-regular text-[14px] leading-[19px] text-primary-900"
                                             numberOfLines={1}
                                         >
                                             {item.title}
@@ -150,7 +150,7 @@ export default function HelpScreen() {
 
                                         {item.description ? (
                                             <Text
-                                                className="mt-0.5 font-inter-regular text-[10px] leading-[14px] text-text2-500"
+                                                className="mt-0.5 font-inter-regular text-[12px] leading-[16px] text-text2-500"
                                                 numberOfLines={
                                                     1
                                                 }
@@ -188,7 +188,7 @@ export default function HelpScreen() {
                         android_ripple={{
                             color: colors.primary[800],
                         }}
-                        className="mt-4 h-[52px] w-full max-w-[288px] flex-row items-center justify-center overflow-hidden rounded-full bg-primary-900"
+                        className="mt-4 h-[52px] w-full max-w-[288px] flex-row items-center justify-center overflow-hidden rounded-full bg-primary"
                         onPress={() =>
                             showUnavailableAction(
                                 'Contact Support',
@@ -210,7 +210,7 @@ export default function HelpScreen() {
                         </Text>
                     </Pressable>
 
-                    <Text className="mt-5 font-inter-regular text-[9px] tracking-[0.1px] text-text2-500">
+                    <Text className="mt-5 font-inter-regular text-[10px] tracking-[0.1px] text-text2-500">
                         HIPAA-compliant • Secure • 24/7
                     </Text>
                 </View>
