@@ -49,6 +49,7 @@ export interface ReminderSchedule {
     localTime: string;
     triggerAtUtc: string | null;
     deliveryMode: ReminderDeliveryMode;
+    nativeAlarmId?: number | null;
     createdAt: string;
 }
 
@@ -100,6 +101,7 @@ export interface ReminderScheduleInput {
     localTime: string;
     triggerAtUtc?: string | null;
     deliveryMode?: ReminderDeliveryMode;
+    nativeAlarmId?: number | null;
 }
 
 interface CreateReminderBaseInput {

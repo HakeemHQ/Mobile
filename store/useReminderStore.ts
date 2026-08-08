@@ -17,6 +17,8 @@ import {
     getErrorMessage,
 } from '@/lib/reminder-utils';
 
+import { ReminderSyncService } from '@/lib/reminder-sync-service';
+
 import type {
     CreateAppointmentReminderFormInput,
     CreateLabTestReminderFormInput,
@@ -257,6 +259,10 @@ export const useReminderStore =
                                             'success',
                                         error: null,
                                     });
+
+                                    for (const reminder of reminders) {
+                                        void ReminderSyncService.syncReminder(reminder);
+                                    }
                                 } catch (error) {
                                     if (
                                         generation !==
@@ -402,6 +408,10 @@ export const useReminderStore =
                                 reminderId,
                                 isEnabled,
                             );
+                            const updatedTarget = get().reminders.find((r) => r.reminderId === reminderId);
+                            if (updatedTarget) {
+                                void ReminderSyncService.syncReminder(updatedTarget);
+                            }
                         } catch (error) {
                             const message =
                                 getErrorMessage(
@@ -427,6 +437,7 @@ export const useReminderStore =
                     ) => {
                         const previousReminders =
                             get().reminders;
+                        const targetToDelete = previousReminders.find((r) => r.reminderId === reminderId);
 
                         set({
                             reminders:
@@ -444,6 +455,9 @@ export const useReminderStore =
                             await deleteReminderFromDatabase(
                                 reminderId,
                             );
+                            if (targetToDelete) {
+                                void ReminderSyncService.cancelReminder(targetToDelete);
+                            }
                         } catch (error) {
                             const message =
                                 getErrorMessage(
