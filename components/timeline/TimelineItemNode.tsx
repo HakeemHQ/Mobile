@@ -5,6 +5,7 @@ import { HugeiconsIcon } from '@hugeicons/react-native';
 import { StethoscopeIcon, Medicine02Icon, FlaskConicalIcon, Scissor01Icon } from '@hugeicons/core-free-icons';
 import { TimelineCard, TimelineCardProps } from './TimelineCard';
 import { cn } from '@/lib/utils';
+import { colors } from '@/lib/theme';
 
 export type TimelineNodeType = 'visit' | 'lab' | 'medication' | 'scan' | 'default';
 
@@ -22,29 +23,29 @@ export interface TimelineItemNodeProps {
 const getDefaultNodeIcon = (type: TimelineNodeType = 'default') => {
   switch (type) {
     case 'visit':
-      return <HugeiconsIcon icon={StethoscopeIcon} size={20} color="#2563EB" />;
+      return <HugeiconsIcon icon={StethoscopeIcon} size={20} color={colors.secondary.DEFAULT} />;
     case 'lab':
-      return <HugeiconsIcon icon={FlaskConicalIcon} size={20} color="#2563EB" />;
+      return <HugeiconsIcon icon={FlaskConicalIcon} size={20} color={colors.tertiary.DEFAULT} />;
     case 'medication':
-      return <HugeiconsIcon icon={Medicine02Icon} size={20} color="#059669" />;
+      return <HugeiconsIcon icon={Medicine02Icon} size={20} color={colors.primary.DEFAULT} />;
     case 'scan':
-      return <HugeiconsIcon icon={Scissor01Icon} size={20} color="#D97706" />;
+      return <HugeiconsIcon icon={Scissor01Icon} size={20} color={colors.tertiary.DEFAULT} />;
     default:
-      return <HugeiconsIcon icon={StethoscopeIcon} size={20} color="#2563EB" />;
+      return <HugeiconsIcon icon={StethoscopeIcon} size={20} color={colors.primary.DEFAULT} />;
   }
 };
 
 const getDefaultNodeBg = (type: TimelineNodeType = 'default') => {
   switch (type) {
-    case 'visit':
-    case 'lab':
-      return 'bg-[#BFD0F5]'; // Light blue circle matching design
     case 'medication':
-      return 'bg-[#A9E6D2]'; // Light green circle matching design
+      return 'bg-primary-50'; 
+    case 'visit':
+      return 'bg-secondary-50'; 
+    case 'lab':
     case 'scan':
-      return 'bg-[#FEF3C7]';
+      return 'bg-tertiary-50'; 
     default:
-      return 'bg-[#BFD0F5]';
+      return 'bg-primary-50';
   }
 };
 

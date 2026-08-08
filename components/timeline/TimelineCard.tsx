@@ -27,16 +27,16 @@ const getTagStyles = (variant: TagVariant = 'default', tagText?: string): { bg: 
   const lowerTag = (tagText || variant).toLowerCase();
   
   if (lowerTag.includes('lab')) {
-    return { bg: 'bg-[#DBEAFE]', text: 'text-[#2563EB]' }; // Soft Blue
+    return { bg: 'bg-tertiary-50', text: 'text-tertiary-700' };
   }
   if (lowerTag.includes('medication') || lowerTag.includes('normal')) {
-    return { bg: 'bg-[#D1FAE5]', text: 'text-[#059669]' }; // Soft Green
+    return { bg: 'bg-primary-50', text: 'text-primary-700' };
   }
   if (lowerTag.includes('visit') || lowerTag.includes('doctor')) {
-    return { bg: 'bg-[#F3E8FF]', text: 'text-[#9333EA]' }; // Soft Purple
+    return { bg: 'bg-secondary-50', text: 'text-secondary-700' };
   }
   if (lowerTag.includes('scan') || lowerTag.includes('x-ray')) {
-    return { bg: 'bg-[#FEF3C7]', text: 'text-[#D97706]' }; // Soft Yellow
+    return { bg: 'bg-[#FEF3C7]', text: 'text-[#D97706]' };
   }
   return { bg: 'bg-gray-100', text: 'text-gray-700' };
 };

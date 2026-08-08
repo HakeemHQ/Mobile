@@ -54,7 +54,7 @@ export const TimelineFilterChips: React.FC<TimelineFilterChipsProps> = ({
               className={cn(
                 'px-4 py-2 rounded-full border items-center justify-center',
                 isSelected
-                  ? 'bg-secondary-900 border-secondary-900'
+                  ? 'bg-primary-900 border-primary-900'
                   : 'bg-white border-bg-700'
               )}
               style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
