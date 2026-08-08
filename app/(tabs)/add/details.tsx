@@ -353,7 +353,7 @@ export default function AddDetailsScreen() {
                   textColor="#1F2937"
                   accentColor={colors.primary[900]}
                   maximumDate={new Date()}
-                  onValueChange={handleDateChange}
+                  onChange={handleDateChange}
                   onDismiss={() => setShowDatePicker(false)}
                 />
               </View>
@@ -368,7 +368,7 @@ export default function AddDetailsScreen() {
             maximumDate={new Date()}
             positiveButton={{ label: t('details.dateOk'), textColor: colors.primary[900] }}
             negativeButton={{ label: t('details.dateCancel'), textColor: colors.text2[600] }}
-            onValueChange={handleDateChange}
+            onChange={handleDateChange}
             onDismiss={() => setShowDatePicker(false)}
           />
         )

@@ -1,8 +1,13 @@
 import {
+    BackHandler,
     ScrollView,
     Text,
     View,
 } from 'react-native';
+
+import {
+    useEffect,
+} from 'react';
 
 import {
     useRouter,
@@ -15,6 +20,10 @@ import {
 import {
     StatusBar,
 } from 'expo-status-bar';
+
+import {
+    useTranslation,
+} from 'react-i18next';
 
 import {
     Pill,
@@ -37,6 +46,11 @@ export default function ReminderSuccessScreen() {
     const router =
         useRouter();
 
+    const { t, i18n } =
+        useTranslation(['reminders', 'common']);
+    const isRTL =
+        (i18n.language || '').startsWith('ar');
+
     const summary =
         useMedicationDraftStore(
             (state) =>
@@ -48,6 +62,29 @@ export default function ReminderSuccessScreen() {
             (state) =>
                 state.clearLastSavedSummary,
         );
+
+    useEffect(() => {
+        const onHardwareBackPress = () => {
+            clearSummary();
+            router.replace(
+                '/reminders',
+            );
+            return true;
+        };
+
+        const subscription =
+            BackHandler.addEventListener(
+                'hardwareBackPress',
+                onHardwareBackPress,
+            );
+
+        return () => {
+            subscription.remove();
+        };
+    }, [
+        clearSummary,
+        router,
+    ]);
 
     const goToReminderList = () => {
         clearSummary();
@@ -65,6 +102,16 @@ export default function ReminderSuccessScreen() {
                 '/reminders/add',
             );
         };
+
+    const getFrequencyText = (frequencyType: string, scheduleCount: number) => {
+        if (frequencyType === 'DAILY') {
+            return t('timeDaily', { count: scheduleCount, defaultValue: `${scheduleCount} مرات / يوم` });
+        }
+        if (frequencyType === 'WEEKLY') {
+            return t('timeOnSelectedDays', { count: scheduleCount, defaultValue: `${scheduleCount} مرات في الأيام المحددة` });
+        }
+        return t('timeOnSelectedDates', { count: scheduleCount, defaultValue: `${scheduleCount} مرات في التواريخ المحددة` });
+    };
 
     return (
         <>
@@ -95,11 +142,11 @@ export default function ReminderSuccessScreen() {
                     <SuccessIcon />
 
                     <Text className="mt-9 font-jakarta-bold text-[30px] text-text-900">
-                        All Set!
+                        {t('allSet', { defaultValue: 'تم بنجاح!' })}
                     </Text>
 
                     <Text className="mt-4 text-center font-inter-semibold text-[16px] leading-6 text-text2-400">
-                        Your reminders have been saved successfully
+                        {t('remindersSavedSuccess', { defaultValue: 'تم حفظ تذكيراتك بنجاح' })}
                     </Text>
 
                     <View
@@ -109,13 +156,8 @@ export default function ReminderSuccessScreen() {
                                 colors.text2[100],
                         }}
                     >
-                        <Text className="font-jakarta-semibold text-[15px] text-text2-400">
-                            {summary.length}{' '}
-                            {summary.length ===
-                                1
-                                ? 'Medication'
-                                : 'Medications'}{' '}
-                            Added
+                        <Text className={`font-jakarta-semibold text-[15px] text-text2-400 ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {t('medicationsAddedCount', { count: summary.length, defaultValue: `تمت إضافة ${summary.length} أدوية` })}
                         </Text>
 
                         <View className="mt-3">
@@ -136,7 +178,7 @@ export default function ReminderSuccessScreen() {
                                             key={
                                                 item.draftId
                                             }
-                                            className="mb-3 flex-row items-center"
+                                            className={`mb-3 flex-row items-center ${isRTL ? 'flex-row-reverse' : ''}`}
                                         >
                                             <View
                                                 className="h-8 w-8 items-center justify-center rounded-full"
@@ -155,7 +197,7 @@ export default function ReminderSuccessScreen() {
                                             </View>
 
                                             <Text
-                                                className="ml-3 flex-1 font-jakarta-bold text-[14px] text-text-900"
+                                                className={`${isRTL ? 'mr-3 text-right' : 'ml-3 text-left'} flex-1 font-jakarta-bold text-[14px] text-text-900`}
                                                 numberOfLines={1}
                                             >
                                                 {
@@ -164,25 +206,7 @@ export default function ReminderSuccessScreen() {
                                             </Text>
 
                                             <Text className="font-inter-semibold text-[13px] text-text2-400">
-                                                {item.frequencyType ===
-                                                    'DAILY'
-                                                    ? `${item.scheduleCount} ${item.scheduleCount ===
-                                                        1
-                                                        ? 'time'
-                                                        : 'times'
-                                                    } / day`
-                                                    : item.frequencyType ===
-                                                        'WEEKLY'
-                                                        ? `${item.scheduleCount} ${item.scheduleCount ===
-                                                            1
-                                                            ? 'time'
-                                                            : 'times'
-                                                        } on selected days`
-                                                        : `${item.scheduleCount} ${item.scheduleCount ===
-                                                            1
-                                                            ? 'time'
-                                                            : 'times'
-                                                        } on selected dates`}
+                                                {getFrequencyText(item.frequencyType, item.scheduleCount)}
                                             </Text>
                                         </View>
                                     );
@@ -194,7 +218,7 @@ export default function ReminderSuccessScreen() {
 
                 <View className="gap-3 px-5 pb-2">
                     <Button
-                        title="Go to Reminders List"
+                        title={t('goToRemindersList', { defaultValue: 'الانتقال إلى قائمة التذكيرات' })}
                         variant="primary"
                         className="h-14"
                         onPress={
@@ -203,7 +227,7 @@ export default function ReminderSuccessScreen() {
                     />
 
                     <Button
-                        title="Add Another Reminder"
+                        title={t('addAnotherReminder', { defaultValue: 'إضافة تذكير آخر' })}
                         variant="outline"
                         className="h-14"
                         onPress={
