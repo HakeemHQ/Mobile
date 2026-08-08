@@ -118,14 +118,12 @@ export class AlarmEngine {
       });
     }
 
-    // Register custom interactive notification actions for iOS & Android
-    await Notifications.setNotificationCategoryAsync('CRITICAL_ALARM_CATEGORY', [
-      {
-        identifier: 'CANCEL_ALARM_ACTION',
-        buttonTitle: 'Stop Alarm',
-        options: { isDestructive: true, isAuthenticationRequired: false },
-      },
-    ]);
+    // Delete category definition to ensure no action buttons are attached
+    try {
+      await Notifications.deleteNotificationCategoryAsync('CRITICAL_ALARM_CATEGORY');
+    } catch {
+      // Ignore if category didn't exist
+    }
 
     this.isInitialized = true;
   }
@@ -166,7 +164,6 @@ export class AlarmEngine {
               title: schedule.title,
               body: schedule.body,
               sound: soundName,
-              categoryIdentifier: 'CRITICAL_ALARM_CATEGORY',
               data: {
                 scheduleId: schedule.scheduleId,
                 reminderId: schedule.reminderId,
@@ -195,7 +192,6 @@ export class AlarmEngine {
               title: schedule.title,
               body: schedule.body,
               sound: soundName,
-              categoryIdentifier: 'CRITICAL_ALARM_CATEGORY',
               data: {
                 scheduleId: schedule.scheduleId,
                 reminderId: schedule.reminderId,
@@ -220,7 +216,6 @@ export class AlarmEngine {
             title: schedule.title,
             body: schedule.body,
             sound: soundName,
-            categoryIdentifier: 'CRITICAL_ALARM_CATEGORY',
             data: {
               scheduleId: schedule.scheduleId,
               reminderId: schedule.reminderId,
@@ -279,7 +274,6 @@ export class AlarmEngine {
         title: `[Snoozed] ${title}`,
         body,
         sound: 'default',
-        categoryIdentifier: 'CRITICAL_ALARM_CATEGORY',
         data: {
           scheduleId,
           deliveryMode: 'ALARM',
@@ -387,7 +381,6 @@ export class AlarmEngine {
         content: {
           title: 'Vitamin D 1000IU',
           body: 'Time to take your Vitamin D supplement as scheduled.',
-          categoryIdentifier: 'CRITICAL_ALARM_CATEGORY',
           data: {
             deliveryMode: 'ALARM',
             scheduleId: `test_sched_${Date.now()}`,

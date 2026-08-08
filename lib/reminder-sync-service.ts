@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import { AlarmEngine } from '@/lib/alarm-engine';
 import { AlarmService } from '@/lib/alarm-service';
+import i18n from '@/localization/i18n';
 import type { MedicationWeekdayCode, Reminder } from '@/types/reminder';
 
 export class ReminderSyncService {
@@ -21,6 +22,12 @@ export class ReminderSyncService {
       if (!reminder.isEnabled) continue;
 
       const deliveryMode = schedule.deliveryMode ?? 'NOTIFICATION';
+      const notifTitle = reminder.reminderType === 'MEDICATION'
+        ? i18n.t('reminders:medicationReminderTitle', { defaultValue: 'Medication Reminder' })
+        : reminder.reminderType === 'APPOINTMENT'
+          ? i18n.t('reminders:appointmentReminderTitle', { defaultValue: 'Appointment Reminder' })
+          : i18n.t('reminders:labTestReminderTitle', { defaultValue: 'Lab Test Reminder' });
+      const notifBody = reminder.title;
 
       if (deliveryMode === 'NOTIFICATION') {
         // Route to expo-notifications
@@ -37,10 +44,8 @@ export class ReminderSyncService {
         await AlarmEngine.syncSchedule({
           scheduleId: schedule.scheduleId,
           reminderId: reminder.reminderId,
-          title: reminder.title,
-          body: reminder.reminderType === 'MEDICATION' && reminder.dosage
-            ? `Take ${reminder.dosage}`
-            : `Scheduled ${reminder.reminderType.toLowerCase()} reminder`,
+          title: notifTitle,
+          body: notifBody,
           localTime: schedule.localTime,
           deliveryMode: 'NOTIFICATION',
           isEnabled: reminder.isEnabled,
@@ -52,24 +57,21 @@ export class ReminderSyncService {
         // Route to Native Android setAlarmClock (or fallback on iOS)
         if (Platform.OS === 'android') {
           const targetDate = this.calculateNextTriggerDate(schedule.localTime);
-          const bodyText = reminder.reminderType === 'MEDICATION' && reminder.dosage
-            ? `Take ${reminder.dosage}`
-            : `Scheduled ${reminder.reminderType.toLowerCase()} alarm`;
 
           await AlarmService.scheduleAlarm(
             requestCode,
             targetDate,
             schedule.scheduleId,
-            reminder.title,
-            bodyText
+            notifTitle,
+            notifBody
           );
         } else {
           // iOS fallback to Critical Notifications
           await AlarmEngine.syncSchedule({
             scheduleId: schedule.scheduleId,
             reminderId: reminder.reminderId,
-            title: reminder.title,
-            body: `Scheduled ${reminder.reminderType.toLowerCase()} alarm`,
+            title: notifTitle,
+            body: notifBody,
             localTime: schedule.localTime,
             deliveryMode: 'ALARM',
             isEnabled: reminder.isEnabled,
