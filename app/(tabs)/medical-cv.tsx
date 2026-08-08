@@ -65,7 +65,7 @@ export default function MedicalCVScreen() {
               icon={
                 <HugeiconsIcon icon={SecurityCheckIcon} size={24} color={colors.primary[900]} />
               }
-              bgColor={`${colors.primary.DEFAULT}80`}
+              bgColor={colors.primary[100]}
               textColor={colors.primary[900]}
               borderColor="transparent"
               className="mb-6 border-0"
@@ -76,7 +76,7 @@ export default function MedicalCVScreen() {
               {/* Download PDF Card */}
               <FastAccessButton
                 title={t('downloadPdf', 'Download PDF')}
-                icon={<HugeiconsIcon icon={Upload01Icon} size={24} color={colors.primary[700]} />}
+                icon={<HugeiconsIcon icon={Upload01Icon} size={24} color={colors.primary[900]} />}
                 onPress={handleDownload}
                 style={{ flex: 1 }}
               />
@@ -84,7 +84,7 @@ export default function MedicalCVScreen() {
               {/* Share Card */}
               <FastAccessButton
                 title={t('shareCard', 'Share')}
-                icon={<HugeiconsIcon icon={Share08Icon} size={24} color={colors.primary[700]} />}
+                icon={<HugeiconsIcon icon={Share08Icon} size={24} color={colors.primary[900]} />}
                 onPress={handleShare}
                 style={{ flex: 1 }}
               />

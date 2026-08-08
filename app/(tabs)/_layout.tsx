@@ -8,8 +8,8 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: '#06432E',
-        tabBarInactiveTintColor: '#06432E',
+        tabBarActiveTintColor: 'primary-900',
+        tabBarInactiveTintColor: 'primary-900',
         tabBarStyle: {
           height: 80,
           paddingBottom: 8,
@@ -44,7 +44,7 @@ export default function TabLayout() {
         options={{
           title: '',
           tabBarIcon: () => (
-            <View className="h-14 w-14 bg-secondary-900 rounded-full items-center justify-center -top-4 shadow-sm border-4 border-surface">
+            <View className="h-14 w-14 bg-primary-900 rounded-full items-center justify-center -top-4 shadow-sm border-4 border-surface">
               <Add02Icon size={24} color="#FFFFFF" variant="solid" />
             </View>
           ),

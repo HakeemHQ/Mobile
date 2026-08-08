@@ -26,7 +26,7 @@ export const MedicalCvHeader: React.FC<MedicalCvHeaderProps> = ({
   return (
     <View className={cn('flex-row items-center justify-between mb-6', isRTL && 'flex-row-reverse', containerClassName)}>
       {/* Title */}
-      <Text className={cn('text-[26px] font-jakarta-bold text-secondary-900', isRTL && 'text-right')}>
+      <Text className={cn('text-[26px] font-jakarta-bold text-primary-900', isRTL && 'text-right')}>
         {displayTitle}
       </Text>
 
@@ -44,7 +44,7 @@ export const MedicalCvHeader: React.FC<MedicalCvHeaderProps> = ({
         {/* Primary Share Capsule Button */}
         <Pressable
           onPress={onSharePress}
-          className="bg-primary-700 flex-row items-center justify-center h-11 px-5 rounded-full shadow-sm"
+          className="bg-primary-900 flex-row items-center justify-center h-11 px-5 rounded-full shadow-sm"
           style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}
         >
           <View className={cn('flex-row items-center gap-2', isRTL && 'flex-row-reverse')}>
