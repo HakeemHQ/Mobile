@@ -14,8 +14,11 @@ import {
 } from 'react-native';
 
 import {
+    BellRing,
     Plus,
 } from 'lucide-react-native';
+
+import { AlarmEngine } from '@/lib/alarm-engine';
 
 import {
     useRouter,
@@ -191,9 +194,27 @@ export default function RemindersScreen() {
                         />
                     </Pressable>
 
-                    <Text className="flex-1 font-jakarta-bold text-[22px] text-primary-900">
-                        Reminders
-                    </Text>
+                    <Pressable
+                        accessibilityLabel="Test alerts"
+                        accessibilityRole="button"
+                        className="h-9 flex-row items-center justify-center rounded-full bg-amber-500/15 border border-amber-500/30 px-3 mr-2"
+                        hitSlop={6}
+                        onPress={() => {
+                            void AlarmEngine.testNotificationAndAlarm();
+                            Alert.alert(
+                                'Test Alerts Scheduled!',
+                                '1️⃣ Notification in 3 sec\n2️⃣ REAL ALARM in 10 sec\n\nLock your screen or stay here to test both!'
+                            );
+                        }}
+                        style={({ pressed }: { pressed: boolean }) => ({
+                            opacity: pressed ? 0.75 : 1,
+                        })}
+                    >
+                        <BellRing size={15} color="#D97706" />
+                        <Text className="ml-1 font-jakarta-semibold text-[12px] text-amber-700">
+                            Test (10s)
+                        </Text>
+                    </Pressable>
 
                     <Pressable
                         accessibilityLabel="Add reminder"
