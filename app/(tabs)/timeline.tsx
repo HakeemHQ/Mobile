@@ -1,161 +1,274 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
-import { HugeiconsIcon } from '@hugeicons/react-native';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
-  Stethoscope02Icon,
-  PillIcon,
-  FlaskConicalIcon,
-  Delete02Icon,
-  ArrowRight01Icon,
-  ArrowLeft01Icon,
-} from '@hugeicons/core-free-icons';
+  View,
+  Text,
+  FlatList,
+  StatusBar,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
+import { useRouter } from 'expo-router';
 
 import {
   TimelineHeader,
   TimelineFilterChips,
-  TimelineGroup,
-  TimelineItemNodeProps,
+  getRecordTypeConfig,
+  parseDisplayName,
 } from '@/components/timeline';
+import { TimelineItemNode, type TimelineItemNodeProps } from '@/components/timeline/TimelineItemNode';
+import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
+import { colors } from '@/lib/theme';
+import { useMedicalRecords } from '@/hooks/useMedicalRecords';
+import type { MedicalRecordType, MedicalRecordItem } from '@/types/medical-record';
+
+// ---------- Flattened list item types for FlatList ----------
+
+/** Year header row */
+interface YearHeaderItem {
+  type: 'year-header';
+  key: string;
+  year: string;
+}
+
+/** Timeline record row */
+interface RecordItem {
+  type: 'record';
+  key: string;
+  props: TimelineItemNodeProps;
+}
+
+type FlatListItem = YearHeaderItem | RecordItem;
+
+// ---------- Helpers ----------
+
+/**
+ * Map a MedicalRecordItem from the API into TimelineItemNode props.
+ */
+const mapRecordToNodeProps = (
+  item: MedicalRecordItem,
+  router: ReturnType<typeof useRouter>,
+  t: TFunction<'timeline'>
+): TimelineItemNodeProps => {
+  const config = getRecordTypeConfig(item.recordType);
+  const { primaryName, subtitle } = parseDisplayName(item.displayName, item.recordType);
+
+  const formattedDate = new Date(item.clinicalDate).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  return {
+    id: item.medicalRecordId,
+    date: formattedDate,
+    nodeType: config.nodeType,
+    nodeBgColor: config.bgColor,
+    nodeIcon: config.icon,
+    cardProps: {
+      title: primaryName,
+      subtitle: subtitle || undefined,
+      tag: t(`recordTypes.${config.labelKey}`, item.recordType),
+      tagVariant: config.tagVariant,
+      footerText: formattedDate,
+      onPress: () => router.push(`/record-detail/${item.medicalRecordId}` as any),
+    },
+  };
+};
+
+/**
+ * Flatten grouped records into a flat array of headers + items for FlatList.
+ */
+const flattenGroups = (
+  groups: { year: string; items: MedicalRecordItem[] }[],
+  router: ReturnType<typeof useRouter>,
+  t: TFunction<'timeline'>,
+  totalGroupCount: number
+): FlatListItem[] => {
+  const result: FlatListItem[] = [];
+
+  groups.forEach((group, groupIdx) => {
+    // Year header
+    result.push({
+      type: 'year-header',
+      key: `header-${group.year}`,
+      year: group.year,
+    });
+
+    // Items
+    const isLastGroup = groupIdx === totalGroupCount - 1;
+    group.items.forEach((item, itemIdx) => {
+      const isLastItem = isLastGroup && itemIdx === group.items.length - 1;
+      const props = mapRecordToNodeProps(item, router, t);
+      result.push({
+        type: 'record',
+        key: item.medicalRecordId,
+        props: { ...props, isLast: isLastItem },
+      });
+    });
+  });
+
+  return result;
+};
+
+// ---------- Year Header Component ----------
+
+const YearHeader = React.memo(({ year, isRTL }: { year: string; isRTL: boolean }) => (
+  <View className={cn('flex-row items-center mb-4 mt-2', isRTL && 'flex-row-reverse')}>
+    <Text className="text-[15px] font-jakarta-bold text-gray-500">
+      {year}
+    </Text>
+    <View className={cn('flex-1 h-[1px] bg-gray-300', isRTL ? 'mr-3' : 'ml-3')} />
+  </View>
+));
+
+// ---------- Pagination Footer ----------
+
+const ListFooter = React.memo(({
+  loadingMore,
+  hasMore,
+  isSearchActive,
+}: {
+  loadingMore: boolean;
+  hasMore: boolean;
+  isSearchActive: boolean;
+}) => {
+  if (isSearchActive || !hasMore) return null;
+  if (!loadingMore) return <View style={{ height: 40 }} />;
+
+  return (
+    <View className="py-4 items-center">
+      <ActivityIndicator size="small" color={colors.primary.DEFAULT} />
+    </View>
+  );
+});
+
+// ---------- Screen ----------
 
 export default function TimelineScreen() {
   const { t, i18n } = useTranslation('timeline');
   const isRTL = i18n.language === 'ar';
+  const router = useRouter();
 
   const [selectedFilter, setSelectedFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
 
-  // Sample data structured by year matching design mockups & Figma specifications
-  const rawTimelineData: { year: string; items: (TimelineItemNodeProps & { category: string })[] }[] = useMemo(() => [
-    {
-      year: '2025',
-      items: [
-        {
-          id: 'item-1',
-          date: 'Feb 3, 2025',
-          category: 'labs',
-          nodeType: 'lab',
-          nodeBgColor: 'bg-[#BFD0F5]',
-          nodeIcon: <HugeiconsIcon icon={Stethoscope02Icon} size={20} color="#1648B8" />,
-          cardProps: {
-            title: 'Comprehensive Metabolic Panel',
-            tag: t('tags.labs', 'Labs'),
-            tagVariant: 'labs',
-            body: 'Lab results are ready for your review.',
-            footerText: 'clinic report #8PC-0203',
-          },
-        },
-        {
-          id: 'item-2',
-          date: 'Feb 3, 2025',
-          category: 'labs',
-          nodeType: 'lab',
-          nodeBgColor: 'bg-[#BFD0F5]',
-          nodeIcon: <HugeiconsIcon icon={Stethoscope02Icon} size={20} color="#1648B8" />,
-          cardProps: {
-            title: 'Comprehensive Metabolic Panel',
-            tag: t('tags.labs', 'Labs'),
-            tagVariant: 'labs',
-            body: 'Lab results are ready for your review.',
-            footerText: 'clinic report #8PC-0203',
-          },
-        },
-        {
-          id: 'item-3',
-          date: 'Aug 15, 2025',
-          category: 'visits',
-          nodeType: 'visit',
-          nodeBgColor: 'bg-[#F3E8FF]',
-          nodeIcon: <HugeiconsIcon icon={FlaskConicalIcon} size={20} color="#9333EA" />,
-          cardProps: {
-            title: 'Cardiology Follow-up',
-            subtitle: 'Dr. Ibrahim Khalil',
-            tag: '10:30 PM',
-            tagVariant: 'visits',
-            footerText: 'Aug 15, 2025',
-            rightIcon: (
-              <View className="w-8 h-8 rounded-full bg-red-50 items-center justify-center">
-                <HugeiconsIcon icon={Delete02Icon} size={16} color="#EF4444" />
-              </View>
-            ),
-          },
-        },
-      ],
+  const {
+    groupedRecords,
+    loading,
+    error,
+    refreshing,
+    loadingMore,
+    hasMore,
+    searching,
+    searchQuery,
+    isSearchActive,
+    refresh,
+    fetchRecords,
+    loadMore,
+    handleSearch,
+  } = useMedicalRecords();
+
+  // When filter changes, re-fetch from API with recordType param
+  const handleFilterChange = useCallback(
+    (filterId: string) => {
+      setSelectedFilter(filterId);
+      const recordType = filterId === 'all' ? undefined : (filterId as MedicalRecordType);
+      fetchRecords(recordType);
     },
-    {
-      year: '2024',
-      items: [
-        {
-          id: 'item-4',
-          date: 'Mar 3, 2024',
-          category: 'medications',
-          nodeType: 'medication',
-          nodeBgColor: 'bg-[#A9E6D2]',
-          nodeIcon: <HugeiconsIcon icon={PillIcon} size={20} color="#0D9B6C" />,
-          cardProps: {
-            title: 'Comprehensive Metabolic Panel',
-            tag: t('tags.medication', 'Medication'),
-            tagVariant: 'medication',
-            body: 'Lab results are ready for your review.',
-            footerText: 'clinic report #8PC-0203',
-          },
-        },
-        {
-          id: 'item-5',
-          date: 'Starting Aug 10, 2024',
-          category: 'medications',
-          nodeType: 'medication',
-          nodeBgColor: 'bg-[#E0E7FF]',
-          nodeIcon: <HugeiconsIcon icon={PillIcon} size={20} color="#4338CA" />,
-          cardProps: {
-            title: 'Metformin 500mg',
-            subtitle: '3 times every day',
-            subtitleClassName: 'text-[#1A56DB] font-jakarta-semibold',
-            footerText: 'Starting Aug 10, 2024',
-            rightIcon: (
-              <HugeiconsIcon
-                icon={isRTL ? ArrowLeft01Icon : ArrowRight01Icon}
-                size={20}
-                color="#6B7280"
+    [fetchRecords]
+  );
+
+  // Handle pull-to-refresh
+  const handleRefresh = useCallback(() => {
+    const recordType =
+      selectedFilter === 'all' ? undefined : (selectedFilter as MedicalRecordType);
+    refresh(recordType);
+  }, [refresh, selectedFilter]);
+
+  // Flatten grouped data for FlatList
+  const flatData = useMemo(
+    () => flattenGroups(groupedRecords, router, t, groupedRecords.length),
+    [groupedRecords, router, t]
+  );
+
+  // FlatList renderItem
+  const renderItem = useCallback(
+    ({ item }: { item: FlatListItem }) => {
+      if (item.type === 'year-header') {
+        return <YearHeader year={item.year} isRTL={isRTL} />;
+      }
+      return <TimelineItemNode {...item.props} />;
+    },
+    [isRTL]
+  );
+
+  // FlatList keyExtractor
+  const keyExtractor = useCallback((item: FlatListItem) => item.key, []);
+
+  // FlatList onEndReached
+  const handleEndReached = useCallback(() => {
+    if (!isSearchActive) {
+      loadMore();
+    }
+  }, [loadMore, isSearchActive]);
+
+  // Loading state (initial load only)
+  if (loading && !refreshing) {
+    return (
+      <>
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView className="flex-1 bg-[#F9FAFB]" edges={['top', 'left', 'right']}>
+          <View className="flex-1 px-5 pt-3">
+            <TimelineHeader searchQuery={searchQuery} onSearchChange={handleSearch} />
+            <TimelineFilterChips
+              selectedFilter={selectedFilter}
+              onSelectFilter={handleFilterChange}
+            />
+            <View className="flex-1 items-center justify-center">
+              <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
+              <Text className="text-[14px] font-inter-regular text-gray-400 mt-3">
+                {t('loading', 'Loading records...')}
+              </Text>
+            </View>
+          </View>
+        </SafeAreaView>
+      </>
+    );
+  }
+
+  // Error state
+  if (error && !loading) {
+    return (
+      <>
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView className="flex-1 bg-[#F9FAFB]" edges={['top', 'left', 'right']}>
+          <View className="flex-1 px-5 pt-3">
+            <TimelineHeader searchQuery={searchQuery} onSearchChange={handleSearch} />
+            <TimelineFilterChips
+              selectedFilter={selectedFilter}
+              onSelectFilter={handleFilterChange}
+            />
+            <View className="flex-1 items-center justify-center px-6">
+              <Text className="text-[16px] font-jakarta-bold text-gray-700 mb-2">
+                {t('error', 'Failed to load records')}
+              </Text>
+              <Text className="text-[14px] font-inter-regular text-gray-400 mb-4 text-center">
+                {error}
+              </Text>
+              <Button
+                title={t('retry', 'Retry')}
+                variant="primary"
+                onPress={handleRefresh}
               />
-            ),
-          },
-        },
-      ],
-    },
-  ], [t, isRTL]);
-
-  // Filtered timeline data according to selected category and search query
-  const filteredGroups = useMemo(() => {
-    return rawTimelineData
-      .map((group) => {
-        const filteredItems = group.items.filter((item) => {
-          // Category match
-          const matchesCategory =
-            selectedFilter === 'all' || item.category === selectedFilter;
-
-          // Search match
-          const query = searchQuery.trim().toLowerCase();
-          const matchesSearch =
-            !query ||
-            item.cardProps.title.toLowerCase().includes(query) ||
-            (item.cardProps.body && item.cardProps.body.toLowerCase().includes(query)) ||
-            (item.cardProps.subtitle && item.cardProps.subtitle.toLowerCase().includes(query)) ||
-            (item.cardProps.footerText && item.cardProps.footerText.toLowerCase().includes(query)) ||
-            item.date.toLowerCase().includes(query);
-
-          return matchesCategory && matchesSearch;
-        });
-
-        return {
-          ...group,
-          items: filteredItems,
-        };
-      })
-      .filter((group) => group.items.length > 0);
-  }, [rawTimelineData, selectedFilter, searchQuery]);
+            </View>
+          </View>
+        </SafeAreaView>
+      </>
+    );
+  }
 
   return (
     <>
@@ -165,38 +278,62 @@ export default function TimelineScreen() {
           {/* Header Component */}
           <TimelineHeader
             searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
+            onSearchChange={handleSearch}
           />
 
           {/* Reusable Category Filter Pills */}
           <TimelineFilterChips
             selectedFilter={selectedFilter}
-            onSelectFilter={setSelectedFilter}
+            onSelectFilter={handleFilterChange}
           />
 
-          {/* Timeline List Content */}
-          <ScrollView
-            className="flex-1"
+          {/* Searching indicator */}
+          {searching && (
+            <View className="py-2 items-center">
+              <ActivityIndicator size="small" color={colors.primary.DEFAULT} />
+            </View>
+          )}
+
+          {/* Timeline FlatList */}
+          <FlatList
+            data={flatData}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 100 }}
-          >
-            {filteredGroups.length > 0 ? (
-              filteredGroups.map((group, groupIdx) => (
-                <TimelineGroup
-                  key={group.year}
-                  year={group.year}
-                  items={group.items}
-                  isLastGroup={groupIdx === filteredGroups.length - 1}
-                />
-              ))
-            ) : (
-              <View className="py-12 items-center justify-center">
-                <Text className={cn('text-[14px] font-inter-regular text-gray-400', isRTL && 'text-right')}>
-                  {t('noResults', 'No timeline records found.')}
-                </Text>
-              </View>
-            )}
-          </ScrollView>
+            onEndReached={handleEndReached}
+            onEndReachedThreshold={0.4}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                colors={[colors.primary.DEFAULT]}
+                tintColor={colors.primary.DEFAULT}
+              />
+            }
+            ListFooterComponent={
+              <ListFooter
+                loadingMore={loadingMore}
+                hasMore={hasMore}
+                isSearchActive={isSearchActive}
+              />
+            }
+            ListEmptyComponent={
+              !searching ? (
+                <View className="py-12 items-center justify-center">
+                  <Text className={cn('text-[14px] font-inter-regular text-gray-400', isRTL && 'text-right')}>
+                    {t('noResults', 'No timeline records found.')}
+                  </Text>
+                </View>
+              ) : null
+            }
+            // Performance optimizations
+            removeClippedSubviews={true}
+            maxToRenderPerBatch={10}
+            windowSize={7}
+            initialNumToRender={15}
+            updateCellsBatchingPeriod={50}
+          />
         </View>
       </SafeAreaView>
     </>

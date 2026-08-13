@@ -2,11 +2,15 @@
   "title": "Time line",
   "searchPlaceholder": "Search timeline...",
   "filters": {
-    "all": "Approve",
-    "visits": "Visits",
-    "labs": "Labs",
-    "medications": "Medications",
-    "scans": "Scans"
+    "all": "All",
+    "Medication": "Medication",
+    "LabResult": "Lab Results",
+    "Condition": "Conditions",
+    "Allergy": "Allergies",
+    "Procedure": "Procedures",
+    "Visit": "Visits",
+    "Facility": "Facilities",
+    "PatientInformation": "Patient Info"
   },
   "tags": {
     "labs": "Labs",
@@ -15,5 +19,46 @@
     "visits": "Visits",
     "scans": "Scans"
   },
+  "recordTypes": {
+    "Medication": "Medication",
+    "LabResult": "Lab Result",
+    "Condition": "Condition",
+    "Allergy": "Allergy",
+    "Procedure": "Procedure",
+    "Visit": "Visit",
+    "Facility": "Facility",
+    "PatientInformation": "Patient Info"
+  },
+  "fieldNames": {
+    "MedicationName": "Medication",
+    "Dose": "Dose",
+    "Quantity": "Quantity",
+    "Frequency": "Frequency",
+    "Route": "Route",
+    "LabTestName": "Lab Test",
+    "LabValue": "Value",
+    "Unit": "Unit",
+    "ReferenceRange": "Reference Range",
+    "ConditionName": "Condition",
+    "AllergyName": "Allergy",
+    "ProcedureName": "Procedure",
+    "Date": "Date",
+    "DoctorName": "Doctor",
+    "FacilityName": "Facility",
+    "PatientName": "Patient"
+  },
+  "detail": {
+    "details": "Details",
+    "sourceDocuments": "Source Documents",
+    "status": "Status",
+    "clinicalDate": "Clinical Date",
+    "page": "Page",
+    "loading": "Loading record...",
+    "error": "Failed to load record",
+    "retry": "Retry"
+  },
+  "loading": "Loading records...",
+  "error": "Failed to load records",
+  "retry": "Retry",
   "noResults": "No timeline records found."
 }

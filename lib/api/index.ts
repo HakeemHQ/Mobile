@@ -4,3 +4,4 @@ export * from './documents';
 export * from './profile';
 export * from './chatbot';
 export * from './medical-cv';
+export * from './medical-records';

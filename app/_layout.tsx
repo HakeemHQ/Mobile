@@ -46,6 +46,7 @@ export default function RootLayout() {
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="reminders" options={{ headerShown: false }} />
+      <Stack.Screen name="record-detail" options={{ headerShown: false }} />
     </Stack>
   );
 }
