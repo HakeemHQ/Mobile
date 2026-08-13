@@ -100,3 +100,25 @@ export const uploadDocumentApi = async (payload: UploadDocumentPayload): Promise
 
   return documentId;
 };
+
+/**
+ * Fetch list of uploaded documents from GET /documents
+ */
+export const getDocumentsApi = async (params?: {
+  pageNumber?: number;
+  pageSize?: number;
+}): Promise<import('@/types/document').DocumentsListResponse> => {
+  const response = await apiClient.get('/documents', { params });
+  return response.data;
+};
+
+/**
+ * Fetch a single document detail from GET /documents/{id}
+ */
+export const getDocumentByIdApi = async (
+  documentId: string
+): Promise<import('@/types/document').DocumentDetailResponse> => {
+  const response = await apiClient.get(`/documents/${documentId}`);
+  return response.data;
+};
+
