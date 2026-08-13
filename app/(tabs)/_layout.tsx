@@ -1,6 +1,8 @@
 import { Tabs } from 'expo-router';
 import { View } from 'react-native';
 import { Home03Icon, Time02Icon, Add02Icon, File02Icon, User02Icon } from '@/components/icons';
+import { colors } from '@/lib/theme/colors';
+import { Bot } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -21,7 +23,7 @@ export default function TabLayout() {
         },
         tabBarLabelStyle: {
           fontFamily: 'PlusJakarta-SemiBold',
-          fontSize: 12, 
+          fontSize: 12,
           marginTop: 4,
         }
       }}>
@@ -39,7 +41,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => <Time02Icon size={24} color={color as string} variant={focused ? 'solid' : 'outline'} />,
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="add"
         options={{
           title: '',
@@ -55,6 +57,37 @@ export default function TabLayout() {
             navigation.navigate('add', { screen: 'index' });
           },
         })}
+      /> */}
+      <Tabs.Screen
+        name="add"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="chatbot"
+        options={{
+          title: '',
+          tabBarAccessibilityLabel: 'Open H-bot',
+          tabBarStyle: {
+            display: 'none',
+          },
+          tabBarIcon: () => (
+            <View
+              className="-top-4 h-14 w-14 items-center justify-center rounded-full border-4 shadow-sm"
+              style={{
+                backgroundColor: colors.primary[900],
+                borderColor: colors.surface.DEFAULT,
+              }}
+            >
+              <Bot
+                size={27}
+                color={colors.surface.DEFAULT}
+                strokeWidth={2}
+              />
+            </View>
+          ),
+        }}
       />
       <Tabs.Screen
         name="medical-cv"
