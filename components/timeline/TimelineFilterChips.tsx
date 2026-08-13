@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import type { MedicalRecordType } from '@/types/medical-record';
 
 export interface FilterOption {
   id: string;
@@ -15,6 +16,18 @@ export interface TimelineFilterChipsProps {
   containerClassName?: string;
 }
 
+/** All 8 supported record types for filter chips */
+const RECORD_TYPE_FILTER_IDS: MedicalRecordType[] = [
+  'Medication',
+  'LabResult',
+  'Condition',
+  'Allergy',
+  'Procedure',
+  'Visit',
+  'Facility',
+  'PatientInformation',
+];
+
 export const TimelineFilterChips: React.FC<TimelineFilterChipsProps> = ({
   selectedFilter,
   onSelectFilter,
@@ -25,11 +38,11 @@ export const TimelineFilterChips: React.FC<TimelineFilterChipsProps> = ({
   const isRTL = i18n.language === 'ar';
 
   const defaultFilters: FilterOption[] = [
-    { id: 'all', label: t('filters.all', 'Approve') },
-    { id: 'visits', label: t('filters.visits', 'Visits') },
-    { id: 'labs', label: t('filters.labs', 'Labs') },
-    { id: 'medications', label: t('filters.medications', 'Medications') },
-    { id: 'scans', label: t('filters.scans', 'Scans') },
+    { id: 'all', label: t('filters.all', 'All') },
+    ...RECORD_TYPE_FILTER_IDS.map((type) => ({
+      id: type,
+      label: t(`filters.${type}`, type),
+    })),
   ];
 
   const categories = filters || defaultFilters;
