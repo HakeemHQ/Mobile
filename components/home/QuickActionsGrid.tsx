@@ -2,11 +2,12 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { Upload01Icon, Time02Icon, File02Icon, Notification01Icon } from '@hugeicons/core-free-icons';
+import { File02Icon, Time02Icon, TransactionHistoryIcon, Notification01Icon } from '@hugeicons/core-free-icons';
 import { FastAccessButton } from '@/components/ui/FastAccessButton';
 import { colors } from '@/lib/theme';
 
 interface QuickActionsGridProps {
+  onDocumentsPress?: () => void;
   onUploadPress?: () => void;
   onTimelinePress?: () => void;
   onCvPress?: () => void;
@@ -15,6 +16,7 @@ interface QuickActionsGridProps {
 }
 
 export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
+  onDocumentsPress,
   onUploadPress,
   onTimelinePress,
   onCvPress,
@@ -23,6 +25,8 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
 }) => {
   const { t } = useTranslation('home');
 
+  const handleDocumentsAction = onDocumentsPress || onUploadPress;
+
   return (
     <View className="w-full mb-8">
       <Text className={`text-[20px] font-jakarta-bold text-gray-900 mb-4 ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -30,21 +34,21 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
       </Text>
 
       <View className="flex-row flex-wrap justify-between gap-y-4">
-        {/* Upload Record */}
+        {/* Documents (replaces Upload Record) */}
         <FastAccessButton
-          title={t('uploadRecord', { defaultValue: 'Upload Record' })}
-          icon={<HugeiconsIcon icon={Upload01Icon} size={22} color= {colors.primary[800]} />}
+          title={t('documents', { defaultValue: 'Documents' })}
+          icon={<HugeiconsIcon icon={File02Icon} size={22} color={colors.primary[800]} />}
           active={false}
           inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
           style={{ width: '48%' }}
-          onPress={onUploadPress}
+          onPress={handleDocumentsAction}
         />
 
         {/* Time line */}
         <FastAccessButton
           title={t('timeline', { defaultValue: 'Time line' })}
-          icon={<HugeiconsIcon icon={Time02Icon} size={22} color= {colors.primary[800]} />}
+          icon={<HugeiconsIcon icon={Time02Icon} size={22} color={colors.primary[800]} />}
           active={false}
           inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
@@ -55,7 +59,7 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
         {/* CV */}
         <FastAccessButton
           title={t('cv', { defaultValue: 'CV' })}
-          icon={<HugeiconsIcon icon={File02Icon} size={22}color= {colors.primary[800]} />}
+          icon={<HugeiconsIcon icon={TransactionHistoryIcon} size={22} color={colors.primary[800]} />}
           active={false}
           inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
@@ -66,7 +70,7 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
         {/* Reminders */}
         <FastAccessButton
           title={t('reminders', { defaultValue: 'Reminders' })}
-          icon={<HugeiconsIcon icon={Notification01Icon} size={22} color= {colors.primary[800]} />}
+          icon={<HugeiconsIcon icon={Notification01Icon} size={22} color={colors.primary[800]} />}
           active={false}
           inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
