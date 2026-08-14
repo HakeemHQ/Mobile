@@ -24,5 +24,14 @@
   "copy": "Copy",
   "copied": "Copied!",
   "linkWillExpire": "This link will expire on:",
-  "close": "Close"
+  "close": "Close",
+  "upload": "Upload",
+  "loadingMedicalCv": "Checking your Medical CV...",
+  "medicalCvLoadError": "Unable to load your Medical CV. Please try again.",
+  "medicalCvUnavailable": "No reviewed medical documents are available yet. Upload your medical documents and have them reviewed by a doctor before sharing or downloading your Medical CV.",
+  "linkUnavailable": "Link unavailable",
+  "medicalCvLoadErrorShort": "Unable to load your Medical CV.",
+  "shareLinkCreateError": "Unable to create a sharing link. Please try again.",
+  "pdfPreviewOpenError": "The PDF preview could not be opened on this device.",
+  "medicalCvPdfOpenError": "Unable to open the Medical CV PDF. Please try again."
 }

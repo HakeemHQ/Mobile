@@ -148,7 +148,12 @@ export default function MedicalCVScreen() {
             setCvError(
               getErrorMessage(
                 error,
-                'Unable to load your Medical CV.',
+                i18n.t(
+                  'medicalCvLoadErrorShort',
+                  {
+                    ns: 'medicalCv',
+                  },
+                ),
               ),
             );
           }
@@ -159,7 +164,7 @@ export default function MedicalCVScreen() {
       return () => {
         isActive = false;
       };
-    }, []),
+    }, [i18n]),
   );
 
   const hasMedicalCv =
@@ -224,7 +229,9 @@ export default function MedicalCVScreen() {
           ),
           getErrorMessage(
             error,
-            'Unable to create a sharing link. Please try again.',
+            t(
+              'shareLinkCreateError',
+            ),
           ),
         );
       } finally {
@@ -260,7 +267,9 @@ export default function MedicalCVScreen() {
 
         if (!canOpen) {
           throw new Error(
-            'The PDF preview could not be opened on this device.',
+            t(
+              'pdfPreviewOpenError',
+            ),
           );
         }
 
@@ -277,7 +286,9 @@ export default function MedicalCVScreen() {
           ),
           getErrorMessage(
             error,
-            'Unable to open the Medical CV PDF. Please try again.',
+            t(
+              'medicalCvPdfOpenError',
+            ),
           ),
         );
       } finally {
