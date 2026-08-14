@@ -10,12 +10,16 @@ interface MedicalProfileCardProps {
 }
 
 export const MedicalProfileCard: React.FC<MedicalProfileCardProps> = ({
-  documentsCount = 12,
+  documentsCount = 0,
   donePercentage = 73,
   description,
   isRTL = false,
 }) => {
   const { t } = useTranslation('home');
+
+  const countText = isRTL
+    ? `${documentsCount} ${documentsCount === 1 ? 'مستند' : 'مستندات'}`
+    : `${documentsCount} ${documentsCount === 1 ? 'document' : 'documents'}`;
 
   return (
     <View className="w-full bg-primary-700 rounded-3xl p-5 mb-6 shadow-sm">
@@ -27,7 +31,7 @@ export const MedicalProfileCard: React.FC<MedicalProfileCardProps> = ({
       {/* Documents Count and %done Circle */}
       <View className={`w-full ${isRTL ? 'flex-row-reverse' : 'flex-row'} items-center justify-between mb-4`}>
         <Text className={`text-[24px] font-jakarta-bold text-white ${isRTL ? 'text-right' : 'text-left'}`}>
-          {t('documentsCount', { defaultValue: `${documentsCount} documents` })}
+          {countText}
         </Text>
 
         {/* Done % Badge Column */}

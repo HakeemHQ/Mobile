@@ -40,3 +40,41 @@ export interface UploadDocumentPayload {
   title: string;
   documentDate: string;
 }
+
+/** Document list item from GET /documents */
+export interface DocumentItem {
+  documentId: string;
+  documentType: string;
+  title: string;
+  documentDate: string;
+  extractionStatus: string;
+}
+
+/** Document detail from GET /documents/{id} */
+export interface DocumentDetail extends DocumentItem {
+  failureCode?: string | null;
+  documentPath?: string | null;
+}
+
+/** List API response wrapper for GET /documents */
+export interface DocumentsListResponse {
+  data: {
+    items: DocumentItem[];
+    totalCount: number;
+    pageNumber: number;
+    pageSize: number;
+  };
+  success: boolean;
+  message: string;
+  errorList?: any[];
+  globalErrorCode?: string | null;
+}
+
+/** Detail API response wrapper for GET /documents/{id} */
+export interface DocumentDetailResponse {
+  data: DocumentDetail;
+  success: boolean;
+  message: string;
+  errorList?: any[];
+  globalErrorCode?: string | null;
+}
