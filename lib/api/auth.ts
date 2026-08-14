@@ -8,17 +8,28 @@ export const saveTokens = async (accessToken: string, refreshToken?: string) => 
     if (refreshToken) {
       await setSecureItem('refreshToken', refreshToken);
     }
+    const { initPushNotifications } = await import('../push-notifications');
+    void initPushNotifications();
   } catch (e) {
     // Intentionally left clean
   }
 };
 
+let isClearingTokens = false;
+
 export const clearTokens = async () => {
+  if (isClearingTokens) return;
+  isClearingTokens = true;
   try {
+    const { removePushTokenFromBackend, clearStoredPushToken } = await import('../push-notifications');
+    await removePushTokenFromBackend();
+    await clearStoredPushToken();
     await deleteSecureItem('accessToken');
     await deleteSecureItem('refreshToken');
   } catch (e) {
     // Intentionally left clean
+  } finally {
+    isClearingTokens = false;
   }
 };
 
