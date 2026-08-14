@@ -1,0 +1,36 @@
+{
+  "title": "Access Requests",
+  "filters": {
+    "all": "All",
+    "pending": "Pending",
+    "active": "Active",
+    "revoked": "Revoked",
+    "expired": "Expired"
+  },
+  "statuses": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "active": "Active",
+    "rejected": "Rejected",
+    "revoked": "Revoked",
+    "expired": "Expired"
+  },
+  "unknownDoctor": "Unknown Doctor",
+  "generalSpecialty": "General",
+  "accessCode": "Access Code",
+  "expiredTag": "Expired",
+  "reject": "Reject",
+  "approve": "Approve",
+  "loading": "Loading requests...",
+  "retry": "Retry",
+  "noRequests": "No access requests.",
+  "failedToFetch": "Failed to fetch access requests",
+  "failedToApprove": "Failed to approve request",
+  "failedToReject": "Failed to reject request",
+  "modal": {
+    "title": "Access Request Approved!",
+    "subtitle": "Provide this one-time code to Dr. {{name}}:",
+    "expiresAt": "Code expires at: {{time}}",
+    "done": "Done"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "title": "طلبات الدخول",
+  "filters": {
+    "all": "الكل",
+    "pending": "قيد الانتظار",
+    "active": "نشط",
+    "revoked": "ملغي",
+    "expired": "منتهي"
+  },
+  "statuses": {
+    "pending": "قيد الانتظار",
+    "approved": "مقبول",
+    "active": "نشط",
+    "rejected": "مرفوض",
+    "revoked": "ملغي",
+    "expired": "منتهي"
+  },
+  "unknownDoctor": "طبيب غير معروف",
+  "generalSpecialty": "عام",
+  "accessCode": "رمز الدخول",
+  "expiredTag": "منتهي",
+  "reject": "رفض",
+  "approve": "قبول",
+  "loading": "جاري تحميل الطلبات...",
+  "retry": "إعادة المحاولة",
+  "noRequests": "لا توجد طلبات.",
+  "failedToFetch": "فشل في تحميل طلبات الدخول",
+  "failedToApprove": "فشل في قبول الطلب",
+  "failedToReject": "فشل في رفض الطلب",
+  "modal": {
+    "title": "تم قبول طلب الدخول!",
+    "subtitle": "يرجى تزويد د. {{name}} بهذا الرمز المؤقت:",
+    "expiresAt": "ينتهي الرمز في: {{time}}",
+    "done": "حسناً، فهمت"
+  }
+}
