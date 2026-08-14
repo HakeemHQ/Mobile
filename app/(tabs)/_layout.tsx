@@ -3,8 +3,13 @@ import { View } from 'react-native';
 import { Home03Icon, Time02Icon, Add02Icon, File02Icon, User02Icon } from '@/components/icons';
 import { colors } from '@/lib/theme/colors';
 import { Bot } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/localization/i18n';
 
 export default function TabLayout() {
+  const { t } = useTranslation('tabs');
+  const isRTL = i18n.language === 'ar';
+
   return (
     <Tabs
       screenOptions={{
@@ -20,6 +25,7 @@ export default function TabLayout() {
           borderTopWidth: 1,
           borderTopColor: '#F3F4F6',
           paddingHorizontal: 10,
+          direction: isRTL ? 'rtl' : 'ltr',
         },
         tabBarLabelStyle: {
           fontFamily: 'PlusJakarta-SemiBold',
@@ -30,14 +36,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: t('home'),
           tabBarIcon: ({ color, focused }) => <Home03Icon size={24} color={color as string} variant={focused ? 'solid' : 'outline'} />,
         }}
       />
       <Tabs.Screen
         name="timeline"
         options={{
-          title: 'Timeline',
+          title: t('timeline'),
           tabBarIcon: ({ color, focused }) => <Time02Icon size={24} color={color as string} variant={focused ? 'solid' : 'outline'} />,
         }}
       />
@@ -68,7 +74,7 @@ export default function TabLayout() {
         name="chatbot"
         options={{
           title: '',
-          tabBarAccessibilityLabel: 'Open H-bot',
+          tabBarAccessibilityLabel: t('openHbot'),
           tabBarStyle: {
             display: 'none',
           },
@@ -92,14 +98,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="medical-cv"
         options={{
-          title: 'Medical CV',
+          title: t('medicalCv'),
           tabBarIcon: ({ color, focused }) => <File02Icon size={24} color={color as string} variant={focused ? 'solid' : 'outline'} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: t('profile'),
           tabBarIcon: ({ color, focused }) => <User02Icon size={24} color={color as string} variant={focused ? 'solid' : 'outline'} />,
         }}
       />

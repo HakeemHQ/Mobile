@@ -1,0 +1,14 @@
+{
+  "title": "H-bot",
+  "greetingWithName": "مرحبًا {{firstName}}، كيف يمكنني مساعدتك اليوم؟",
+  "greeting": "مرحبًا، كيف يمكنني مساعدتك اليوم؟",
+  "errors": {
+    "unableToGetResponse": "تعذّر الحصول على رد من H-bot.",
+    "emptyResponse": "أعاد H-bot ردًا فارغًا.",
+    "unableToConnect": "تعذّر الاتصال بـ H-bot. يُرجى المحاولة مرة أخرى."
+  },
+  "closeHbot": "إغلاق H-bot",
+  "messageInput": "رسالة H-bot",
+  "enterMessage": "اكتب رسالتك",
+  "sendMessage": "إرسال الرسالة"
+}

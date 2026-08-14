@@ -32,6 +32,7 @@ import FormattedAssistantMessage from '@/components/chatbot/FormattedAssistantMe
 import { sendChatbotMessageApi } from '@/lib/api';
 import { colors } from '@/lib/theme/colors';
 import { useProfileStore } from '@/store/useProfileStore';
+import { useTranslation } from 'react-i18next';
 
 type ChatMessageRole = 'user' | 'assistant';
 
@@ -104,6 +105,7 @@ function MessageBubble({
 }
 
 export default function ChatbotScreen() {
+    const { t } = useTranslation('chatbot');
     const scrollViewRef = useRef<ScrollView>(null);
 
     const chatSessionRef = useRef(0);
@@ -156,10 +158,10 @@ export default function ChatbotScreen() {
                 id: 'initial-hbot-greeting',
                 role: 'assistant',
                 content: firstName
-                    ? `Hello there ${firstName}, how can I help you today?`
-                    : 'Hello there, how can I help you today?',
+                    ? t('greetingWithName', { firstName })
+                    : t('greeting'),
             };
-        }, [profile?.firstName]);
+        }, [profile?.firstName, t]);
 
     const displayedMessages = useMemo(
         () => [
@@ -242,7 +244,7 @@ export default function ChatbotScreen() {
             ) {
                 setSendError(
                     response.message ||
-                    'Unable to get a response from H-bot.',
+                    t('errors.unableToGetResponse'),
                 );
 
                 return;
@@ -253,7 +255,7 @@ export default function ChatbotScreen() {
 
             if (!assistantText) {
                 setSendError(
-                    'H-bot returned an empty response.',
+                    t('errors.emptyResponse'),
                 );
 
                 return;
@@ -286,7 +288,7 @@ export default function ChatbotScreen() {
 
             setSendError(
                 apiError.message ||
-                'Unable to connect to H-bot. Please try again.',
+                t('errors.unableToConnect'),
             );
         } finally {
             if (
@@ -342,14 +344,14 @@ export default function ChatbotScreen() {
                                     colors.surface.DEFAULT,
                             }}
                         >
-                            H-bot
+                            {t('title')}
                         </Text>
                     </View>
 
                     <View className="flex-1" />
 
                     <Pressable
-                        accessibilityLabel="Close H-bot"
+                        accessibilityLabel={t('closeHbot')}
                         accessibilityRole="button"
                         className="h-12 w-12 items-center justify-center"
                         hitSlop={8}
@@ -441,9 +443,9 @@ export default function ChatbotScreen() {
                         }}
                     >
                         <TextInput
-                            accessibilityLabel="H-bot message"
+                            accessibilityLabel={t('messageInput')}
                             className="flex-1 font-inter-regular text-[18px]"
-                            placeholder="Enter message"
+                            placeholder={t('enterMessage')}
                             placeholderTextColor={
                                 colors.text2[400]
                             }
@@ -471,7 +473,7 @@ export default function ChatbotScreen() {
                         />
 
                         <Pressable
-                            accessibilityLabel="Send message"
+                            accessibilityLabel={t('sendMessage')}
                             accessibilityRole="button"
                             accessibilityState={{
                                 disabled: !canSend,

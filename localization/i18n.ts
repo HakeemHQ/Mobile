@@ -26,6 +26,10 @@ import enReminders from './EN/reminders.json';
 import arReminders from './AR/reminders.json';
 import enAuth from './EN/auth.json';
 import arAuth from './AR/auth.json';
+import enTabs from './EN/tabs.json';
+import arTabs from './AR/tabs.json';
+import enChatbot from './EN/chatbot.json';
+import arChatbot from './AR/chatbot.json';
 
 const resources = {
   en: {
@@ -40,6 +44,8 @@ const resources = {
     medicalCv: enMedicalCv,
     reminders: enReminders,
     auth: enAuth,
+    tabs: enTabs,
+    chatbot: enChatbot
   },
   ar: {
     onboarding: arOnboarding,
@@ -53,6 +59,8 @@ const resources = {
     medicalCv: arMedicalCv,
     reminders: arReminders,
     auth: arAuth,
+    tabs: arTabs,
+    chatbot: arChatbot
   },
 };
 
