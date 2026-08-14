@@ -1,4 +1,6 @@
-const { withAndroidManifest, withInfoPlist } = require('@expo/config-plugins');
+const { withAndroidManifest, withInfoPlist, withDangerousMod } = require('@expo/config-plugins');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Expo Config Plugin to enable Clock/Watch App style Alarm capabilities.
@@ -121,6 +123,22 @@ const withClockAlarm = (config) => {
     }
     return config;
   });
+
+  // 3. Ensure android/local.properties contains valid sdk.dir path on prebuild
+  config = withDangerousMod(config, [
+    'android',
+    async (config) => {
+      const localPropsPath = path.join(config.modRequest.projectRoot, 'android', 'local.properties');
+      const sdkDir = 'C:\\Users\\Lenovo\\AppData\\Local\\Android\\Sdk';
+      const content = `sdk.dir=${sdkDir.replace(/\\/g, '\\\\')}\n`;
+      try {
+        fs.writeFileSync(localPropsPath, content, { encoding: 'utf-8' });
+      } catch (e) {
+        // Ignore if directory doesn't exist yet
+      }
+      return config;
+    },
+  ]);
 
   return config;
 };
