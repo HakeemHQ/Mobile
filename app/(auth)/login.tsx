@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { apiFetch, saveTokens } from '../../lib/api';
 import { GoogleIcon } from '../../components/icons/GoogleIcon';
 import { ArrowLeft02Icon } from '../../components/icons/ArrowLeft02Icon';
@@ -16,9 +17,13 @@ import { ShieldIcon } from '../../components/icons/ShieldIcon';
 import { useProfileStore } from '../../store/useProfileStore';
 
 export default function LoginScreen() {
+  const { t, i18n } = useTranslation('auth');
+  const isRTL = i18n.language === 'ar';
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [globalError, setGlobalError] = useState('');
+
   const { control, handleSubmit, setError, formState: { errors } } = useForm({
     mode: 'onChange',
     defaultValues: { email: '', password: '' }
@@ -27,6 +32,7 @@ export default function LoginScreen() {
   const onSubmit = async (data: any) => {
     setGlobalError('');
     setIsLoading(true);
+
     try {
       const response = await apiFetch('/auth/login', {
         method: 'POST',
@@ -38,17 +44,21 @@ export default function LoginScreen() {
           response.data.accessToken ||
           response.data.token ||
           (typeof response.data === 'string' ? response.data : '');
+
         const refreshToken = response.data.refreshToken || '';
+
         await saveTokens(token, refreshToken);
         await useProfileStore.getState().fetchProfile(true);
+
         router.replace('/(tabs)');
       } else {
-        setGlobalError(response.message || 'Something went wrong');
+        setGlobalError(response.message || t('somethingWentWrong'));
       }
     } catch (error: any) {
       if (error.errorList && error.errorList.length > 0) {
         error.errorList.forEach((err: any) => {
           const propName = (err.propertyName || '').toLowerCase();
+
           if (propName.includes('email')) {
             setError('email', { type: 'server', message: err.message });
           } else if (propName.includes('password')) {
@@ -58,7 +68,7 @@ export default function LoginScreen() {
           }
         });
       } else {
-        setGlobalError(error.message || 'Something went wrong');
+        setGlobalError(error.message || t('somethingWentWrong'));
       }
     } finally {
       setIsLoading(false);
@@ -75,6 +85,8 @@ export default function LoginScreen() {
         <View className="gap-8 py-8">
           {/* Back Button */}
           <Pressable
+            accessibilityLabel={t('goBack')}
+            accessibilityRole="button"
             className="w-10 h-10 rounded-full border border-bg-600 items-center justify-center"
             onPress={() => router.back()}
           >
@@ -82,21 +94,28 @@ export default function LoginScreen() {
           </Pressable>
 
           {/* Logo */}
-          <View className="flex-row items-center">
-            <View className="w-8 h-8 rounded-lg bg-primary-50 items-center justify-center mr-3">
+          <View className={`items-center ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
+            <View className={`w-8 h-8 rounded-lg bg-primary-50 items-center justify-center ${isRTL ? 'ml-3' : 'mr-3'}`}>
               <AddIcon size={20} color="primary.900" />
             </View>
-            <Text className="text-2xl font-jakarta-bold text-primary-900">Hakeem</Text>
+            <Text className="text-2xl font-jakarta-bold text-primary-900">
+              {t('brandName')}
+            </Text>
           </View>
 
           {/* Header */}
           <View>
-            <Text className="text-[28px] font-jakarta-bold text-primary-900 mb-2">Welcome back</Text>
-            <Text className="text-sm font-inter-regular text-text2-500">
-              Sign in to access your medical records
+            <Text className={`text-[28px] font-jakarta-bold text-primary-900 mb-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('welcomeBack')}
             </Text>
+            <Text className={`text-sm font-inter-regular text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+              {t('loginSubtitle')}
+            </Text>
+
             {globalError ? (
-              <Text className="text-sm font-inter-regular text-red-500 mt-2">{globalError}</Text>
+              <Text className={`text-sm font-inter-regular text-red-500 mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+                {globalError}
+              </Text>
             ) : null}
           </View>
 
@@ -105,14 +124,17 @@ export default function LoginScreen() {
             control={control}
             name="email"
             rules={{
-              required: 'Email is required',
-              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Please enter a valid email address' }
+              required: t('emailRequired'),
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: t('invalidEmail')
+              }
             }}
             render={({ field: { onChange, value } }) => (
               <InputField
-                label="Email Address"
+                label={t('emailAddress')}
                 icon={Mail01Icon}
-                placeholder="you@example.com"
+                placeholder={t('emailPlaceholder')}
                 keyboardType="email-address"
                 value={value}
                 onChangeText={onChange}
@@ -128,14 +150,17 @@ export default function LoginScreen() {
             control={control}
             name="password"
             rules={{
-              required: 'Password is required',
-              minLength: { value: 8, message: 'Password must be at least 8 characters' }
+              required: t('passwordRequired'),
+              minLength: {
+                value: 8,
+                message: t('passwordMinLength')
+              }
             }}
             render={({ field: { onChange, value } }) => (
               <InputField
-                label="Password"
+                label={t('password')}
                 icon={LockOpenIcon}
-                placeholder="At least 8 characters"
+                placeholder={t('passwordPlaceholder')}
                 secureTextEntry={!isPasswordVisible}
                 rightIcon={isPasswordVisible ? ViewIcon : EyeOffIcon}
                 onRightIconPress={() => setIsPasswordVisible(!isPasswordVisible)}
@@ -149,9 +174,11 @@ export default function LoginScreen() {
           />
 
           {/* Forgot password */}
-          <View className="items-end">
+          <View className={isRTL ? 'items-start' : 'items-end'}>
             <Pressable onPress={() => router.push('/(auth)/reset-password')}>
-              <Text className="text-sm font-jakarta-bold text-primary-900">Forgot password?</Text>
+              <Text className="text-sm font-jakarta-bold text-primary-900">
+                {t('forgotPassword')}
+              </Text>
             </Pressable>
           </View>
 
@@ -164,36 +191,47 @@ export default function LoginScreen() {
             {isLoading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text className="text-white font-jakarta-bold text-lg">Continue</Text>
+              <Text className="text-white font-jakarta-bold text-lg">
+                {t('continue')}
+              </Text>
             )}
           </Pressable>
 
           {/* Or continue with */}
           <View className="items-center">
-            <Text className="text-sm font-inter-regular text-text2-500">or continue with</Text>
+            <Text className="text-sm font-inter-regular text-text2-500">
+              {t('orContinueWith')}
+            </Text>
           </View>
 
           {/* Social Login Buttons */}
-          <Pressable className="h-14 border border-text2-100 rounded-2xl flex-row items-center justify-center mt-2 mb-2">
+          <Pressable className={`h-14 border border-text2-100 rounded-2xl items-center justify-center mt-2 mb-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
             <GoogleIcon />
-            <Text className="font-jakarta-bold text-text-900 ml-3 text-base">Continue with Google</Text>
+            <Text className={`font-jakarta-bold text-text-900 text-base ${isRTL ? 'mr-3' : 'ml-3'}`}>
+              {t('continueWithGoogle')}
+            </Text>
           </Pressable>
 
           {/* Encryption Banner */}
-          <View className="bg-primary-50 h-12 rounded-xl flex-row items-center justify-center px-4">
+          <View className={`bg-primary-50 h-12 rounded-xl items-center justify-center px-4 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
             <ShieldIcon size={20} color="primary.900" />
-            <Text className="text-[11px] font-jakarta-bold text-primary-900 ml-2">
-              256-bit encrypted, Your data is never sold or shared
+            <Text className={`flex-1 text-[11px] font-jakarta-bold text-primary-900 ${isRTL ? 'mr-2 text-right' : 'ml-2 text-left'}`}>
+              {t('encryptionNotice')}
             </Text>
           </View>
 
           {/* Sign Up Link */}
-          <View className="flex-row justify-center">
+          <View className={`justify-center ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
             <Text className="text-sm font-inter-regular text-text2-500">
-              Don't have account?{' '}
+              {t('dontHaveAccount')}
             </Text>
-            <Pressable onPress={() => router.replace('/(auth)/register')}>
-              <Text className="text-sm font-jakarta-bold text-primary-900">Sign up free</Text>
+            <Pressable
+              className={isRTL ? 'mr-1' : 'ml-1'}
+              onPress={() => router.replace('/(auth)/register')}
+            >
+              <Text className="text-sm font-jakarta-bold text-primary-900">
+                {t('signUpFree')}
+              </Text>
             </Pressable>
           </View>
         </View>

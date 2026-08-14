@@ -24,6 +24,8 @@ import enMedicalCv from './EN/medical-cv.json';
 import arMedicalCv from './AR/medical-cv.json';
 import enReminders from './EN/reminders.json';
 import arReminders from './AR/reminders.json';
+import enAuth from './EN/auth.json';
+import arAuth from './AR/auth.json';
 
 const resources = {
   en: {
@@ -37,6 +39,7 @@ const resources = {
     timeline: enTimeline,
     medicalCv: enMedicalCv,
     reminders: enReminders,
+    auth: enAuth,
   },
   ar: {
     onboarding: arOnboarding,
@@ -49,6 +52,7 @@ const resources = {
     timeline: arTimeline,
     medicalCv: arMedicalCv,
     reminders: arReminders,
+    auth: arAuth,
   },
 };
 
