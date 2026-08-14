@@ -1,5 +1,6 @@
 {
   "title": "H-bot",
+  "subtitle": "مساعدة طبية",
   "greetingWithName": "مرحبًا {{firstName}}، كيف يمكنني مساعدتك اليوم؟",
   "greeting": "مرحبًا، كيف يمكنني مساعدتك اليوم؟",
   "errors": {

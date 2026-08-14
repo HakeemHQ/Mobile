@@ -1,5 +1,6 @@
 {
   "title": "H-bot",
+  "subtitle": "Medical Assistant",
   "greetingWithName": "Hello there {{firstName}}, how can I help you today?",
   "greeting": "Hello there, how can I help you today?",
   "errors": {

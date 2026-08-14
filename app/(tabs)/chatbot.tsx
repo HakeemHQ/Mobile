@@ -16,10 +16,11 @@ import {
     View,
 } from 'react-native';
 import {
+    ArrowLeft,
+    ArrowRight,
     Bot,
-    FlaskConical,
     Send,
-    X,
+    ShieldCheck,
 } from 'lucide-react-native';
 import {
     router,
@@ -46,6 +47,23 @@ interface MessageBubbleProps {
     message: ChatMessage;
 }
 
+function AssistantAvatar() {
+    return (
+        <View
+            className="h-9 w-9 items-center justify-center rounded-full"
+            style={{
+                backgroundColor: colors.primary[50],
+            }}
+        >
+            <Bot
+                size={20}
+                color={colors.primary[900]}
+                strokeWidth={1.9}
+            />
+        </View>
+    );
+}
+
 function MessageBubble({
     message,
 }: MessageBubbleProps) {
@@ -53,49 +71,45 @@ function MessageBubble({
 
     if (isUser) {
         return (
-            <View className="mb-5 items-end">
+            <View className="mb-4 items-end">
                 <View
-                    className="rounded-[22px] px-5 py-3.5"
+                    className="rounded-[22px] rounded-br-[7px] px-4 py-3"
                     style={{
-                        maxWidth: '78%',
-                        backgroundColor: colors.bg.DEFAULT,
+                        maxWidth: '80%',
+                        backgroundColor:
+                            colors.primary.DEFAULT,
                     }}
                 >
-                    <FormattedAssistantMessage
-                        content={message.content}
-                    />
+                    <Text
+                        className="font-inter-regular text-[15px] leading-[22px]"
+                        style={{
+                            color:
+                                colors.surface.DEFAULT,
+                        }}
+                    >
+                        {message.content}
+                    </Text>
                 </View>
             </View>
         );
     }
 
     return (
-        <View className="mb-5 items-start">
+        <View className="mb-4 flex-row items-end">
+            <View className="mr-2">
+                <AssistantAvatar />
+            </View>
+
             <View
-                className="relative rounded-[22px] px-5 py-4"
+                className="rounded-[22px] rounded-bl-[7px] border px-4 py-3.5"
                 style={{
-                    maxWidth: '88%',
-                    backgroundColor: colors.surface[600],
-                    borderBottomLeftRadius: 5,
+                    maxWidth: '79%',
+                    backgroundColor:
+                        colors.surface.DEFAULT,
+                    borderColor:
+                        colors.bg[600],
                 }}
             >
-                <View
-                    pointerEvents="none"
-                    style={{
-                        position: 'absolute',
-                        bottom: 2,
-                        left: -8,
-                        width: 19,
-                        height: 19,
-                        backgroundColor: colors.surface[600],
-                        transform: [
-                            {
-                                rotate: '45deg',
-                            },
-                        ],
-                    }}
-                />
-
                 <FormattedAssistantMessage
                     content={message.content}
                 />
@@ -105,7 +119,9 @@ function MessageBubble({
 }
 
 export default function ChatbotScreen() {
-    const { t } = useTranslation('chatbot');
+    const { t, i18n } = useTranslation('chatbot');
+    const isRTL = i18n.dir() === 'rtl';
+
     const scrollViewRef = useRef<ScrollView>(null);
 
     const chatSessionRef = useRef(0);
@@ -303,14 +319,10 @@ export default function ChatbotScreen() {
 
     return (
         <SafeAreaView
-            className="flex-1"
+            className="flex-1 bg-bg"
             edges={['top', 'bottom']}
-            style={{
-                backgroundColor:
-                    colors.primary.DEFAULT,
-            }}
         >
-            <StatusBar style="light" />
+            <StatusBar style="dark" />
 
             <KeyboardAvoidingView
                 className="flex-1"
@@ -321,138 +333,228 @@ export default function ChatbotScreen() {
                 }
             >
                 <View
-                    className="h-[112px] flex-row items-center px-7"
+                    className="items-center border-b px-5 py-3"
                     style={{
+                        flexDirection:
+                            isRTL
+                                ? 'row-reverse'
+                                : 'row',
                         borderBottomColor:
-                            colors.text2[300],
-                        borderBottomWidth: 1,
+                            colors.bg[600],
+                        backgroundColor:
+                            colors.surface.DEFAULT,
                     }}
                 >
-                    <View className="flex-row items-center">
+                    <Pressable
+                        accessibilityLabel={t('closeHbot')}
+                        accessibilityRole="button"
+                        className="h-10 w-10 items-center justify-center rounded-full"
+                        hitSlop={8}
+                        onPress={handleClose}
+                        style={({ pressed }) => ({
+                            backgroundColor:
+                                pressed
+                                    ? colors.primary[50]
+                                    : colors.surface.DEFAULT,
+                        })}
+                    >
+                        {isRTL ? (
+                            <ArrowRight
+                                size={23}
+                                color={colors.primary[900]}
+                                strokeWidth={2}
+                            />
+                        ) : (
+                            <ArrowLeft
+                                size={23}
+                                color={colors.primary[900]}
+                                strokeWidth={2}
+                            />
+                        )}
+                    </Pressable>
+
+                    <View
+                        className="h-11 w-11 items-center justify-center rounded-full"
+                        style={{
+                            marginRight: isRTL ? 0 : 12,
+                            marginLeft: isRTL ? 12 : 0,
+                            backgroundColor:
+                                colors.primary[900],
+                        }}
+                    >
                         <Bot
-                            size={44}
+                            size={24}
                             color={
                                 colors.surface.DEFAULT
                             }
-                            strokeWidth={1.8}
+                            strokeWidth={2}
                         />
+                    </View>
 
+                    <View className="flex-1">
                         <Text
-                            className="ml-5 font-jakarta-bold text-[30px]"
+                            className="font-jakarta-bold text-[18px]"
                             style={{
+                                textAlign: isRTL
+                                    ? 'right'
+                                    : 'left',
+                                writingDirection:
+                                    isRTL
+                                        ? 'rtl'
+                                        : 'ltr',
                                 color:
-                                    colors.surface.DEFAULT,
+                                    colors.primary[900],
                             }}
                         >
                             {t('title')}
                         </Text>
-                    </View>
 
-                    <View className="flex-1" />
-
-                    <Pressable
-                        accessibilityLabel={t('closeHbot')}
-                        accessibilityRole="button"
-                        className="h-12 w-12 items-center justify-center"
-                        hitSlop={8}
-                        onPress={handleClose}
-                        style={({ pressed }) => ({
-                            opacity:
-                                pressed ? 0.65 : 1,
-                        })}
-                    >
-                        <X
-                            size={38}
-                            color={
-                                colors.surface.DEFAULT
-                            }
-                            strokeWidth={1.7}
-                        />
-                    </Pressable>
-                </View>
-
-                <View className="flex-1">
-                    <View
-                        pointerEvents="none"
-                        className="absolute left-0 right-0 items-center"
-                        style={{
-                            top: '40%',
-                        }}
-                    >
-                        <FlaskConical
-                            size={155}
-                            color={
-                                colors.surface.DEFAULT
-                            }
-                            strokeWidth={1.35}
-                        />
-                    </View>
-
-                    <ScrollView
-                        ref={scrollViewRef}
-                        className="flex-1"
-                        contentContainerStyle={{
-                            flexGrow: 1,
-                            paddingHorizontal: 28,
-                            paddingTop: 42,
-                            paddingBottom: 36,
-                        }}
-                        keyboardDismissMode={
-                            Platform.OS === 'ios'
-                                ? 'interactive'
-                                : 'on-drag'
-                        }
-                        keyboardShouldPersistTaps="handled"
-                        showsVerticalScrollIndicator={false}
-                        onContentSizeChange={() =>
-                            scrollToBottom(false)
-                        }
-                        style={{
-                            zIndex: 1,
-                        }}
-                    >
-                        {displayedMessages.map(
-                            (message) => (
-                                <MessageBubble
-                                    key={message.id}
-                                    message={message}
-                                />
-                            ),
-                        )}
-                    </ScrollView>
-                </View>
-
-                <View className="px-7 pb-2 pt-3">
-                    {sendError ? (
                         <Text
-                            className="mb-2 px-3 font-inter-medium text-[12px]"
+                            className="mt-0.5 font-inter-regular text-[12px]"
                             style={{
-                                color:
-                                    colors.surface.DEFAULT,
+                                textAlign:
+                                    isRTL ? 'right' : 'left',
+                                writingDirection:
+                                    isRTL ? 'rtl' : 'ltr',
+                                color: colors.text2.DEFAULT,
                             }}
                         >
-                            {sendError}
+                            {t('subtitle')}
                         </Text>
+                    </View>
+                </View>
+
+                <ScrollView
+                    ref={scrollViewRef}
+                    className="flex-1"
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        paddingHorizontal: 20,
+                        paddingTop: 18,
+                        paddingBottom: 24,
+                    }}
+                    keyboardDismissMode={
+                        Platform.OS === 'ios'
+                            ? 'interactive'
+                            : 'on-drag'
+                    }
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    onContentSizeChange={() =>
+                        scrollToBottom(false)
+                    }
+                >
+                    <View className="mb-6 items-center">
+                        <View
+                            className="rounded-full px-4 py-1.5"
+                            style={{
+                                backgroundColor:
+                                    colors.primary[50],
+                            }}
+                        >
+                            <Text
+                                className="font-inter-medium text-[12px]"
+                                style={{
+                                    color:
+                                        colors.primary[800],
+                                }}
+                            >
+                                Today
+                            </Text>
+                        </View>
+                    </View>
+
+                    {displayedMessages.map(
+                        (message) => (
+                            <MessageBubble
+                                key={message.id}
+                                message={message}
+                            />
+                        ),
+                    )}
+
+                    {isSending ? (
+                        <View className="mb-4 flex-row items-end">
+                            <View className="mr-2">
+                                <AssistantAvatar />
+                            </View>
+
+                            <View
+                                className="h-12 min-w-[62px] items-center justify-center rounded-[22px] rounded-bl-[7px] border px-4"
+                                style={{
+                                    backgroundColor:
+                                        colors.surface.DEFAULT,
+                                    borderColor:
+                                        colors.bg[600],
+                                }}
+                            >
+                                <ActivityIndicator
+                                    size="small"
+                                    color={
+                                        colors.primary.DEFAULT
+                                    }
+                                />
+                            </View>
+                        </View>
                     ) : null}
 
+                    {sendError ? (
+                        <View
+                            className="mb-4 rounded-2xl border px-4 py-3"
+                            style={{
+                                backgroundColor:
+                                    colors.danger?.[50] ??
+                                    colors.surface.DEFAULT,
+                                borderColor:
+                                    colors.danger?.[100] ??
+                                    colors.bg[600],
+                            }}
+                        >
+                            <Text
+                                className="font-inter-medium text-[13px] leading-5"
+                                style={{
+                                    color:
+                                        colors.danger?.[700] ??
+                                        colors.text.DEFAULT,
+                                }}
+                            >
+                                {sendError}
+                            </Text>
+                        </View>
+                    ) : null}
+                </ScrollView>
+
+                <View
+                    className="border-t px-4 pb-2 pt-3"
+                    style={{
+                        borderTopColor:
+                            colors.bg[600],
+                        backgroundColor:
+                            colors.surface.DEFAULT,
+                    }}
+                >
                     <View
-                        className="min-h-[58px] flex-row items-center rounded-[30px] px-5"
+                        className="min-h-[56px] items-end rounded-[28px] border px-4 py-2"
                         style={{
+                            flexDirection:
+                                isRTL ? 'row-reverse' : 'row',
                             backgroundColor:
                                 colors.bg.DEFAULT,
+                            borderColor:
+                                colors.bg[600],
                         }}
                     >
                         <TextInput
                             accessibilityLabel={t('messageInput')}
-                            className="flex-1 font-inter-regular text-[18px]"
+                            className="max-h-28 flex-1 font-inter-regular text-[15px]"
                             placeholder={t('enterMessage')}
                             placeholderTextColor={
-                                colors.text2[400]
+                                colors.text2[300]
                             }
-                            returnKeyType="send"
                             selectionColor={
                                 colors.primary.DEFAULT
                             }
+                            multiline
                             value={draftMessage}
                             editable={!isSending}
                             onChangeText={(value) => {
@@ -462,53 +564,98 @@ export default function ChatbotScreen() {
                                     setSendError('');
                                 }
                             }}
-                            onSubmitEditing={() => {
-                                void handleSend();
-                            }}
                             style={{
                                 color:
                                     colors.text.DEFAULT,
-                                paddingVertical: 0,
+                                paddingBottom: 8,
+                                paddingTop: 8,
+                                textAlignVertical: 'center',
+                                textAlign:
+                                    isRTL
+                                        ? 'right'
+                                        : 'left',
+                                writingDirection:
+                                    isRTL
+                                        ? 'rtl'
+                                        : 'ltr',
                             }}
                         />
 
-                        <Pressable
-                            accessibilityLabel={t('sendMessage')}
-                            accessibilityRole="button"
-                            accessibilityState={{
-                                disabled: !canSend,
+                        <View
+                            style={{
+                                width: 40,
+                                height: 40,
+                                marginLeft:
+                                    isRTL ? 0 : 8,
+                                marginRight:
+                                    isRTL ? 8 : 0,
+                                borderRadius: 20,
+                                backgroundColor:
+                                    colors.primary[500],
+                                opacity:
+                                    canSend ? 1 : 0.35,
+                                alignItems: 'center',
+                                justifyContent: 'center',
                             }}
-                            className="ml-2 h-11 w-11 items-center justify-center"
-                            disabled={!canSend}
-                            hitSlop={5}
-                            onPress={() => {
-                                void handleSend();
-                            }}
-                            style={({ pressed }) => ({
-                                opacity: !canSend
-                                    ? 0.4
-                                    : pressed
-                                        ? 0.55
-                                        : 1,
-                            })}
                         >
-                            {isSending ? (
-                                <ActivityIndicator
-                                    size="small"
-                                    color={
-                                        colors.text2[500]
-                                    }
-                                />
-                            ) : (
-                                <Send
-                                    size={28}
-                                    color={
-                                        colors.text2[500]
-                                    }
-                                    strokeWidth={1.7}
-                                />
-                            )}
-                        </Pressable>
+                            <Pressable
+                                accessibilityLabel={t('sendMessage')}
+                                accessibilityRole="button"
+                                accessibilityState={{
+                                    disabled: !canSend,
+                                }}
+                                disabled={!canSend}
+                                hitSlop={5}
+                                onPress={() => {
+                                    void handleSend();
+                                }}
+                                style={({ pressed }) => ({
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: 20,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: 0,
+                                    opacity:
+                                        pressed
+                                            ? 0.7
+                                            : 1,
+                                })}
+                            >
+                                <View
+                                    style={{
+                                        width: 20,
+                                        height: 20,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Send
+                                        size={18}
+                                        color={colors.surface.DEFAULT}
+                                        strokeWidth={2}
+                                    />
+                                </View>
+                            </Pressable>
+                        </View>
+                    </View>
+
+                    <View className="mt-2 flex-row items-center justify-center px-4">
+                        <ShieldCheck
+                            size={13}
+                            color={colors.secondary[700]}
+                            strokeWidth={1.8}
+                        />
+
+                        <Text
+                            className="ml-1.5 text-center font-inter-regular text-[10px] leading-[14px]"
+                            style={{
+                                color:
+                                    colors.text2.DEFAULT,
+                            }}
+                        >
+                            AI responses may contain mistakes. Verify important medical information.
+                        </Text>
                     </View>
                 </View>
             </KeyboardAvoidingView>
