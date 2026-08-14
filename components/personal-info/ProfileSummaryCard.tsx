@@ -1,4 +1,5 @@
 import { Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '@/lib/theme/colors';
 import {
@@ -14,12 +15,14 @@ interface ProfileSummaryCardProps {
 export function ProfileSummaryCard({
     profile,
 }: ProfileSummaryCardProps) {
+    const { t, i18n } = useTranslation('profile');
+    const isRTL = i18n.language === 'ar';
     const displayName = buildProfileDisplayName(profile);
     const initials = getInitials(displayName);
 
     return (
-        <View className="mb-6 flex-row items-center rounded-[28px] bg-primary p-5">
-            <View className="mr-4 h-[68px] w-[68px] items-center justify-center rounded-[20px] bg-primary-400">
+        <View className={`mb-6 flex-row items-center rounded-[28px] bg-primary p-5 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <View className={`${isRTL ? 'ml-4' : 'mr-4'} h-[68px] w-[68px] items-center justify-center rounded-[20px] bg-primary-400`}>
                 <Text className="font-jakarta-bold text-2xl text-surface">
                     {initials}
                 </Text>
@@ -27,37 +30,37 @@ export function ProfileSummaryCard({
 
             <View className="flex-1">
                 <Text
-                    className="font-jakarta-bold text-[17px] text-surface"
+                    className={`font-jakarta-bold text-[17px] text-surface ${isRTL ? 'text-right' : 'text-left'}`}
                     numberOfLines={1}
                 >
                     {displayName}
                 </Text>
 
                 <Text
-                    className="mt-1 font-inter-regular text-[11px] text-surface opacity-90"
+                    className={`mt-1 font-inter-regular text-[11px] text-surface opacity-90 ${isRTL ? 'text-right' : 'text-left'}`}
                     ellipsizeMode="middle"
                     numberOfLines={1}
                 >
-                    ID: {profile.userId.slice(0,18)}
+                    {t('profileComponents.summary.idLabel')}: {profile.userId.slice(0, 18)}
                 </Text>
 
                 <View
-                    className="mt-2 self-start rounded-full border px-3 py-1.5"
+                    className={`mt-2 rounded-full border px-3 py-1.5 ${isRTL ? 'self-end' : 'self-start'}`}
                     style={{
                         backgroundColor: colors.primary[400],
                         borderColor: colors.primary[300],
                     }}
                 >
-                    <View className="flex-row items-center">
+                    <View className={`flex-row items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <View
-                            className="mr-2 h-2 w-2 rounded-full"
+                            className={`${isRTL ? 'ml-2' : 'mr-2'} h-2 w-2 rounded-full`}
                             style={{
                                 backgroundColor: colors.secondary[300],
                             }}
                         />
 
-                        <Text className="font-jakarta-bold text-[9px] uppercase tracking-wide text-surface">
-                            {profile.status || 'Unknown'}
+                        <Text className={`font-jakarta-bold text-[9px] uppercase tracking-wide text-surface ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {profile.status || t('profileComponents.summary.unknownStatus')}
                         </Text>
                     </View>
                 </View>

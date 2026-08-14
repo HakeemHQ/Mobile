@@ -8,6 +8,7 @@ import {
     PencilLine,
     Settings2,
 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Calendar03Icon } from '@/components/icons/Calendar03Icon';
 import { Call02Icon } from '@/components/icons/Call02Icon';
@@ -35,6 +36,7 @@ interface PersonalInfoRowProps {
     actionAccessibilityLabel?: string;
     onActionPress?: () => void;
     showDivider?: boolean;
+    isRTL: boolean;
 }
 
 function PersonalInfoRow({
@@ -45,25 +47,26 @@ function PersonalInfoRow({
     actionAccessibilityLabel,
     onActionPress,
     showDivider = true,
+    isRTL,
 }: PersonalInfoRowProps) {
     return (
         <View
-            className={`flex-row items-center px-5 py-[16px] ${showDivider
+            className={`flex-row items-center px-5 py-[16px] ${isRTL ? 'flex-row-reverse' : ''} ${showDivider
                 ? 'border-b border-bg-600/30'
                 : ''
                 }`}
         >
-            <View className="mr-4 h-[42px] w-[42px] items-center justify-center rounded-[16px] bg-primary-50">
+            <View className={`${isRTL ? 'ml-4' : 'mr-4'} h-[42px] w-[42px] items-center justify-center rounded-[16px] bg-primary-50`}>
                 {leadingIcon}
             </View>
 
             <View className="flex-1">
-                <Text className="font-jakarta-semibold text-[12px] uppercase tracking-wider text-primary-900">
+                <Text className={`font-jakarta-semibold text-[12px] uppercase tracking-wider text-primary-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                     {label}
                 </Text>
 
                 <Text
-                    className="mt-1 font-inter-regular text-[14px] leading-[18px] text-text-500"
+                    className={`mt-1 font-inter-regular text-[14px] leading-[18px] text-text-500 ${isRTL ? 'text-right' : 'text-left'}`}
                     numberOfLines={1}
                 >
                     {value}
@@ -74,7 +77,7 @@ function PersonalInfoRow({
                 <Pressable
                     accessibilityLabel={actionAccessibilityLabel}
                     accessibilityRole="button"
-                    className="ml-3 h-10 w-10 items-center justify-center rounded-full"
+                    className={`${isRTL ? 'mr-3' : 'ml-3'} h-10 w-10 items-center justify-center rounded-full`}
                     hitSlop={6}
                     onPress={onActionPress}
                 >
@@ -89,7 +92,7 @@ function PersonalInfoRow({
                     )}
                 </Pressable>
             ) : (
-                <View className="ml-3 h-10 w-10" />
+                <View className={`${isRTL ? 'mr-3' : 'ml-3'} h-10 w-10`} />
             )}
         </View>
     );
@@ -99,15 +102,25 @@ export function PersonalInfoCard({
     profile,
     onEdit,
 }: PersonalInfoCardProps) {
+    const { t, i18n } = useTranslation('profile');
+    const isRTL = i18n.language === 'ar';
     const primaryIconColor = colors.primary[900];
     const actionIconColor = colors.text2[200];
     const normalizedGender = profile.gender?.trim().toLowerCase();
+    const notProvided = t('profileComponents.personalInfoCard.notProvided');
+
+    const genderValue =
+        normalizedGender === 'male'
+            ? t('profileComponents.personalInfoCard.male')
+            : normalizedGender === 'female'
+                ? t('profileComponents.personalInfoCard.female')
+                : profile.gender || notProvided;
 
     return (
         <View className="overflow-hidden rounded-[28px] border border-bg-600/40 bg-surface">
             <PersonalInfoRow
-                label="First Name"
-                value={profile.firstName || 'Not provided'}
+                label={t('profileComponents.personalInfoCard.firstName')}
+                value={profile.firstName || notProvided}
                 leadingIcon={
                     <User02Icon
                         size={20}
@@ -121,13 +134,14 @@ export function PersonalInfoCard({
                         strokeWidth={1.9}
                     />
                 }
-                actionAccessibilityLabel="Edit first name"
+                actionAccessibilityLabel={t('profileComponents.personalInfoCard.editFirstName')}
                 onActionPress={() => onEdit('firstName')}
+                isRTL={isRTL}
             />
 
             <PersonalInfoRow
-                label="Last Name"
-                value={profile.lastName || 'Not provided'}
+                label={t('profileComponents.personalInfoCard.lastName')}
+                value={profile.lastName || notProvided}
                 leadingIcon={
                     <User02Icon
                         size={20}
@@ -141,13 +155,14 @@ export function PersonalInfoCard({
                         strokeWidth={1.9}
                     />
                 }
-                actionAccessibilityLabel="Edit last name"
+                actionAccessibilityLabel={t('profileComponents.personalInfoCard.editLastName')}
                 onActionPress={() => onEdit('lastName')}
+                isRTL={isRTL}
             />
 
             <PersonalInfoRow
-                label="Email Address"
-                value={profile.email || 'Not provided'}
+                label={t('profileComponents.personalInfoCard.emailAddress')}
+                value={profile.email || notProvided}
                 leadingIcon={
                     <Mail01Icon
                         size={20}
@@ -161,13 +176,14 @@ export function PersonalInfoCard({
                         strokeWidth={1.9}
                     />
                 }
-                actionAccessibilityLabel="Edit email address"
+                actionAccessibilityLabel={t('profileComponents.personalInfoCard.editEmailAddress')}
                 onActionPress={() => onEdit('email')}
+                isRTL={isRTL}
             />
 
             <PersonalInfoRow
-                label="Phone Number"
-                value={profile.phoneNumber || 'Not provided'}
+                label={t('profileComponents.personalInfoCard.phoneNumber')}
+                value={profile.phoneNumber || notProvided}
                 leadingIcon={
                     <Call02Icon
                         size={20}
@@ -181,13 +197,14 @@ export function PersonalInfoCard({
                         strokeWidth={1.9}
                     />
                 }
-                actionAccessibilityLabel="Edit phone number"
+                actionAccessibilityLabel={t('profileComponents.personalInfoCard.editPhoneNumber')}
                 onActionPress={() => onEdit('phoneNumber')}
                 showDivider={false}
+                isRTL={isRTL}
             />
 
             <PersonalInfoRow
-                label="Birth Date"
+                label={t('profileComponents.personalInfoCard.birthDate')}
                 value={formatProfileBirthDate(
                     profile.birthDate,
                 )}
@@ -197,11 +214,12 @@ export function PersonalInfoCard({
                         color={primaryIconColor}
                     />
                 }
+                isRTL={isRTL}
             />
 
             <PersonalInfoRow
-                label="Gender"
-                value={profile.gender || 'Not provided'}
+                label={t('profileComponents.personalInfoCard.gender')}
+                value={genderValue}
                 leadingIcon={
                     normalizedGender === 'male' ? (
                         <MaleIcon
@@ -220,6 +238,7 @@ export function PersonalInfoCard({
                         />
                     )
                 }
+                isRTL={isRTL}
             />
         </View>
     );

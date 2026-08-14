@@ -1,23 +1,156 @@
 {
   "title": "الملف الشخصي",
-  "loading": "جاري تحميل بيانات الملف الشخصي...",
-  "unableToLoad": "تعذر تحميل تفاصيل الملف الشخصي",
+  "loading": "جارٍ تحميل ملفك الشخصي...",
+  "unableToLoad": "تعذر تحميل ملفك الشخصي",
   "menu": {
     "personalInfo": "المعلومات الشخصية",
     "privacy": "الخصوصية والأمان",
+    "language": "اللغة",
     "notifications": "الإشعارات",
     "dataStorage": "البيانات والتخزين",
-    "helpSupport": "المساعدة والدعم",
-    "language": "اللغة"
+    "helpSupport": "المساعدة والدعم"
   },
   "languageModal": {
-    "title": "تغيير اللغة",
+    "title": "اللغة",
     "subtitle": "اختر لغتك المفضلة",
-    "english": "English (الإنجليزية)",
-    "arabic": "العربية",
-    "auto": "تلقائي (لغة النظام)",
-    "cancel": "إغلاق"
+    "auto": "لغة النظام",
+    "cancel": "إلغاء"
   },
   "signOut": "تسجيل الخروج",
-  "version": "حكيم v1.0.0 • متوافق مع معايير HIPAA للأمان"
+  "version": "الإصدار 1.0.0",
+  "profileScreens": {
+    "index": {
+      "fallbackUserName": "مستخدم حكيم",
+      "language": {
+        "englishCode": "English (EN)",
+        "arabicCode": "العربية (AR)",
+        "english": "English",
+        "englishUS": "English (US)",
+        "arabic": "العربية",
+        "arabicDescription": "العربية",
+        "systemLanguage": "لغة النظام"
+      }
+    },
+    "personalInfo": {
+      "backToProfile": "العودة إلى الملف الشخصي",
+      "title": "المعلومات الشخصية",
+      "loading": "جارٍ تحميل ملفك الشخصي...",
+      "loadError": "تعذر تحميل ملفك الشخصي",
+      "retryAccessibility": "إعادة محاولة تحميل الملف الشخصي",
+      "tryAgain": "حاول مرة أخرى",
+      "securityDescription": "يتم تشفير معلوماتك الشخصية وتخزينها وفقًا لمعايير الخصوصية في حكيم.",
+      "hipaaSecurity": "أمان متوافق مع معايير HIPAA"
+    },
+    "privacy": {
+      "backToProfile": "العودة إلى الملف الشخصي",
+      "title": "الخصوصية والأمان",
+      "passwordSection": "كلمة المرور",
+      "changePassword": "تغيير كلمة المرور",
+      "lastChanged": "تم تغييرها منذ ٣ أشهر",
+      "authenticationSection": "المصادقة",
+      "biometrics": "تفعيل بصمة الوجه / القياسات الحيوية",
+      "twoFactor": "المصادقة الثنائية",
+      "twoFactorDescription": "أمّن حسابك عبر الرسائل النصية أو البريد الإلكتروني",
+      "sessionSection": "الجلسات",
+      "manageDevices": "إدارة الأجهزة المسجّل الدخول عليها",
+      "activeSessions": "٣ جلسات نشطة",
+      "hipaaTitle": "بياناتك متوافقة مع HIPAA",
+      "hipaaDescription": "يستخدم حكيم التشفير من طرف إلى طرف لجميع السجلات الطبية والمراسلات الخاصة.",
+      "deleteAccount": "حذف الحساب",
+      "deleteDescription": "حذف جميع بياناتك نهائيًا"
+    },
+    "changePassword": {
+      "backToPrivacy": "العودة إلى الخصوصية",
+      "title": "تغيير كلمة المرور",
+      "subtitle": "حدّث كلمة المرور للحفاظ على أمان بياناتك الطبية.",
+      "currentPassword": "كلمة المرور الحالية",
+      "currentPasswordPlaceholder": "أدخل كلمة المرور الحالية",
+      "newPassword": "كلمة المرور الجديدة",
+      "newPasswordPlaceholder": "٨ أحرف على الأقل",
+      "strengthNone": "القوة: لا توجد",
+      "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+      "confirmNewPasswordPlaceholder": "أعد إدخال كلمة المرور الجديدة",
+      "securityHint": "تأكد من أن كلمة المرور الجديدة تجمع بين الحروف والأرقام والرموز لتحقيق أقصى مستوى من الأمان المناسب للبيانات الطبية.",
+      "updatePassword": "تحديث كلمة المرور"
+    },
+    "deleteAccount": {
+      "backToPrivacy": "العودة إلى الخصوصية",
+      "title": "حذف الحساب",
+      "confirmTitle": "هل أنت متأكد تمامًا؟",
+      "warning": "سيؤدي حذف حسابك إلى إزالة ملفك الطبي ومعلوماتك الشخصية نهائيًا. لا يمكن التراجع عن هذا الإجراء، وستفقد إمكانية الوصول إلى جميع سجلاتك الطبية المخزنة على حكيم.",
+      "acknowledgement": "أفهم أن هذا الإجراء نهائي وأن بياناتي الطبية لن تكون قابلة للاستعادة.",
+      "retentionNotice": "امتثالًا لمتطلبات HIPAA ولوائح السجلات الطبية المحلية، قد يتم الاحتفاظ ببعض سجلات المعاملات لأغراض التدقيق في صورة آمنة وغير قابلة للتعريف.",
+      "cancel": "إلغاء"
+    },
+    "help": {
+      "backToProfile": "العودة إلى الملف الشخصي",
+      "title": "المساعدة والدعم",
+      "comingSoon": "قريبًا",
+      "notConnected": "ميزة {{title}} غير متاحة بعد.",
+      "immediateAssistance": "هل تحتاج إلى مساعدة فورية؟",
+      "securityFooter": "متوافق مع HIPAA • آمن • على مدار الساعة",
+      "items": {
+        "faq": {
+          "title": "الأسئلة الشائعة",
+          "description": "الأسئلة المتكررة"
+        },
+        "contactSupport": {
+          "title": "التواصل مع الدعم",
+          "description": "احصل على المساعدة من فريق الدعم"
+        },
+        "reportIssue": {
+          "title": "الإبلاغ عن مشكلة",
+          "description": "أبلغ عن الأخطاء أو المشكلات التقنية"
+        },
+        "privacyPolicy": {
+          "title": "سياسة الخصوصية"
+        },
+        "terms": {
+          "title": "الشروط والأحكام"
+        },
+        "about": {
+          "title": "حول حكيم",
+          "description": "الإصدار 1.0.0"
+        }
+      }
+    }
+  },
+  "profileComponents": {
+    "summary": {
+      "idLabel": "المعرّف",
+      "unknownStatus": "غير معروف"
+    },
+    "personalInfoCard": {
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "emailAddress": "البريد الإلكتروني",
+      "phoneNumber": "رقم الهاتف",
+      "birthDate": "تاريخ الميلاد",
+      "gender": "الجنس",
+      "notProvided": "غير متوفر",
+      "male": "ذكر",
+      "female": "أنثى",
+      "editFirstName": "تعديل الاسم الأول",
+      "editLastName": "تعديل اسم العائلة",
+      "editEmailAddress": "تعديل البريد الإلكتروني",
+      "editPhoneNumber": "تعديل رقم الهاتف"
+    },
+    "editFieldModal": {
+      "titles": {
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "email": "البريد الإلكتروني",
+        "phoneNumber": "رقم الهاتف"
+      },
+      "placeholders": {
+        "firstName": "أدخل الاسم الأول",
+        "lastName": "أدخل اسم العائلة",
+        "email": "أدخل البريد الإلكتروني",
+        "phoneNumber": "أدخل رقم الهاتف"
+      },
+      "closeAccessibility": "إغلاق محرر الملف الشخصي",
+      "cancel": "إلغاء",
+      "saveChanges": "حفظ التغييرات"
+    }
+  }
 }

@@ -13,8 +13,6 @@ import { setLanguage, getStoredLanguage } from '@/localization/i18n';
 
 import { User02Icon } from '@/components/icons/User02Icon';
 import { SecurityCheckIcon } from '@/components/icons/SecurityCheckIcon';
-import { Notification01Icon } from '@/components/icons/Notification01Icon';
-import { File02Icon } from '@/components/icons/File02Icon';
 import { Stethoscope02Icon } from '@/components/icons/Stethoscope02Icon';
 
 type LanguageOption = 'auto' | 'ar' | 'en';
@@ -58,9 +56,9 @@ export default function ProfileScreen() {
   const getLanguageLabel = (code: LanguageOption) => {
     switch (code) {
       case 'ar':
-        return 'العربية (AR)';
+        return t('profileScreens.index.language.arabicCode');
       case 'en':
-        return 'English (EN)';
+        return t('profileScreens.index.language.englishCode');
       case 'auto':
       default:
         return t('languageModal.auto');
@@ -71,15 +69,13 @@ export default function ProfileScreen() {
     { key: 'personalInfo', title: t('menu.personalInfo'), icon: User02Icon, type: 'link', route: '/profile/personal-info' },
     { key: 'privacy', title: t('menu.privacy'), icon: SecurityCheckIcon, type: 'link', route: '/profile/privacy' },
     { key: 'language', title: t('menu.language'), icon: null, customIcon: Globe, type: 'action', action: () => setShowLanguageModal(true) },
-    { key: 'notifications', title: t('menu.notifications'), icon: Notification01Icon, type: 'link', route: null },
-    { key: 'dataStorage', title: t('menu.dataStorage'), icon: File02Icon, type: 'link', route: null },
     { key: 'helpSupport', title: t('menu.helpSupport'), icon: Stethoscope02Icon, type: 'link', route: '/profile/help' },
   ];
 
   const languageOptions: { id: LanguageOption; label: string; subLabel: string; flag: string }[] = [
-    { id: 'en', label: 'English', subLabel: 'English (US)', flag: '🇺🇸' },
-    { id: 'ar', label: 'العربية', subLabel: 'Arabic', flag: '🇸🇦' },
-    { id: 'auto', label: t('languageModal.auto'), subLabel: 'System Language', flag: '🌐' },
+    { id: 'en', label: t('profileScreens.index.language.english'), subLabel: t('profileScreens.index.language.englishUS'), flag: '🇺🇸' },
+    { id: 'ar', label: t('profileScreens.index.language.arabic'), subLabel: t('profileScreens.index.language.arabicDescription'), flag: '🇸🇦' },
+    { id: 'auto', label: t('languageModal.auto'), subLabel: t('profileScreens.index.language.systemLanguage'), flag: '🌐' },
   ];
 
   const isLoading = fetchStatus === 'loading' && !profile;
@@ -95,7 +91,7 @@ export default function ProfileScreen() {
         {isLoading ? (
           <View className="bg-primary-900 rounded-[28px] p-6 mb-6 items-center justify-center min-h-[110px]">
             <ActivityIndicator size="small" color={colors.surface.DEFAULT} />
-            <Text className="text-surface/80 text-[12px] font-inter-regular mt-2">
+            <Text className={`text-surface/80 text-[12px] font-inter-regular mt-2 ${isRTL ? 'self-stretch text-right' : ''}`}>
               {t('loading')}
             </Text>
           </View>
@@ -107,8 +103,8 @@ export default function ProfileScreen() {
               <Text className="text-surface text-2xl font-jakarta-bold">HK</Text>
             </View>
             <View className={`flex-1 ${isRTL ? 'items-end' : 'items-start'}`}>
-              <Text className="text-surface text-[17px] font-jakarta-bold">Hakeem User</Text>
-              <Text className="text-surface/70 text-[11px] font-inter-regular mt-1">
+              <Text className={`text-surface text-[17px] font-jakarta-bold ${isRTL ? 'text-right' : 'text-left'}`}>{t('profileScreens.index.fallbackUserName')}</Text>
+              <Text className={`text-surface/70 text-[11px] font-inter-regular mt-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                 {fetchError || t('unableToLoad')}
               </Text>
             </View>
@@ -132,9 +128,8 @@ export default function ProfileScreen() {
                     router.push(item.route as any);
                   }
                 }}
-                className={`flex-row items-center px-5 py-[18px] ${isRTL ? 'flex-row-reverse' : ''} ${
-                  !isLast ? 'border-b border-bg-600/40' : ''
-                }`}
+                className={`flex-row items-center px-5 py-[18px] ${isRTL ? 'flex-row-reverse' : ''} ${!isLast ? 'border-b border-bg-600/40' : ''
+                  }`}
                 style={({ pressed }) => ({
                   backgroundColor: pressed ? colors.bg[100] : colors.surface.DEFAULT,
                 })}
@@ -153,7 +148,7 @@ export default function ProfileScreen() {
 
                 {item.key === 'language' && (
                   <View className={`bg-bg-600/40 px-2.5 py-1 rounded-lg ${isRTL ? 'ml-2' : 'mr-2'}`}>
-                    <Text className="text-[12px] font-jakarta-semibold text-primary-900">
+                    <Text className={`text-[12px] font-jakarta-semibold text-primary-900 ${isRTL ? 'text-right' : 'text-left'}`}>
                       {getLanguageLabel(activeLang)}
                     </Text>
                   </View>
@@ -171,9 +166,8 @@ export default function ProfileScreen() {
 
         {/* Sign Out Button */}
         <Pressable
-          className={`bg-surface border border-bg-600 h-[56px] rounded-[28px] items-center justify-center mb-6 shadow-sm ${
-            isLoggingOut ? 'opacity-70' : ''
-          }`}
+          className={`bg-surface border border-bg-600 h-[56px] rounded-[28px] items-center justify-center mb-6 shadow-sm ${isLoggingOut ? 'opacity-70' : ''
+            }`}
           onPress={handleLogout}
           disabled={isLoggingOut}
           style={({ pressed }) => ({
@@ -210,10 +204,10 @@ export default function ProfileScreen() {
             {/* Header */}
             <View className="items-center mb-5">
               <View className="w-10 h-1.5 bg-bg-600/70 rounded-full mb-4" />
-              <Text className="text-[20px] font-jakarta-bold text-primary-900 mb-1 text-center">
+              <Text className={`text-[20px] font-jakarta-bold text-primary-900 mb-1 ${isRTL ? 'self-stretch text-right' : 'text-center'}`}>
                 {t('languageModal.title')}
               </Text>
-              <Text className="text-[13px] font-inter-regular text-text2-500 text-center">
+              <Text className={`text-[13px] font-inter-regular text-text2-500 ${isRTL ? 'self-stretch text-right' : 'text-center'}`}>
                 {t('languageModal.subtitle')}
               </Text>
             </View>
@@ -227,15 +221,12 @@ export default function ProfileScreen() {
                   <Pressable
                     key={opt.id}
                     onPress={() => handleSelectLanguage(opt.id)}
-                    className={`flex-row items-center p-4 rounded-2xl border ${
-                      !isLast ? 'mb-3' : ''
-                    } ${
-                      isRTL ? 'flex-row-reverse' : ''
-                    } ${
-                      isSelected
+                    className={`flex-row items-center p-4 rounded-2xl border ${!isLast ? 'mb-3' : ''
+                      } ${isRTL ? 'flex-row-reverse' : ''
+                      } ${isSelected
                         ? 'bg-primary-50/60 border-primary-800'
                         : 'bg-bg-600/20 border-bg-600/60'
-                    }`}
+                      }`}
                     style={({ pressed }) => ({
                       opacity: pressed ? 0.8 : 1,
                     })}
@@ -245,13 +236,12 @@ export default function ProfileScreen() {
                     </Text>
                     <View className={`flex-1 ${isRTL ? 'items-end' : 'items-start'}`}>
                       <Text
-                        className={`text-[16px] font-jakarta-semibold ${
-                          isSelected ? 'text-primary-900' : 'text-text2-900'
-                        }`}
+                        className={`text-[16px] font-jakarta-semibold ${isRTL ? 'text-right' : 'text-left'} ${isSelected ? 'text-primary-900' : 'text-text2-900'
+                          }`}
                       >
                         {opt.label}
                       </Text>
-                      <Text className="text-[12px] font-inter-regular text-text2-500 mt-0.5">
+                      <Text className={`text-[12px] font-inter-regular text-text2-500 mt-0.5 ${isRTL ? 'text-right' : 'text-left'}`}>
                         {opt.subLabel}
                       </Text>
                     </View>

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { ArrowLeft02Icon } from '@/components/icons/ArrowLeft02Icon';
 import { LockIcon } from '@/components/icons/LockIcon';
@@ -20,6 +21,8 @@ import { colors } from '@/lib/theme/colors';
 import type { EditableProfileField } from '@/types/profile';
 
 export default function PersonalInfoScreen() {
+    const { t, i18n } = useTranslation('profile');
+    const isRTL = i18n.language === 'ar';
     const [activeField, setActiveField] =
         useState<EditableProfileField | null>(null);
 
@@ -109,25 +112,37 @@ export default function PersonalInfoScreen() {
             edges={['top']}
         >
             {/* Header */}
-            <View className="mb-6 mt-2 flex-row items-center px-6">
+            <View className={`mb-6 mt-2 flex-row items-center px-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Pressable
-                    accessibilityLabel="Return to Profile"
+                    accessibilityLabel={t('profileScreens.personalInfo.backToProfile')}
                     accessibilityRole="button"
-                    className="mr-4 h-10 w-10 items-center justify-center rounded-full border border-bg-600 bg-surface"
+                    className={`${isRTL ? 'ml-4' : 'mr-4'} h-10 w-10 items-center justify-center rounded-full border border-bg-600 bg-surface`}
                     hitSlop={8}
                     onPress={() => router.back()}
                     style={({ pressed }) => ({
                         opacity: pressed ? 0.7 : 1,
                     })}
                 >
-                    <ArrowLeft02Icon
-                        size={20}
-                        color={colors.text[800]}
-                    />
+                    <View
+                        style={
+                            isRTL
+                                ? {
+                                    transform: [
+                                        { scaleX: -1 },
+                                    ],
+                                }
+                                : undefined
+                        }
+                    >
+                        <ArrowLeft02Icon
+                            size={20}
+                            color={colors.text[800]}
+                        />
+                    </View>
                 </Pressable>
 
-                <Text className="font-jakarta-bold text-[22px] text-primary-900">
-                    Personal Info
+                <Text className={`font-jakarta-bold text-[22px] text-primary-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {t('profileScreens.personalInfo.title')}
                 </Text>
             </View>
 
@@ -138,22 +153,22 @@ export default function PersonalInfoScreen() {
                         color={colors.primary[900]}
                     />
 
-                    <Text className="mt-4 font-inter-regular text-[13px] text-text2-500">
-                        Loading your profile...
+                    <Text className={`mt-4 font-inter-regular text-[13px] text-text2-500 ${isRTL ? 'self-stretch text-right' : ''}`}>
+                        {t('profileScreens.personalInfo.loading')}
                     </Text>
                 </View>
             ) : fetchError ? (
                 <View className="flex-1 items-center justify-center px-6">
-                    <Text className="text-center font-jakarta-semibold text-[16px] text-primary-900">
-                        Could not load your profile
+                    <Text className={`font-jakarta-semibold text-[16px] text-primary-900 ${isRTL ? 'self-stretch text-right' : 'text-center'}`}>
+                        {t('profileScreens.personalInfo.loadError')}
                     </Text>
 
-                    <Text className="mt-2 max-w-[280px] text-center font-inter-regular text-[13px] leading-5 text-text2-500">
+                    <Text className={`mt-2 max-w-[280px] font-inter-regular text-[13px] leading-5 text-text2-500 ${isRTL ? 'self-stretch text-right' : 'text-center'}`}>
                         {fetchError}
                     </Text>
 
                     <Pressable
-                        accessibilityLabel="Retry loading profile"
+                        accessibilityLabel={t('profileScreens.personalInfo.retryAccessibility')}
                         accessibilityRole="button"
                         className="mt-6 h-12 items-center justify-center rounded-2xl bg-primary-900 px-8"
                         onPress={() => {
@@ -161,7 +176,7 @@ export default function PersonalInfoScreen() {
                         }}
                     >
                         <Text className="font-jakarta-semibold text-[14px] text-surface">
-                            Try Again
+                            {t('profileScreens.personalInfo.tryAgain')}
                         </Text>
                     </Pressable>
                 </View>
@@ -182,20 +197,18 @@ export default function PersonalInfoScreen() {
 
                     {/* Security information */}
                     <View className="mt-9 items-center px-4">
-                        <Text className="max-w-[260px] text-center font-inter-regular text-[11px] leading-[17px] text-text2-500">
-                            Your personal information is encrypted
-                            and stored according to Hakeem Privacy
-                            Standards.
+                        <Text className={`max-w-[260px] font-inter-regular text-[11px] leading-[17px] text-text2-500 ${isRTL ? 'self-stretch text-right' : 'text-center'}`}>
+                            {t('profileScreens.personalInfo.securityDescription')}
                         </Text>
 
-                        <View className="mt-3 flex-row items-center rounded-full bg-bg-600/30 px-4 py-2">
+                        <View className={`mt-3 flex-row items-center rounded-full bg-bg-600/30 px-4 py-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                             <LockIcon
                                 size={14}
                                 color={colors.primary[900]}
                             />
 
-                            <Text className="ml-2 font-jakarta-semibold text-[11px] text-primary-900">
-                                HIPAA Compliant Security
+                            <Text className={`${isRTL ? 'mr-2' : 'ml-2'} font-jakarta-semibold text-[11px] text-primary-900`}>
+                                {t('profileScreens.personalInfo.hipaaSecurity')}
                             </Text>
                         </View>
                     </View>

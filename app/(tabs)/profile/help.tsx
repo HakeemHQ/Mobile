@@ -15,6 +15,7 @@ import {
     MessageSquare,
 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { ArrowLeft02Icon } from '@/components/icons/ArrowLeft02Icon';
 import { ChevronRightIcon } from '@/components/icons/ChevronRightIcon';
@@ -24,70 +25,87 @@ import { colors } from '@/lib/theme/colors';
 
 const SUPPORT_ITEMS = [
     {
-        title: 'FAQ',
-        description: 'Frequently Asked Questions',
+        titleKey: 'profileScreens.help.items.faq.title',
+        descriptionKey: 'profileScreens.help.items.faq.description',
         Icon: CircleHelp,
     },
     {
-        title: 'Contact Support',
-        description: 'Get help from our support team',
+        titleKey: 'profileScreens.help.items.contactSupport.title',
+        descriptionKey: 'profileScreens.help.items.contactSupport.description',
         Icon: Headset,
     },
     {
-        title: 'Report an Issue',
-        description: 'Report bugs or technical issues',
+        titleKey: 'profileScreens.help.items.reportIssue.title',
+        descriptionKey: 'profileScreens.help.items.reportIssue.description',
         Icon: Bug,
     },
     {
-        title: 'Privacy Policy',
-        description: null,
+        titleKey: 'profileScreens.help.items.privacyPolicy.title',
+        descriptionKey: null,
         Icon: ShieldIcon,
     },
     {
-        title: 'Terms & Conditions',
-        description: null,
+        titleKey: 'profileScreens.help.items.terms.title',
+        descriptionKey: null,
         Icon: Gavel,
     },
     {
-        title: 'About Hakeem',
-        description: 'Version 1.0.0',
+        titleKey: 'profileScreens.help.items.about.title',
+        descriptionKey: 'profileScreens.help.items.about.description',
         Icon: InfoCircleIcon,
     },
 ] as const;
 
-function showUnavailableAction(title: string) {
-    Alert.alert(
-        'Coming soon',
-        `${title} is not connected yet.`,
-    );
-}
-
 export default function HelpScreen() {
+    const { t, i18n } = useTranslation('profile');
+    const isRTL = i18n.language === 'ar';
+
+    const showUnavailableAction = (title: string) => {
+        Alert.alert(
+            t('profileScreens.help.comingSoon'),
+            t('profileScreens.help.notConnected', {
+                title,
+            }),
+        );
+    };
+
     return (
         <SafeAreaView
             className="flex-1 bg-bg"
             edges={['top']}
         >
             {/* Header */}
-            <View className="mb-6 mt-2 flex-row items-center px-6">
+            <View className={`mb-6 mt-2 flex-row items-center px-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Pressable
-                    accessibilityLabel="Return to Profile"
+                    accessibilityLabel={t('profileScreens.help.backToProfile')}
                     accessibilityRole="button"
-                    className="mr-4 h-10 w-10 items-center justify-center rounded-full border border-bg-600 bg-surface"
+                    className={`${isRTL ? 'ml-4' : 'mr-4'} h-10 w-10 items-center justify-center rounded-full border border-bg-600 bg-surface`}
                     hitSlop={8}
                     onPress={() => router.back()}
                     style={({ pressed }) => ({
                         opacity: pressed ? 0.7 : 1,
                     })}
                 >
-                    <ArrowLeft02Icon
-                        size={20}
-                        color={colors.text[800]}
-                    />
+                    <View
+                        style={
+                            isRTL
+                                ? {
+                                    transform: [
+                                        { scaleX: -1 },
+                                    ],
+                                }
+                                : undefined
+                        }
+                    >
+                        <ArrowLeft02Icon
+                            size={20}
+                            color={colors.text[800]}
+                        />
+                    </View>
                 </Pressable>
 
-                <Text className="font-jakarta-bold text-[22px] text-primary-900">
-                    Help &amp; Support
+                <Text className={`font-jakarta-bold text-[22px] text-primary-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {t('profileScreens.help.title')}
                 </Text>
             </View>
 
@@ -100,6 +118,10 @@ export default function HelpScreen() {
                 <View className="overflow-hidden rounded-[22px] border border-bg-600 bg-surface">
                     {SUPPORT_ITEMS.map((item, index) => {
                         const ItemIcon = item.Icon;
+                        const title = t(item.titleKey);
+                        const description = item.descriptionKey
+                            ? t(item.descriptionKey)
+                            : null;
 
                         const hasDivider =
                             index <
@@ -107,15 +129,15 @@ export default function HelpScreen() {
 
                         return (
                             <Pressable
-                                key={item.title}
+                                key={item.titleKey}
                                 accessibilityLabel={
-                                    item.title
+                                    title
                                 }
                                 accessibilityRole="button"
-                                className="flex-row items-center pl-4"
+                                className={`flex-row items-center ${isRTL ? 'flex-row-reverse pr-4' : 'pl-4'}`}
                                 onPress={() =>
                                     showUnavailableAction(
-                                        item.title,
+                                        title,
                                     )
                                 }
                                 style={({ pressed }) => ({
@@ -135,39 +157,51 @@ export default function HelpScreen() {
                                 </View>
 
                                 <View
-                                    className={`ml-3 min-h-[65px] flex-1 flex-row items-center py-3 pr-3 ${hasDivider
+                                    className={`${isRTL ? 'mr-3 flex-row-reverse pl-3' : 'ml-3 pr-3'} min-h-[65px] flex-1 flex-row items-center py-3 ${hasDivider
                                         ? 'border-b border-bg-600/40'
                                         : ''
                                         }`}
                                 >
                                     <View className="flex-1 justify-center">
                                         <Text
-                                            className="font-jakarta-regular text-[14px] leading-[19px] text-primary-900"
+                                            className={`font-jakarta-regular text-[14px] leading-[19px] text-primary-900 ${isRTL ? 'text-right' : 'text-left'}`}
                                             numberOfLines={1}
                                         >
-                                            {item.title}
+                                            {title}
                                         </Text>
 
-                                        {item.description ? (
+                                        {description ? (
                                             <Text
-                                                className="mt-0.5 font-inter-regular text-[12px] leading-[16px] text-text2-500"
+                                                className={`mt-0.5 font-inter-regular text-[12px] leading-[16px] text-text2-500 ${isRTL ? 'text-right' : 'text-left'}`}
                                                 numberOfLines={
                                                     1
                                                 }
                                             >
                                                 {
-                                                    item.description
+                                                    description
                                                 }
                                             </Text>
                                         ) : null}
                                     </View>
 
-                                    <ChevronRightIcon
-                                        size={18}
-                                        color={
-                                            colors.text2[500]
+                                    <View
+                                        style={
+                                            isRTL
+                                                ? {
+                                                    transform: [
+                                                        { scaleX: -1 },
+                                                    ],
+                                                }
+                                                : undefined
                                         }
-                                    />
+                                    >
+                                        <ChevronRightIcon
+                                            size={18}
+                                            color={
+                                                colors.text2[500]
+                                            }
+                                        />
+                                    </View>
                                 </View>
                             </Pressable>
                         );
@@ -178,20 +212,20 @@ export default function HelpScreen() {
 
                 {/* Immediate assistance */}
                 <View className="items-center">
-                    <Text className="font-inter-regular text-[14px] text-text2-500">
-                        Need immediate assistance?
+                    <Text className={`font-inter-regular text-[14px] text-text2-500 ${isRTL ? 'self-stretch text-right' : ''}`}>
+                        {t('profileScreens.help.immediateAssistance')}
                     </Text>
 
                     <Pressable
-                        accessibilityLabel="Contact Support"
+                        accessibilityLabel={t('profileScreens.help.items.contactSupport.title')}
                         accessibilityRole="button"
                         android_ripple={{
                             color: colors.primary[800],
                         }}
-                        className="mt-4 h-[52px] w-full max-w-[288px] flex-row items-center justify-center overflow-hidden rounded-full bg-primary"
+                        className={`mt-4 h-[52px] w-full max-w-[288px] flex-row items-center justify-center overflow-hidden rounded-full bg-primary ${isRTL ? 'flex-row-reverse' : ''}`}
                         onPress={() =>
                             showUnavailableAction(
-                                'Contact Support',
+                                t('profileScreens.help.items.contactSupport.title'),
                             )
                         }
                         style={({ pressed }) => [
@@ -205,13 +239,13 @@ export default function HelpScreen() {
                             color={colors.surface.DEFAULT}
                         />
 
-                        <Text className="ml-2 font-jakarta-medium text-[15px] text-surface">
-                            Contact Support
+                        <Text className={`${isRTL ? 'mr-2' : 'ml-2'} font-jakarta-medium text-[15px] text-surface`}>
+                            {t('profileScreens.help.items.contactSupport.title')}
                         </Text>
                     </Pressable>
 
-                    <Text className="mt-5 font-inter-regular text-[10px] tracking-[0.1px] text-text2-500">
-                        HIPAA-compliant • Secure • 24/7
+                    <Text className={`mt-5 font-inter-regular text-[10px] tracking-[0.1px] text-text2-500 ${isRTL ? 'self-stretch text-right' : ''}`}>
+                        {t('profileScreens.help.securityFooter')}
                     </Text>
                 </View>
             </ScrollView>

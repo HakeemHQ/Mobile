@@ -1,11 +1,15 @@
 import { Stack } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileLayout() {
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+
   return (
     <Stack
       screenOptions={{
         headerShown: false,
-        animation: 'slide_from_right',
+        animation: isRTL ? 'slide_from_left' : 'slide_from_right',
       }}
     >
       <Stack.Screen name="index" />
