@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
-import ImageViewer from 'react-native-image-zoom-viewer';
 import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import {
@@ -25,6 +24,9 @@ import {
   Cancel01Icon,
   ViewIcon,
   Camera02Icon,
+  FlaskConicalIcon,
+  PillIcon,
+  Stethoscope02Icon,
 } from '@hugeicons/core-free-icons';
 
 import BackButton from '@/components/ui/BackButton';
@@ -57,7 +59,7 @@ const getStatusStyle = (status: string) => {
     bg: 'bg-primary-50',
     text: 'text-primary-700',
     icon: <HugeiconsIcon icon={Clock01Icon} size={14} color={colors.primary[700]} />,
-    label: 'Processing',
+    label: 'Pending',
   };
 };
 
@@ -85,6 +87,36 @@ const checkIsImage = (path?: string | null): boolean => {
     lower.includes('/image/') ||
     !lower.includes('.')
   );
+};
+
+const getDocumentTypeConfig = (docType: string) => {
+  const lower = (docType || '').toLowerCase();
+  if (lower.includes('lab') || lower.includes('test') || lower.includes('result')) {
+    return {
+      nodeBg: 'bg-tertiary-50',
+      textColor: 'text-tertiary-700',
+      icon: <HugeiconsIcon icon={FlaskConicalIcon} size={24} color={colors.tertiary.DEFAULT} />,
+    };
+  }
+  if (lower.includes('medication') || lower.includes('prescription') || lower.includes('drug')) {
+    return {
+      nodeBg: 'bg-primary-50',
+      textColor: 'text-primary-700',
+      icon: <HugeiconsIcon icon={PillIcon} size={24} color={colors.primary.DEFAULT} />,
+    };
+  }
+  if (lower.includes('visit') || lower.includes('note') || lower.includes('doctor')) {
+    return {
+      nodeBg: 'bg-secondary-50',
+      textColor: 'text-secondary-700',
+      icon: <HugeiconsIcon icon={Stethoscope02Icon} size={24} color={colors.secondary.DEFAULT} />,
+    };
+  }
+  return {
+    nodeBg: 'bg-primary-50',
+    textColor: 'text-primary-700',
+    icon: <HugeiconsIcon icon={File02Icon} size={24} color={colors.primary.DEFAULT} />,
+  };
 };
 
 export default function DocumentDetailScreen() {
@@ -150,6 +182,7 @@ export default function DocumentDetailScreen() {
   const statusStyle = getStatusStyle(document.extractionStatus);
   const formattedDate = formatDate(document.documentDate, isRTL);
   const isImage = checkIsImage(document.documentPath);
+  const docConfig = getDocumentTypeConfig(document.documentType);
 
   return (
     <>
@@ -163,8 +196,8 @@ export default function DocumentDetailScreen() {
           {/* Header */}
           <View className={cn('flex-row items-center justify-between px-5 pt-4 pb-2', isRTL && 'flex-row-reverse')}>
             <BackButton />
-            <View className="px-3 py-1.5 rounded-full bg-primary-50">
-              <Text className="text-[12px] font-jakarta-bold text-primary-700">
+            <View className={cn('px-3 py-1.5 rounded-full', docConfig.nodeBg)}>
+              <Text className={cn('text-[12px] font-jakarta-bold', docConfig.textColor)}>
                 {document.documentType}
               </Text>
             </View>
@@ -173,8 +206,8 @@ export default function DocumentDetailScreen() {
           {/* Main Info Card */}
           <View className="mx-5 mt-4 bg-white rounded-2xl border border-[#E5E7EB] p-5 shadow-sm">
             <View className={cn('flex-row items-center mb-4', isRTL && 'flex-row-reverse')}>
-              <View className={cn('w-12 h-12 rounded-2xl bg-primary-50 items-center justify-center', isRTL ? 'ml-3' : 'mr-3')}>
-                <HugeiconsIcon icon={File02Icon} size={24} color={colors.primary.DEFAULT} />
+              <View className={cn('w-12 h-12 rounded-2xl items-center justify-center', docConfig.nodeBg, isRTL ? 'ml-3' : 'mr-3')}>
+                {docConfig.icon}
               </View>
               <View className="flex-1">
                 <Text className={cn('text-[20px] font-jakarta-bold text-gray-900 leading-6', isRTL && 'text-right')}>
@@ -310,14 +343,20 @@ export default function DocumentDetailScreen() {
 
               {/* Interactive Zoomable Image */}
               <View className="flex-1 w-full justify-center items-center">
-                <ImageViewer
-                  imageUrls={[{ url: document.documentPath }]}
-                  enableSwipeDown={true}
-                  onSwipeDown={() => setShowFullImage(false)}
-                  renderIndicator={() => <></>}
-                  backgroundColor="transparent"
+                <ScrollView
+                  maximumZoomScale={4}
+                  minimumZoomScale={1}
+                  showsHorizontalScrollIndicator={false}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}
                   style={{ width: '100%', height: '100%' }}
-                />
+                >
+                  <Image
+                    source={{ uri: document.documentPath }}
+                    style={{ width: width, height: height * 0.7 }}
+                    resizeMode="contain"
+                  />
+                </ScrollView>
               </View>
 
               {/* Bottom Close Button Overlay */}

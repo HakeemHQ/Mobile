@@ -28,26 +28,11 @@ export const MedicalProfileCard: React.FC<MedicalProfileCardProps> = ({
         {t('profileTitle', { defaultValue: 'MEDICAL PROFILE' })}
       </Text>
 
-      {/* Documents Count and %done Circle */}
-      <View className={`w-full ${isRTL ? 'flex-row-reverse' : 'flex-row'} items-center justify-between mb-4`}>
+      {/* Documents Count */}
+      <View className={`w-full mb-4`}>
         <Text className={`text-[24px] font-jakarta-bold text-white ${isRTL ? 'text-right' : 'text-left'}`}>
           {countText}
         </Text>
-
-        {/* Done % Badge Column */}
-        <View className="items-center">
-          <View className="w-14 h-14 rounded-full border-2 border-primary-300 bg-primary-500 items-center justify-center">
-            <Text className="text-[18px] font-jakarta-bold text-white">{donePercentage}</Text>
-          </View>
-          <Text className="text-[11px] font-jakarta-bold text-[#89A092] mt-1">
-            {t('donePercent', { defaultValue: '%done' })}
-          </Text>
-        </View>
-      </View>
-
-      {/* Progress Bar */}
-      <View className="w-full bg-[#1E40AF]/60 h-2.5 rounded-full overflow-hidden mb-4">
-        <View className="bg-white h-full rounded-full" style={{ width: `${donePercentage}%` }} />
       </View>
 
       {/* Description */}

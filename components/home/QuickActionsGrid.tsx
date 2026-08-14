@@ -2,14 +2,15 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { File02Icon, Time02Icon, TransactionHistoryIcon, Notification01Icon } from '@hugeicons/core-free-icons';
+import { File02Icon, TransactionHistoryIcon, Notification01Icon } from '@hugeicons/core-free-icons';
+import { SecurityCheckIcon } from '@/components/icons/SecurityCheckIcon';
 import { FastAccessButton } from '@/components/ui/FastAccessButton';
 import { colors } from '@/lib/theme';
 
 interface QuickActionsGridProps {
   onDocumentsPress?: () => void;
   onUploadPress?: () => void;
-  onTimelinePress?: () => void;
+  onAccessRequestsPress?: () => void;
   onCvPress?: () => void;
   onRemindersPress?: () => void;
   isRTL?: boolean;
@@ -18,7 +19,7 @@ interface QuickActionsGridProps {
 export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
   onDocumentsPress,
   onUploadPress,
-  onTimelinePress,
+  onAccessRequestsPress,
   onCvPress,
   onRemindersPress,
   isRTL = false,
@@ -45,15 +46,15 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
           onPress={handleDocumentsAction}
         />
 
-        {/* Time line */}
+        {/* Access Requests */}
         <FastAccessButton
-          title={t('timeline', { defaultValue: 'Time line' })}
-          icon={<HugeiconsIcon icon={Time02Icon} size={22} color={colors.primary[800]} />}
+          title={t('accessRequests', { defaultValue: 'Access Requests' })}
+          icon={<SecurityCheckIcon size={22} color={colors.primary[800]} />}
           active={false}
           inactiveCircleColor="bg-primary-100"
           inactiveTextColor="text-gray-900"
           style={{ width: '48%' }}
-          onPress={onTimelinePress}
+          onPress={onAccessRequestsPress}
         />
 
         {/* CV */}

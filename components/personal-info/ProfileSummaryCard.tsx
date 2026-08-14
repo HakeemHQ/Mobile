@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { ShieldCheck, ShieldAlert } from 'lucide-react-native';
 
 import { colors } from '@/lib/theme/colors';
 import {
@@ -21,7 +22,7 @@ export function ProfileSummaryCard({
     const initials = getInitials(displayName);
 
     return (
-        <View className={`mb-6 flex-row items-center rounded-[28px] bg-primary p-5 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <View className={`mb-6 flex-row items-center rounded-[28px] bg-primary-700 p-5 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <View className={`${isRTL ? 'ml-4' : 'mr-4'} h-[68px] w-[68px] items-center justify-center rounded-[20px] bg-primary-400`}>
                 <Text className="font-jakarta-bold text-2xl text-surface">
                     {initials}
@@ -29,19 +30,26 @@ export function ProfileSummaryCard({
             </View>
 
             <View className="flex-1">
-                <Text
-                    className={`font-jakarta-bold text-[17px] text-surface ${isRTL ? 'text-right' : 'text-left'}`}
-                    numberOfLines={1}
-                >
-                    {displayName}
-                </Text>
+                <View className={`flex-row items-center ${isRTL ? 'justify-end' : 'justify-start'} gap-1.5`}>
+                    <Text
+                        className={`font-jakarta-bold text-[17px] text-surface`}
+                        numberOfLines={1}
+                    >
+                        {displayName}
+                    </Text>
+                    {profile.identityVerificationStatus === 'Verified' ? (
+                        <ShieldCheck size={24} color="#5CCFA9" strokeWidth={2.5} />
+                    ) : profile.identityVerificationStatus ? (
+                        <ShieldAlert size={24} color="#FFB020" strokeWidth={2.5} />
+                    ) : null}
+                </View>
 
                 <Text
                     className={`mt-1 font-inter-regular text-[11px] text-surface opacity-90 ${isRTL ? 'text-right' : 'text-left'}`}
                     ellipsizeMode="middle"
                     numberOfLines={1}
                 >
-                    {t('profileComponents.summary.idLabel')}: {profile.userId.slice(0, 18)}
+                    {t('profileComponents.summary.idLabel')}: <Text className="font-jakarta-bold text-[16x]">{profile.patientCode}</Text>
                 </Text>
 
                 <View
