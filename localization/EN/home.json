@@ -37,5 +37,17 @@
   "activity3Title": "Clinical Note Added",
   "activity3Subtitle": "Dr. Jenkins updated your cardiology file.",
   "activity3Tag": "Normal",
-  "activity3Date": "Oct 24, 2023"
+  "activity3Date": "Oct 24, 2023",
+  "emptyDocumentsTitle": "No documents yet",
+  "emptyDocumentsSubtitle": "Keep track of your health documents and medical files in one place.",
+  "emptyDocumentsSearch": "No documents found",
+  "emptyDocumentsSearchSubtitle": "We couldn't find any documents matching \"{{query}}\".",
+  "onlyDocCanUpload": "NOTE: ONLY DOCTORS CAN UPLOAD DOCUMENTS",
+  "filterAll": "All",
+  "filterPrescription": "Prescription",
+  "filterLabReport": "Lab Report",
+  "filterMedicalVisit": "Medical Visit",
+  "emptyPrescriptions": "No Prescriptions",
+  "emptyLabReports": "No Lab Reports",
+  "emptyMedicalVisits": "No Medical Visits"
 }
