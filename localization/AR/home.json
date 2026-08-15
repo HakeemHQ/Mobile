@@ -37,5 +37,17 @@
   "activity3Title": "إضافة ملاحظة إكلينيكية",
   "activity3Subtitle": "قامت د. جينكينز بتحديث ملف القلب الخاص بك.",
   "activity3Tag": "طبيعي",
-  "activity3Date": "24 أكتوبر 2023"
+  "activity3Date": "24 أكتوبر 2023",
+  "emptyDocumentsTitle": "لا توجد مستندات بعد",
+  "emptyDocumentsSubtitle": "تتبع مستنداتك الصحية وملفاتك الطبية في مكان واحد.",
+  "emptyDocumentsSearch": "لم يتم العثور على مستندات",
+  "emptyDocumentsSearchSubtitle": "لم نتمكن من العثور على أي مستندات تطابق \"{{query}}\".",
+  "onlyDocCanUpload": "ملاحظة: يمكن للأطباء فقط تحميل المستندات",
+  "filterAll": "الكل",
+  "filterPrescription": "وصفة طبية",
+  "filterLabReport": "تقرير مختبر",
+  "filterMedicalVisit": "زيارة طبية",
+  "emptyPrescriptions": "لا توجد وصفات طبية",
+  "emptyLabReports": "لا توجد تقارير مختبر",
+  "emptyMedicalVisits": "لا توجد زيارات طبية"
 }

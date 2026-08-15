@@ -55,11 +55,16 @@
     "page": "Page",
     "loading": "Loading record...",
     "error": "Failed to load record",
-    "retry": "Retry"
+    "retry": "Retry",
+    "emptyTitle": "No Details Available",
+    "emptySubtitle": "This record has no details or source documents."
   },
   "loading": "Loading records...",
   "error": "Failed to load records",
   "retry": "Retry",
   "noResults": "No timeline records found.",
-  "emptySubtitle": "Your clinical records, visits, and medications will appear here once added."
+  "emptySubtitle": "Your clinical records, visits, and medications will appear here once added.",
+  "emptyTitle": "No timeline records yet",
+  "noRecordsFound": "No records found",
+  "noRecordsFoundSubtitle": "We couldn't find any records matching \"{{query}}\"."
 }

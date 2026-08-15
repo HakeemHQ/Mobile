@@ -8,6 +8,8 @@ import {
   RefreshControl,
   TextInput,
   Pressable,
+  Image,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -20,10 +22,15 @@ import {
   CheckmarkCircle02Icon,
   Clock01Icon,
   AlertCircleIcon,
+  PillIcon,
+  FlaskConicalIcon,
+  Stethoscope02Icon,
 } from '@hugeicons/core-free-icons';
 
 import BackButton from '@/components/ui/BackButton';
 import { Button } from '@/components/ui/Button';
+import { InfoBanner } from '@/components/ui/InfoBanner';
+import { TimelineItemNode } from '@/components/timeline/TimelineItemNode';
 import { useDocuments } from '@/hooks/useDocuments';
 import { cn } from '@/lib/utils';
 import { colors } from '@/lib/theme';
@@ -35,6 +42,7 @@ const getStatusBadge = (status: string) => {
   if (lower === 'completed' || lower === 'success') {
     return {
       bg: 'bg-secondary-50',
+      border: 'border-secondary-100',
       text: 'text-secondary-700',
       icon: <HugeiconsIcon icon={CheckmarkCircle02Icon} size={13} color={colors.secondary[700]} />,
       label: 'Completed',
@@ -43,6 +51,7 @@ const getStatusBadge = (status: string) => {
   if (lower === 'failed' || lower === 'error') {
     return {
       bg: 'bg-danger-50',
+      border: 'border-danger-100',
       text: 'text-danger-700',
       icon: <HugeiconsIcon icon={AlertCircleIcon} size={13} color={colors.danger[700]} />,
       label: 'Failed',
@@ -50,11 +59,25 @@ const getStatusBadge = (status: string) => {
   }
   return {
     bg: 'bg-primary-50',
+    border: 'border-primary-100',
     text: 'text-primary-700',
     icon: <HugeiconsIcon icon={Clock01Icon} size={13} color={colors.primary[700]} />,
     label: 'Processing',
   };
 };
+
+const YearHeader = React.memo(({ year, isRTL }: { year: string; isRTL: boolean }) => (
+  <View className={cn('flex-row items-center mb-4 mt-2', isRTL && 'flex-row-reverse')}>
+    <Text className="text-[15px] font-jakarta-bold text-gray-500">
+      {year}
+    </Text>
+    <View className={cn('flex-1 h-[1px] bg-gray-300', isRTL ? 'mr-3' : 'ml-3')} />
+  </View>
+));
+
+type FlatListItem = 
+  | { type: 'year-header'; year: string; key: string } 
+  | { type: 'document'; item: DocumentItem; isLast: boolean; key: string };
 
 export default function DocumentsScreen() {
   const { t, i18n } = useTranslation('home');
@@ -63,80 +86,120 @@ export default function DocumentsScreen() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState('all');
 
   const { documents, loading, error, refreshing, refresh } = useDocuments();
 
-  // Search filtering
+  // Search and category filtering
   const filteredDocuments = useMemo(() => {
+    // 1. Filter by category first
+    let docs = documents;
+    if (selectedFilter === 'prescription') {
+      docs = documents.filter((doc) => {
+        const type = (doc.documentType || '').toLowerCase();
+        return type.includes('prescription') || type.includes('medication') || type.includes('drug');
+      });
+    } else if (selectedFilter === 'lab_report') {
+      docs = documents.filter((doc) => {
+        const type = (doc.documentType || '').toLowerCase();
+        return type.includes('lab') || type.includes('test') || type.includes('result');
+      });
+    } else if (selectedFilter === 'medical_visit') {
+      docs = documents.filter((doc) => {
+        const type = (doc.documentType || '').toLowerCase();
+        return type.includes('visit') || type.includes('note') || type.includes('doctor');
+      });
+    }
+
+    // 2. Filter by search query
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return documents;
-    return documents.filter(
+    if (!query) return docs;
+    return docs.filter(
       (doc) =>
         doc.title.toLowerCase().includes(query) ||
         doc.documentType.toLowerCase().includes(query) ||
         doc.documentDate.toLowerCase().includes(query)
     );
-  }, [documents, searchQuery]);
+  }, [documents, searchQuery, selectedFilter]);
+
+  const flatData = useMemo(() => {
+    // Group by year
+    const groups: { [year: string]: DocumentItem[] } = {};
+    filteredDocuments.forEach((doc) => {
+      const year = new Date(doc.documentDate).getFullYear().toString();
+      if (!groups[year]) groups[year] = [];
+      groups[year].push(doc);
+    });
+
+    // Sort years descending
+    const sortedYears = Object.keys(groups).sort((a, b) => Number(b) - Number(a));
+    
+    const flat: FlatListItem[] = [];
+    sortedYears.forEach((year) => {
+      flat.push({ type: 'year-header', year, key: `year-${year}` });
+      const docs = groups[year];
+      docs.forEach((doc, idx) => {
+        const isLast = idx === docs.length - 1;
+        flat.push({ type: 'document', item: doc, isLast, key: `doc-${doc.documentId}` });
+      });
+    });
+    return flat;
+  }, [filteredDocuments]);
 
   const renderItem = useCallback(
-    ({ item }: { item: DocumentItem }) => {
+    ({ item: flatItem }: { item: FlatListItem }) => {
+      if (flatItem.type === 'year-header') {
+        return <YearHeader year={flatItem.year} isRTL={isRTL} />;
+      }
+      
+      const { item, isLast } = flatItem;
       const badge = getStatusBadge(item.extractionStatus);
       const formattedDate = new Date(item.documentDate).toLocaleDateString(
         isRTL ? 'ar-EG' : 'en-US',
         { month: 'short', day: 'numeric', year: 'numeric' }
       );
 
+      const lowerType = (item.documentType || '').toLowerCase();
+      const isPrescription = lowerType.includes('prescription') || lowerType.includes('medication') || lowerType.includes('drug');
+      const isLabReport = lowerType.includes('lab') || lowerType.includes('test') || lowerType.includes('result');
+      const isMedicalVisit = lowerType.includes('visit') || lowerType.includes('note') || lowerType.includes('doctor');
+
+      let nodeBg = 'bg-primary-50';
+      let iconColor: string = colors.primary.DEFAULT;
+      let CategoryIcon = File02Icon;
+
+      if (isPrescription) {
+        nodeBg = 'bg-primary-50';
+        iconColor = colors.primary.DEFAULT;
+        CategoryIcon = PillIcon;
+      } else if (isLabReport) {
+        nodeBg = 'bg-tertiary-50';
+        iconColor = colors.tertiary.DEFAULT;
+        CategoryIcon = FlaskConicalIcon;
+      } else if (isMedicalVisit) {
+        nodeBg = 'bg-secondary-50';
+        iconColor = colors.secondary.DEFAULT;
+        CategoryIcon = Stethoscope02Icon;
+      }
+
       return (
-        <Pressable
-          onPress={() => router.push(`/documents/${item.documentId}` as any)}
-          className={cn(
-            'bg-white rounded-2xl p-4 border border-[#E5E7EB] mb-3 flex-row items-center justify-between shadow-sm',
-            isRTL && 'flex-row-reverse'
-          )}
-          style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
-        >
-          {/* Left Icon */}
-          <View
-            className={cn(
-              'w-11 h-11 rounded-2xl bg-primary-50 items-center justify-center',
-              isRTL ? 'ml-3' : 'mr-3'
-            )}
-          >
-            <HugeiconsIcon icon={File02Icon} size={22} color={colors.primary.DEFAULT} />
-          </View>
-
-          {/* Details */}
-          <View className="flex-1">
-            <View className={cn('flex-row items-center justify-between gap-2 mb-1', isRTL && 'flex-row-reverse')}>
-              <Text
-                className={cn('text-[15px] font-jakarta-bold text-gray-900 flex-1', isRTL && 'text-right')}
-                numberOfLines={1}
-              >
-                {item.title}
-              </Text>
-
-              {/* Status Badge */}
-              <View className={cn('flex-row items-center gap-1 px-2.5 py-1 rounded-full', badge.bg, isRTL && 'flex-row-reverse')}>
-                {badge.icon}
-                <Text className={cn('text-[11px] font-jakarta-semibold', badge.text)}>
-                  {badge.label}
-                </Text>
-              </View>
-            </View>
-
-            <View className={cn('flex-row items-center justify-between', isRTL && 'flex-row-reverse')}>
-              <Text className={cn('text-[13px] font-inter-medium text-gray-500', isRTL && 'text-right')}>
-                {item.documentType}
-              </Text>
-              <Text className={cn('text-[12px] font-inter-regular text-gray-400', isRTL && 'text-right')}>
-                {formattedDate}
-              </Text>
-            </View>
-          </View>
-        </Pressable>
+        <TimelineItemNode
+          id={item.documentId}
+          date={formattedDate}
+          nodeType={isPrescription ? 'medication' : isLabReport ? 'lab' : isMedicalVisit ? 'visit' : 'default'}
+          nodeBgColor={nodeBg}
+          nodeIcon={<HugeiconsIcon icon={CategoryIcon} size={24} color={iconColor} />}
+          isLast={isLast}
+          cardProps={{
+            title: item.title,
+            subtitle: item.documentType,
+            tag: badge.label,
+            onPress: () => router.push(`/documents/${item.documentId}` as any),
+          }}
+        />
       );
     },
-    [isRTL, router]
+    [isRTL, router, filteredDocuments]
   );
 
   return (
@@ -190,6 +253,50 @@ export default function DocumentsScreen() {
             )}
           </View>
 
+          {/* Filter Chips */}
+          <View className="mb-4">
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingHorizontal: 4,
+                flexDirection: isRTL ? 'row-reverse' : 'row',
+                gap: 8,
+              }}
+            >
+              {[
+                { id: 'all', labelKey: 'filterAll' },
+                { id: 'prescription', labelKey: 'filterPrescription' },
+                { id: 'lab_report', labelKey: 'filterLabReport' },
+                { id: 'medical_visit', labelKey: 'filterMedicalVisit' },
+              ].map((opt) => {
+                const isSelected = selectedFilter === opt.id;
+                return (
+                  <Pressable
+                    key={opt.id}
+                    onPress={() => setSelectedFilter(opt.id)}
+                    className={cn(
+                      'px-4 py-2 rounded-full border items-center justify-center',
+                      isSelected
+                        ? 'bg-primary-900 border-primary-900'
+                        : 'bg-white border-gray-200'
+                    )}
+                    style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
+                  >
+                    <Text
+                      className={cn(
+                        'text-[13px] font-jakarta-semibold',
+                        isSelected ? 'text-white' : 'text-gray-700'
+                      )}
+                    >
+                      {t(opt.labelKey)}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
+
           {/* Content */}
           {loading && !refreshing ? (
             <View className="flex-1 items-center justify-center">
@@ -214,11 +321,11 @@ export default function DocumentsScreen() {
             </View>
           ) : (
             <FlatList
-              data={filteredDocuments}
+              data={flatData}
               renderItem={renderItem}
-              keyExtractor={(item) => item.documentId}
+              keyExtractor={(item) => item.key}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 100 }}
+              contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -228,10 +335,43 @@ export default function DocumentsScreen() {
                 />
               }
               ListEmptyComponent={
-                <View className="py-16 items-center justify-center">
-                  <Text className={cn('text-[14px] font-inter-regular text-gray-400', isRTL && 'text-right')}>
-                    {isRTL ? 'لم يتم العثور على مستندات.' : 'No documents found.'}
-                  </Text>
+                <View className="flex-1 items-center justify-center px-4 py-8">
+                  <Image
+                    source={require('@/assets/images/documentEmptyList.png')}
+                    style={{ width: 220, height: 220 }}
+                    resizeMode="contain"
+                    className="mb-4"
+                  />
+                  {searchQuery.trim() ? (
+                    <>
+                      <Text className={cn('text-center font-jakarta-bold text-[18px] text-gray-900 mb-2', isRTL && 'text-right')}>
+                        {t('emptyDocumentsSearch', { defaultValue: 'No documents found' })}
+                      </Text>
+                      <Text className={cn('text-center font-inter-regular text-[14px] text-gray-500 max-w-[300px]', isRTL && 'text-right')}>
+                        {t('emptyDocumentsSearchSubtitle', {
+                          defaultValue: `We couldn't find any documents matching "${searchQuery}".`,
+                          query: searchQuery,
+                        })}
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text className={cn('text-center font-jakarta-bold text-[20px] text-gray-900 mb-2', isRTL && 'text-right')}>
+                        {t('emptyDocumentsTitle', { defaultValue: 'No documents yet' })}
+                      </Text>
+                      <Text className={cn('text-center font-inter-regular text-[14px] text-gray-500 max-w-[320px] mb-6', isRTL && 'text-right')}>
+                        {t('emptyDocumentsSubtitle', { defaultValue: 'Keep track of your health documents and medical files in one place.' })}
+                      </Text>
+                      <InfoBanner
+                        text={t('onlyDocCanUpload', { defaultValue: 'NOTE: ONLY DOCTORS CAN UPLOAD DOCUMENTS' })}
+                        icon={<HugeiconsIcon icon={AlertCircleIcon} size={20} color={colors.primary.DEFAULT} />}
+                        bgColor="bg-primary-50"
+                        textColor="text-primary-900"
+                        borderColor="border-primary-100"
+                        className="w-full max-w-[320px]"
+                      />
+                    </>
+                  )}
                 </View>
               }
             />

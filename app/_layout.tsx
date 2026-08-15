@@ -15,6 +15,9 @@ export {
   ErrorBoundary,
 } from 'expo-router';
 
+// Global memory tracker to survive hot reloads during development
+const handledNotificationIds = new Set<string>();
+
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     'PlusJakarta-Regular': require('../assets/fonts/PlusJakartaSans-Regular.ttf'),
@@ -27,9 +30,6 @@ export default function RootLayout() {
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
   });
 
-  // Track whether we've already acted on the last notification response
-  const lastNotifIdHandled = useRef<string | null>(null);
-
   // useLastNotificationResponse is the correct modern hook — works for both
   // foreground taps AND cold-start (app opened by tapping a push notification)
   const lastNotificationResponse = Notifications.useLastNotificationResponse();
@@ -39,8 +39,8 @@ export default function RootLayout() {
 
     const notifId = lastNotificationResponse.notification.request.identifier;
     // Deduplicate: don't navigate twice for the same notification
-    if (lastNotifIdHandled.current === notifId) return;
-    lastNotifIdHandled.current = notifId;
+    if (handledNotificationIds.has(notifId)) return;
+    handledNotificationIds.add(notifId);
 
     const data = lastNotificationResponse.notification.request.content.data;
     const actionId = lastNotificationResponse.actionIdentifier;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StatusBar, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, StatusBar, ActivityIndicator, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -111,7 +111,7 @@ export default function RecordDetailScreen() {
         <ScrollView
           className="flex-1"
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 40 }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
         >
           {/* Header with BackButton and record type tag */}
           <View className={cn('flex-row items-center justify-between px-5 pt-4 pb-2', isRTL && 'flex-row-reverse')}>
@@ -221,6 +221,24 @@ export default function RecordDetailScreen() {
                   showRightIcon={false}
                 />
               ))}
+            </View>
+          )}
+
+          {/* Empty State Section */}
+          {(!record.fields || record.fields.length === 0) && (!record.sources || record.sources.length === 0) && (
+            <View className="flex-1 items-center justify-center px-5">
+              <Image
+                source={require('@/assets/images/record-detailEmptyState.png')}
+                style={{ width: 220, height: 220 }}
+                resizeMode="contain"
+                className="mb-4"
+              />
+              <Text className="text-[16px] font-jakarta-bold text-gray-900 mb-2 text-center">
+                {t('detail.emptyTitle', 'No Details Available')}
+              </Text>
+              <Text className="text-[14px] font-inter-regular text-gray-500 text-center leading-5">
+                {t('detail.emptySubtitle', 'This record has no details or source documents.')}
+              </Text>
             </View>
           )}
         </ScrollView>

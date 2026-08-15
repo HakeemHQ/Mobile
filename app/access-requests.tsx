@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, FlatList, StatusBar, ActivityIndicator, Pressable, RefreshControl, Modal } from 'react-native';
+import { View, Text, FlatList, StatusBar, ActivityIndicator, Pressable, RefreshControl, Modal, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react-native';
@@ -277,7 +277,7 @@ export default function AccessRequestsScreen() {
               renderItem={renderItem}
               keyExtractor={keyExtractor}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 100 }}
+              contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
               onEndReached={handleLoadMore}
               onEndReachedThreshold={0.4}
               refreshControl={
@@ -291,9 +291,18 @@ export default function AccessRequestsScreen() {
                 ) : null
               }
               ListEmptyComponent={
-                <View className="py-16 items-center justify-center">
-                  <Text className={cn('text-[14px] font-inter-regular text-gray-400', isRTL && 'text-right')}>
-                    {t('noRequests', 'No access requests.')}
+                <View className="flex-1 items-center justify-center px-6">
+                  <Image
+                    source={require('@/assets/images/record-detailEmptyState.png')}
+                    style={{ width: 220, height: 220 }}
+                    resizeMode="contain"
+                    className="mb-4"
+                  />
+                  <Text className="text-[16px] font-jakarta-bold text-gray-900 mb-2 text-center">
+                    {t(`emptyStates.${selectedFilter}` as any, 'No access requests.')}
+                  </Text>
+                  <Text className="text-[14px] font-inter-regular text-gray-500 text-center leading-5">
+                    {t(`emptyStates.${selectedFilter}Subtitle` as any, "You don't have any access requests right now.")}
                   </Text>
                 </View>
               }

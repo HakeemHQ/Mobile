@@ -6,6 +6,7 @@ import {
   StatusBar,
   ActivityIndicator,
   RefreshControl,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { TFunction } from 'i18next';
@@ -300,7 +301,7 @@ export default function TimelineScreen() {
             renderItem={renderItem}
             keyExtractor={keyExtractor}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 100 }}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
             onEndReached={handleEndReached}
             onEndReachedThreshold={0.4}
             refreshControl={
@@ -320,10 +321,35 @@ export default function TimelineScreen() {
             }
             ListEmptyComponent={
               !searching ? (
-                <View className="py-12 items-center justify-center">
-                  <Text className={cn('text-[14px] font-inter-regular text-gray-400', isRTL && 'text-right')}>
-                    {t('noResults', 'No timeline records found.')}
-                  </Text>
+                <View className="flex-1 items-center justify-center px-4 py-8">
+                  <Image
+                    source={require('@/assets/images/emptyList.png')}
+                    style={{ width: 220, height: 220 }}
+                    resizeMode="contain"
+                    className="mb-4"
+                  />
+                  {searchQuery.trim() ? (
+                    <>
+                      <Text className={cn('text-center font-jakarta-bold text-[18px] text-gray-900 mb-2', isRTL && 'text-right')}>
+                        {t('noRecordsFound', { defaultValue: 'No records found' })}
+                      </Text>
+                      <Text className={cn('text-center font-inter-regular text-[14px] text-gray-500 max-w-[300px]', isRTL && 'text-right')}>
+                        {t('noRecordsFoundSubtitle', {
+                          defaultValue: `We couldn't find any records matching "${searchQuery}".`,
+                          query: searchQuery,
+                        })}
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text className={cn('text-center font-jakarta-bold text-[20px] text-gray-900 mb-2', isRTL && 'text-right')}>
+                        {t('emptyTitle', { defaultValue: 'No timeline records yet' })}
+                      </Text>
+                      <Text className={cn('text-center font-inter-regular text-[14px] text-gray-500 max-w-[320px]', isRTL && 'text-right')}>
+                        {t('emptySubtitle')}
+                      </Text>
+                    </>
+                  )}
                 </View>
               ) : null
             }

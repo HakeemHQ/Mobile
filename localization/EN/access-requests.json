@@ -32,5 +32,17 @@
     "subtitle": "Provide this one-time code to Dr. {{name}}:",
     "expiresAt": "Code expires at: {{time}}",
     "done": "Done"
+  },
+  "emptyStates": {
+    "all": "No access requests.",
+    "allSubtitle": "You don't have any access requests right now.",
+    "pending": "No Pending Requests",
+    "pendingSubtitle": "You don't have any pending requests to approve or reject.",
+    "active": "No Active Requests",
+    "activeSubtitle": "You have no currently active access sessions.",
+    "revoked": "No Revoked Requests",
+    "revokedSubtitle": "You haven't revoked any access requests.",
+    "expired": "No Expired Requests",
+    "expiredSubtitle": "You have no expired access requests."
   }
 }
