@@ -34,6 +34,7 @@ export default function RegisterScreen() {
       lastName: '',
       email: '',
       phoneNumber: '',
+      nationalId: '',
       birthDate: '',
       password: '',
       gender: '',
@@ -56,6 +57,7 @@ export default function RegisterScreen() {
           phoneNumber: data.phoneNumber,
           gender: data.gender,
           birthDate: data.birthDate,
+          nationalId: data.nationalId
         }),
       });
 
@@ -81,6 +83,8 @@ export default function RegisterScreen() {
             setError('lastName', { type: 'server', message: err.message });
           } else if (propName.includes('phone')) {
             setError('phoneNumber', { type: 'server', message: err.message });
+          } else if (propName.includes('national')) {
+            setError('nationalId', { type: 'server', message: err.message });
           } else if (propName.includes('birth')) {
             setError('birthDate', { type: 'server', message: err.message });
           } else {
@@ -235,6 +239,24 @@ export default function RegisterScreen() {
                 </Text>
               ) : null}
             </View>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="nationalId"
+          rules={{ required: t('nationalIdRequired') }}
+          render={({ field: { onChange, value } }) => (
+            <InputField
+              label={t('nationalId')}
+              icon={User02Icon}
+              placeholder={t('nationalIdPlaceholder')}
+              keyboardType="number-pad"
+              value={value}
+              onChangeText={onChange}
+              error={errors.nationalId?.message as string}
+              bgClassName="bg-primary-50"
+            />
           )}
         />
 

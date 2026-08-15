@@ -101,9 +101,9 @@ export function validateProfileField(
 
     if (
         field === 'phoneNumber' &&
-        !/^\+?[0-9\s()-]{7,20}$/.test(cleanedValue)
+        !/^01[0-9]{9}$/.test(cleanedValue)
     ) {
-        return 'Enter a valid phone number.';
+        return 'Enter a valid Egyptian phone number starting with 01 and containing 11 digits.';
     }
 
     return null;
