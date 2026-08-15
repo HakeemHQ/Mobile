@@ -7,6 +7,7 @@ import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import '../localization/i18n';
 import { AlarmEngine } from '@/lib/alarm-engine';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { initPushNotifications } from '@/lib/push-notifications';
 
 SplashScreen.preventAutoHideAsync();
@@ -77,15 +78,17 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="reminders" options={{ headerShown: false }} />
-      <Stack.Screen name="record-detail" options={{ headerShown: false }} />
-      <Stack.Screen name="documents" options={{ headerShown: false }} />
-      <Stack.Screen name="access-requests" options={{ headerShown: false }} />
-    </Stack>
+    <KeyboardProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="reminders" options={{ headerShown: false }} />
+        <Stack.Screen name="record-detail" options={{ headerShown: false }} />
+        <Stack.Screen name="documents" options={{ headerShown: false }} />
+        <Stack.Screen name="access-requests" options={{ headerShown: false }} />
+      </Stack>
+    </KeyboardProvider>
   );
 }

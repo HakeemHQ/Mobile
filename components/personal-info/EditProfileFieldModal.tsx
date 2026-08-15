@@ -4,9 +4,7 @@ import {
 } from 'react';
 import {
     ActivityIndicator,
-    KeyboardAvoidingView,
     Modal,
-    Platform,
     Pressable,
     Text,
     TextInput,
@@ -20,6 +18,7 @@ import {
     validateProfileField,
 } from '@/lib/profile-utils';
 import type { EditableProfileField } from '@/types/profile';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 interface EditProfileFieldModalProps {
     visible: boolean;
@@ -120,9 +119,7 @@ export function EditProfileFieldModal({
             onRequestClose={handleClose}
         >
             <KeyboardAvoidingView
-                behavior={
-                    Platform.OS === 'ios' ? 'padding' : 'height'
-                }
+                behavior="padding"
                 className="flex-1"
             >
                 <Pressable
