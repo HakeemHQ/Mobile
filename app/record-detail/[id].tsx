@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, StatusBar, ActivityIndicator, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import { File02Icon, CheckmarkCircle02Icon } from '@hugeicons/core-free-icons';
@@ -51,6 +51,7 @@ const getStatusStyle = (status: string) => {
 
 export default function RecordDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const { t, i18n } = useTranslation('timeline');
   const isRTL = i18n.language === 'ar';
 
@@ -218,7 +219,8 @@ export default function RecordDetailScreen() {
                     <HugeiconsIcon icon={File02Icon} size={20} color={colors.primary.DEFAULT} />
                   }
                   iconBgColor="bg-primary-50"
-                  showRightIcon={false}
+                  showRightIcon={true}
+                  onPress={() => router.push(`/documents/${source.documentId}` as any)}
                 />
               ))}
             </View>
