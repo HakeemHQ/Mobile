@@ -5,6 +5,7 @@
  */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getMedicalRecords, searchMedicalRecords } from '@/lib/api/medical-records';
+import { useProfileStore } from '@/store/useProfileStore';
 import type { MedicalRecordItem, MedicalRecordType } from '@/types/medical-record';
 
 const PAGE_SIZE = 15;
@@ -41,6 +42,8 @@ const groupByYear = (items: MedicalRecordItem[]): MedicalRecordGroup[] => {
 };
 
 export function useMedicalRecords() {
+  const { profile } = useProfileStore();
+
   // All items (accumulated across pages)
   const [allItems, setAllItems] = useState<MedicalRecordItem[]>([]);
   const [groupedRecords, setGroupedRecords] = useState<MedicalRecordGroup[]>([]);
@@ -80,15 +83,12 @@ export function useMedicalRecords() {
         const newItems = response.data.items || [];
         const totalCount = response.data.totalCount || 0;
 
-        const updatedItems = append ? [...allItems, ...newItems] : newItems;
-        setAllItems(updatedItems);
-        setGroupedRecords(groupByYear(updatedItems));
-
-        // Determine if there are more pages
-        const loadedCount = append
-          ? allItems.length + newItems.length
-          : newItems.length;
-        setHasMore(loadedCount < totalCount);
+        setAllItems((prevItems) => {
+          const updatedItems = append ? [...prevItems, ...newItems] : newItems;
+          setGroupedRecords(groupByYear(updatedItems));
+          setHasMore(updatedItems.length < totalCount);
+          return updatedItems;
+        });
         currentPageRef.current = pageNumber;
       } else {
         if (!append) {
@@ -109,7 +109,7 @@ export function useMedicalRecords() {
       setRefreshing(false);
       setLoadingMore(false);
     }
-  }, [allItems]);
+  }, []);
 
   /**
    * Initial fetch / filter change: resets to page 1.
@@ -119,37 +119,11 @@ export function useMedicalRecords() {
     currentPageRef.current = 1;
     setLoading(true);
     setHasMore(true);
-    setAllItems([]);
     setSearchResults(null);
     setSearchQuery('');
 
-    try {
-      setError(null);
-      const response = await getMedicalRecords({
-        pageNumber: 1,
-        pageSize: PAGE_SIZE,
-        recordType,
-      });
-
-      if (response.success && response.data) {
-        const items = response.data.items || [];
-        const totalCount = response.data.totalCount || 0;
-        setAllItems(items);
-        setGroupedRecords(groupByYear(items));
-        setHasMore(items.length < totalCount);
-      } else {
-        setAllItems([]);
-        setGroupedRecords([]);
-        setHasMore(false);
-      }
-    } catch (err: any) {
-      setError(err?.message || 'Failed to load records');
-      setAllItems([]);
-      setGroupedRecords([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    await fetchPage(1, recordType, false);
+  }, [fetchPage]);
 
   /**
    * Load next page (infinite scroll).
@@ -172,31 +146,8 @@ export function useMedicalRecords() {
     setSearchResults(null);
     setSearchQuery('');
 
-    try {
-      setError(null);
-      const response = await getMedicalRecords({
-        pageNumber: 1,
-        pageSize: PAGE_SIZE,
-        recordType: recordType ?? currentFilterRef.current,
-      });
-
-      if (response.success && response.data) {
-        const items = response.data.items || [];
-        const totalCount = response.data.totalCount || 0;
-        setAllItems(items);
-        setGroupedRecords(groupByYear(items));
-        setHasMore(items.length < totalCount);
-      } else {
-        setAllItems([]);
-        setGroupedRecords([]);
-        setHasMore(false);
-      }
-    } catch (err: any) {
-      setError(err?.message || 'Failed to load records');
-    } finally {
-      setRefreshing(false);
-    }
-  }, []);
+    await fetchPage(1, recordType ?? currentFilterRef.current, false);
+  }, [fetchPage]);
 
   /**
    * Server-side search with debounce.
@@ -223,22 +174,37 @@ export function useMedicalRecords() {
     setSearching(true);
     searchTimerRef.current = setTimeout(async () => {
       try {
-        const response = await searchMedicalRecords({
-          query: trimmed,
-          limit: 50,
+        const response = await getMedicalRecords({
+          search: trimmed,
+          pageNumber: 1,
+          pageSize: 50,
+          recordType: currentFilterRef.current,
         });
 
-        if (response.success && response.data?.items) {
-          setSearchResults(response.data.items);
-          setGroupedRecords(groupByYear(response.data.items));
+        const resData = (response as any)?.data;
+        const items: MedicalRecordItem[] | null =
+          (Array.isArray(resData?.items) ? resData.items : null) ||
+          (Array.isArray(resData) ? resData : null) ||
+          (Array.isArray((response as any)?.items) ? (response as any).items : null) ||
+          (Array.isArray(response) ? (response as any) : null);
+
+        if (items) {
+          setSearchResults(items);
+          setGroupedRecords(groupByYear(items));
         } else {
           setSearchResults([]);
           setGroupedRecords([]);
         }
-      } catch {
-        // On search error, fall back to showing all data
-        setSearchResults(null);
-        setGroupedRecords(groupByYear(allItems));
+      } catch (err) {
+        console.warn('Search API call failed, falling back to local filter:', err);
+        const lowerQuery = trimmed.toLowerCase();
+        const localMatches = allItems.filter(
+          (item) =>
+            item.displayName?.toLowerCase().includes(lowerQuery) ||
+            item.recordType?.toLowerCase().includes(lowerQuery)
+        );
+        setSearchResults(localMatches);
+        setGroupedRecords(groupByYear(localMatches));
       } finally {
         setSearching(false);
       }
