@@ -21,6 +21,7 @@
   "profileScreens": {
     "index": {
       "fallbackUserName": "Hakeem User",
+      "privacyUnavailableMessage": "This feature is temporarily unavailable.",
       "language": {
         "englishCode": "English (EN)",
         "arabicCode": "العربية (AR)",

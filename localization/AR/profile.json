@@ -21,6 +21,7 @@
   "profileScreens": {
     "index": {
       "fallbackUserName": "مستخدم حكيم",
+      "privacyUnavailableMessage": "هذه الميزة غير متاحة مؤقتًا.",
       "language": {
         "englishCode": "English (EN)",
         "arabicCode": "العربية (AR)",
