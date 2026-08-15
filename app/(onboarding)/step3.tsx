@@ -8,7 +8,7 @@ export default function OnboardingStep3() {
   const { t } = useTranslation('onboarding3');
 
   const handleSkip = () => {
-    // router.replace('/(auth)/register');
+    router.replace('/(auth)/login');
   };
 
   const renderFooter = (

@@ -30,6 +30,8 @@ import enTabs from './EN/tabs.json';
 import arTabs from './AR/tabs.json';
 import enChatbot from './EN/chatbot.json';
 import arChatbot from './AR/chatbot.json';
+import enAccessRequests from './EN/access-requests.json';
+import arAccessRequests from './AR/access-requests.json';
 
 const resources = {
   en: {
@@ -45,7 +47,8 @@ const resources = {
     reminders: enReminders,
     auth: enAuth,
     tabs: enTabs,
-    chatbot: enChatbot
+    chatbot: enChatbot,
+    accessRequests: enAccessRequests,
   },
   ar: {
     onboarding: arOnboarding,
@@ -60,7 +63,8 @@ const resources = {
     reminders: arReminders,
     auth: arAuth,
     tabs: arTabs,
-    chatbot: arChatbot
+    chatbot: arChatbot,
+    accessRequests: arAccessRequests,
   },
 };
 

@@ -46,6 +46,15 @@ export const UpcomingAppointmentCard: React.FC<UpcomingAppointmentCardProps> = (
               {appointmentTime || t('appointmentTime', { defaultValue: 'Tomorrow, 10:30 AM' })}
             </Text>
           </View>
+
+          {appointmentLocation ? (
+            <View className={`flex-row items-center ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
+              <HugeiconsIcon icon={Location01Icon} size={14} color={colors.text2[500]} />
+              <Text className={`text-[13px] font-inter-regular text-gray-600 ${isRTL ? 'mr-1.5' : 'ml-1.5'}`}>
+                {appointmentLocation}
+              </Text>
+            </View>
+          ) : null}
         </View>
       </View>
     </View>

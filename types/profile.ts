@@ -14,6 +14,9 @@ export interface ProfileData {
     lastName: string;
     phoneNumber: string;
     gender: string;
+    patientCode: string;
+    nationalIdMasked: string;
+    identityVerificationStatus?: string;
 }
 
 export type ProfileGenderIconProps = {

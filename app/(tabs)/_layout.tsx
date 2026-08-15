@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Home03Icon, Time02Icon, Add02Icon, File02Icon, User02Icon } from '@/components/icons';
 import { colors } from '@/lib/theme/colors';
 import { Bot } from 'lucide-react-native';
@@ -9,6 +10,7 @@ import i18n from '@/localization/i18n';
 export default function TabLayout() {
   const { t } = useTranslation('tabs');
   const isRTL = i18n.language === 'ar';
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -18,8 +20,8 @@ export default function TabLayout() {
         tabBarActiveTintColor: 'primary-900',
         tabBarInactiveTintColor: 'primary-900',
         tabBarStyle: {
-          height: 80,
-          paddingBottom: 8,
+          height: 72 + Math.max(insets.bottom, 8),
+          paddingBottom: Math.max(insets.bottom, 8),
           paddingTop: 8,
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,

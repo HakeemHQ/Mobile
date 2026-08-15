@@ -45,3 +45,6 @@ android/build/
 android/app/build/
 android/local.properties
 .agents/
+
+# firebase 
+hakeem-953ef-firebase-adminsdk-fbsvc-580b111d75.json

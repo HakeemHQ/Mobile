@@ -8,7 +8,7 @@ export default function OnboardingStep1() {
   };
 
   const handleSkip = () => {
-    // router.replace('/(auth)/register');
+    router.replace('/(auth)/login');
   };
 
   return (

@@ -60,5 +60,6 @@
   "loading": "Loading records...",
   "error": "Failed to load records",
   "retry": "Retry",
-  "noResults": "No timeline records found."
+  "noResults": "No timeline records found.",
+  "emptySubtitle": "Your clinical records, visits, and medications will appear here once added."
 }

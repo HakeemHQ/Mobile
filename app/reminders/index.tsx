@@ -192,7 +192,7 @@ export default function RemindersScreen() {
                         </Text>
                     </View>
 
-                    <Pressable
+                    {/* <Pressable
                         accessibilityLabel="Test alerts"
                         accessibilityRole="button"
                         className={`h-9 flex-row items-center justify-center rounded-full bg-amber-500/15 border border-amber-500/30 px-3 ${isRTL ? 'ml-2' : 'mr-2'}`}
@@ -212,7 +212,7 @@ export default function RemindersScreen() {
                         <Text className={`${isRTL ? 'mr-1.5' : 'ml-1.5'} font-jakarta-semibold text-[12px] text-amber-700`}>
                             {t('testAlerts')}
                         </Text>
-                    </Pressable>
+                    </Pressable> */}
 
                     <Pressable
                         accessibilityLabel="Add reminder"
@@ -248,8 +248,8 @@ export default function RemindersScreen() {
                 <ScrollView
                     className="flex-1 px-6"
                     contentContainerStyle={{
-                        paddingBottom:
-                            36,
+                        flexGrow: 1,
+                        paddingBottom: 36,
                     }}
                     showsVerticalScrollIndicator={
                         false

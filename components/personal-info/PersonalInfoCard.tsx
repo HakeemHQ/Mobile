@@ -199,7 +199,6 @@ export function PersonalInfoCard({
                 }
                 actionAccessibilityLabel={t('profileComponents.personalInfoCard.editPhoneNumber')}
                 onActionPress={() => onEdit('phoneNumber')}
-                showDivider={false}
                 isRTL={isRTL}
             />
 
@@ -240,6 +239,21 @@ export function PersonalInfoCard({
                 }
                 isRTL={isRTL}
             />
+
+            {profile.nationalIdMasked && (
+                <PersonalInfoRow
+                    label={'National ID'}
+                    value={profile.nationalIdMasked}
+                    leadingIcon={
+                        <User02Icon
+                            size={20}
+                            color={primaryIconColor}
+                        />
+                    }
+                    showDivider={false}
+                    isRTL={isRTL}
+                />
+            )}
         </View>
     );
 }

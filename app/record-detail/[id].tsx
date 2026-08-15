@@ -121,9 +121,9 @@ export default function RecordDetailScreen() {
                 className={cn(
                   'text-[12px] font-jakarta-bold',
                   config.tagVariant === 'medication' ? 'text-primary-700' :
-                  config.tagVariant === 'labs' ? 'text-tertiary-700' :
-                  config.tagVariant === 'visits' ? 'text-secondary-700' :
-                  'text-gray-700'
+                    config.tagVariant === 'labs' ? 'text-tertiary-700' :
+                      config.tagVariant === 'visits' ? 'text-secondary-700' :
+                        'text-gray-700'
                 )}
               >
                 {t(`recordTypes.${config.labelKey}`, record.recordType)}

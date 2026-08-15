@@ -25,7 +25,7 @@ export interface TimelineCardProps {
 
 const getTagStyles = (variant: TagVariant = 'default', tagText?: string): { bg: string; text: string } => {
   const lowerTag = (tagText || variant).toLowerCase();
-  
+
   if (lowerTag.includes('lab')) {
     return { bg: 'bg-tertiary-50', text: 'text-tertiary-700' };
   }
@@ -37,6 +37,15 @@ const getTagStyles = (variant: TagVariant = 'default', tagText?: string): { bg: 
   }
   if (lowerTag.includes('scan') || lowerTag.includes('x-ray')) {
     return { bg: 'bg-[#FEF3C7]', text: 'text-[#D97706]' };
+  }
+  if (lowerTag.includes('completed') || lowerTag.includes('success') || lowerTag.includes('مكتمل')) {
+    return { bg: 'bg-secondary-50', text: 'text-secondary-700' };
+  }
+  if (lowerTag.includes('pending') || lowerTag.includes('processing') || lowerTag.includes('معالجة')) {
+    return { bg: 'bg-primary-50', text: 'text-primary-700' };
+  }
+  if (lowerTag.includes('failed') || lowerTag.includes('error') || lowerTag.includes('فشل')) {
+    return { bg: 'bg-danger-50', text: 'text-danger-700' };
   }
   return { bg: 'bg-gray-100', text: 'text-gray-700' };
 };
