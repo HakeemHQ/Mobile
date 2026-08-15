@@ -42,29 +42,16 @@ export function selectUpcomingDatedReminders(
     reminders: Reminder[],
     referenceDate = new Date(),
 ): Reminder[] {
-    const referenceTimestamp =
-        referenceDate.getTime();
+    const todayMedicationIds = new Set(
+        selectTodayMedicationReminders(reminders, referenceDate).map(
+            (reminder) => reminder.reminderId,
+        ),
+    );
 
     return reminders
-        .filter(
-            (reminder) =>
-                reminder.reminderType !==
-                'MEDICATION' &&
-                getReminderTimestamp(
-                    reminder,
-                ) >=
-                referenceTimestamp,
-        )
+        .filter((reminder) => !todayMedicationIds.has(reminder.reminderId))
         .sort(
-            (
-                firstReminder,
-                secondReminder,
-            ) =>
-                getReminderTimestamp(
-                    firstReminder,
-                ) -
-                getReminderTimestamp(
-                    secondReminder,
-                ),
+            (firstReminder, secondReminder) =>
+                getReminderTimestamp(firstReminder) - getReminderTimestamp(secondReminder),
         );
 }

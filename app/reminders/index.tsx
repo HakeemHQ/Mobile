@@ -406,6 +406,22 @@ export default function RemindersScreen() {
                                         <SwipeableReminderCard
                                             key={reminder.reminderId}
                                             reminder={reminder}
+                                            onToggleMedication={(isEnabled) => {
+                                                void toggleReminder(
+                                                    reminder.reminderId,
+                                                    isEnabled,
+                                                ).catch((toggleError: unknown) => {
+                                                    const message =
+                                                        toggleError instanceof Error
+                                                            ? toggleError.message
+                                                            : 'The reminder could not be updated.';
+
+                                                    Alert.alert(
+                                                        'Unable to update reminder',
+                                                        message,
+                                                    );
+                                                });
+                                            }}
                                             onPress={() => setEditingReminder(reminder)}
                                             onDelete={() => setDeletingReminder(reminder)}
                                         />
