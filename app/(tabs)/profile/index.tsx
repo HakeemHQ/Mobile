@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Pressable, ActivityIndicator, ScrollView, Modal } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator, ScrollView, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -67,7 +67,7 @@ export default function ProfileScreen() {
 
   const menuItems = [
     { key: 'personalInfo', title: t('menu.personalInfo'), icon: User02Icon, type: 'link', route: '/profile/personal-info' },
-    { key: 'privacy', title: t('menu.privacy'), icon: SecurityCheckIcon, type: 'link', route: '/profile/privacy' },
+    { key: 'privacy', title: t('menu.privacy'), icon: SecurityCheckIcon, type: 'action', action: () => Alert.alert(t('menu.privacy'), t('profileScreens.index.privacyUnavailableMessage'),), },
     { key: 'language', title: t('menu.language'), icon: null, customIcon: Globe, type: 'action', action: () => setShowLanguageModal(true) },
     { key: 'helpSupport', title: t('menu.helpSupport'), icon: Stethoscope02Icon, type: 'link', route: '/profile/help' },
   ];

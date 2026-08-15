@@ -6,7 +6,6 @@ import {
 } from 'react-native';
 import {
     PencilLine,
-    Settings2,
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -169,15 +168,6 @@ export function PersonalInfoCard({
                         color={primaryIconColor}
                     />
                 }
-                trailingIcon={
-                    <Settings2
-                        size={18}
-                        color={actionIconColor}
-                        strokeWidth={1.9}
-                    />
-                }
-                actionAccessibilityLabel={t('profileComponents.personalInfoCard.editEmailAddress')}
-                onActionPress={() => onEdit('email')}
                 isRTL={isRTL}
             />
 
