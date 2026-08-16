@@ -1,6 +1,7 @@
 import { View, Text, TextInput, Pressable, ScrollView, Alert, ActivityIndicator, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { InputField } from '../../components/ui/InputField';
+import { SuccessModal } from '../../components/ui/SuccessModal';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -27,6 +28,7 @@ export default function RegisterScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [globalError, setGlobalError] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const { control, handleSubmit, setError, formState: { errors } } = useForm({
     mode: 'onChange',
@@ -63,9 +65,7 @@ export default function RegisterScreen() {
       });
 
       if (response.success) {
-        Alert.alert(t('success'), t('accountCreatedSuccess'), [
-          { text: t('ok'), onPress: () => router.replace('/(auth)/login') }
-        ]);
+        setShowSuccessModal(true);
       } else {
         setGlobalError(response.message || t('somethingWentWrong'));
       }
@@ -116,7 +116,7 @@ export default function RegisterScreen() {
             accessibilityLabel={t('goBack')}
             accessibilityRole="button"
             className="w-10 h-10 rounded-full border border-bg-600 items-center justify-center mb-6"
-            onPress={() => router.back()}
+            onPress={() => router.replace('/(auth)/login')}
           >
             <ArrowLeft02Icon size={20} color="primary.900" />
           </Pressable>
@@ -272,9 +272,10 @@ export default function RegisterScreen() {
           <Controller
             control={control}
             name="phoneNumber"
+            rules={{ required: t('phoneRequired') }}
             render={({ field: { onChange, value } }) => (
               <InputField
-                label={t('phoneOptional')}
+                label={t('phone')}
                 icon={Call02Icon}
                 placeholder={t('phonePlaceholder')}
                 keyboardType="phone-pad"
@@ -442,6 +443,17 @@ export default function RegisterScreen() {
           </View>
         </KeyboardAwareScrollView>
       </View>
+
+      <SuccessModal
+        visible={showSuccessModal}
+        title={t('success')}
+        subtitle={t('accountCreatedSuccess')}
+        buttonText={t('ok')}
+        onConfirm={() => {
+          setShowSuccessModal(false);
+          router.replace('/(auth)/login');
+        }}
+      />
     </SafeAreaView>
   );
 }

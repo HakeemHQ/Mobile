@@ -82,15 +82,17 @@ export default function LoginScreen() {
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
       >
         <View className="gap-8 py-8">
-          {/* Back Button */}
-          <Pressable
-            accessibilityLabel={t('goBack')}
-            accessibilityRole="button"
-            className="w-10 h-10 rounded-full border border-bg-600 items-center justify-center"
-            onPress={() => router.back()}
-          >
-            <ArrowLeft02Icon size={20} color="primary.900" />
-          </Pressable>
+          {/* Back Button (Only if there is a screen to go back to) */}
+          {router.canGoBack() && (
+            <Pressable
+              accessibilityLabel={t('goBack')}
+              accessibilityRole="button"
+              className="w-10 h-10 rounded-full border border-bg-600 items-center justify-center"
+              onPress={() => router.back()}
+            >
+              <ArrowLeft02Icon size={20} color="primary.900" />
+            </Pressable>
+          )}
 
           {/* Logo */}
           <View className={`items-center ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
