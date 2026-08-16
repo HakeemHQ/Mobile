@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { getSecureItem } from '../storage';
 import { isTokenExpired, clearTokens } from './auth';
 
-export const BASE_URL = 'http://hakeem1.runasp.net';
+export const BASE_URL = 'https://hakeem1.runasp.net';
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
