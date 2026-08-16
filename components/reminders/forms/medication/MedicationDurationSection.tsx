@@ -3,14 +3,13 @@ import {
 } from 'react';
 
 import {
-    Platform,
     Pressable,
     Text,
     View,
 } from 'react-native';
 
 import DateTimePicker, {
-    type DateTimePickerEvent,
+    type DateTimePickerChangeEvent,
 } from '@react-native-community/datetimepicker';
 
 import {
@@ -157,27 +156,12 @@ export function MedicationDurationSection({
             ? endDate
             : startDate;
 
-    const handlePickerChange = (
-        event: DateTimePickerEvent,
-        selectedValue?: Date,
+    const handlePickerValueChange = (
+        _event:
+            DateTimePickerChangeEvent,
+        selectedValue: Date,
     ) => {
-        const wasDismissed =
-            event.type ===
-            'dismissed';
-
-        if (
-            Platform.OS ===
-            'android' ||
-            wasDismissed
-        ) {
-            setPickerTarget(null);
-        }
-
-        if (
-            !pickerTarget ||
-            !selectedValue ||
-            wasDismissed
-        ) {
+        if (!pickerTarget) {
             return;
         }
 
@@ -194,11 +178,11 @@ export function MedicationDurationSection({
             );
         }
 
-        if (
-            Platform.OS === 'ios'
-        ) {
-            setPickerTarget(null);
-        }
+        setPickerTarget(null);
+    };
+
+    const handlePickerDismiss = () => {
+        setPickerTarget(null);
     };
 
     return (
@@ -270,8 +254,8 @@ export function MedicationDurationSection({
                             ? new Date()
                             : startDate
                     }
-                    onChange={
-                        handlePickerChange
+                    onValueChange={
+                        handlePickerValueChange
                     }
                 />
             ) : null}

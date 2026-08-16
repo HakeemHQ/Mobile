@@ -3,7 +3,6 @@ import {
 } from 'react';
 
 import {
-    Platform,
     Text,
 } from 'react-native';
 
@@ -12,7 +11,7 @@ import {
 } from 'react-i18next';
 
 import DateTimePicker, {
-    type DateTimePickerEvent,
+    type DateTimePickerChangeEvent,
 } from '@react-native-community/datetimepicker';
 
 import {
@@ -88,27 +87,12 @@ export function ReminderDateTimeFields({
             null,
         );
 
-    const handlePickerChange = (
-        event: DateTimePickerEvent,
-        selectedValue?: Date,
+    const handlePickerValueChange = (
+        _event:
+            DateTimePickerChangeEvent,
+        selectedValue: Date,
     ) => {
-        const wasDismissed =
-            event.type ===
-            'dismissed';
-
-        if (
-            Platform.OS ===
-            'android' ||
-            wasDismissed
-        ) {
-            setPickerMode(null);
-        }
-
-        if (
-            !selectedValue ||
-            !pickerMode ||
-            wasDismissed
-        ) {
+        if (!pickerMode) {
             return;
         }
 
@@ -120,11 +104,11 @@ export function ReminderDateTimeFields({
             ),
         );
 
-        if (
-            Platform.OS === 'ios'
-        ) {
-            setPickerMode(null);
-        }
+        setPickerMode(null);
+    };
+
+    const handlePickerDismiss = () => {
+        setPickerMode(null);
     };
 
     return (
@@ -169,8 +153,11 @@ export function ReminderDateTimeFields({
                             ? new Date()
                             : undefined
                     }
-                    onChange={
-                        handlePickerChange
+                    onValueChange={
+                        handlePickerValueChange
+                    }
+                    onDismiss={
+                        handlePickerDismiss
                     }
                 />
             ) : null}

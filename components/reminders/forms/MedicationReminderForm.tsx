@@ -7,14 +7,13 @@ import {
 } from 'react-i18next';
 
 import {
-    Platform,
     Pressable,
     Text,
     View,
 } from 'react-native';
 
 import DateTimePicker, {
-    type DateTimePickerEvent,
+    type DateTimePickerChangeEvent,
 } from '@react-native-community/datetimepicker';
 
 import {
@@ -613,42 +612,24 @@ export function MedicationReminderForm({
         setIsTimePickerOpen,
     ] = useState(false);
 
-    const handleTimeChange = (
-        event: DateTimePickerEvent,
-        selectedTime?: Date,
+    const handleTimeValueChange = (
+        _event: DateTimePickerChangeEvent,
+        selectedTime: Date,
     ) => {
-        const wasDismissed =
-            event.type ===
-            'dismissed';
-
-        if (
-            Platform.OS ===
-            'android' ||
-            wasDismissed
-        ) {
-            setIsTimePickerOpen(
-                false,
-            );
-        }
-
-        if (
-            !selectedTime ||
-            wasDismissed
-        ) {
-            return;
-        }
 
         form.setMedicationTime(
             selectedTime,
         );
 
-        if (
-            Platform.OS === 'ios'
-        ) {
-            setIsTimePickerOpen(
-                false,
-            );
-        }
+        setIsTimePickerOpen(
+            false,
+        );
+    };
+
+    const handleTimeDismiss = () => {
+        setIsTimePickerOpen(
+            false,
+        );
     };
 
     return (
@@ -753,8 +734,11 @@ export function MedicationReminderForm({
                         }
                         mode="time"
                         display="default"
-                        onChange={
-                            handleTimeChange
+                        onValueChange={
+                            handleTimeValueChange
+                        }
+                        onDismiss={
+                            handleTimeDismiss
                         }
                     />
                 ) : null}
