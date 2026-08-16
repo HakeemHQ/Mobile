@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { apiFetch, saveTokens } from '../../lib/api';
-import { GoogleIcon } from '../../components/icons/GoogleIcon';
 import { ArrowLeft02Icon } from '../../components/icons/ArrowLeft02Icon';
 import { Mail01Icon } from '../../components/icons/Mail01Icon';
 import { LockOpenIcon } from '../../components/icons/LockOpenIcon';
@@ -195,21 +194,6 @@ export default function LoginScreen() {
                 {t('continue')}
               </Text>
             )}
-          </Pressable>
-
-          {/* Or continue with */}
-          <View className="items-center">
-            <Text className="text-sm font-inter-regular text-text2-500">
-              {t('orContinueWith')}
-            </Text>
-          </View>
-
-          {/* Social Login Buttons */}
-          <Pressable className={`h-14 border border-text2-100 rounded-2xl items-center justify-center mt-2 mb-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
-            <GoogleIcon />
-            <Text className={`font-jakarta-bold text-text-900 text-base ${isRTL ? 'mr-3' : 'ml-3'}`}>
-              {t('continueWithGoogle')}
-            </Text>
           </Pressable>
 
           {/* Encryption Banner */}

@@ -134,11 +134,15 @@ export function setupPushNotificationResponseListener(): () => void {
 }
 
 /**
- * Full registration flow: get token → send to backend.
+ * Full registration flow: get token → send to backend (only if authenticated).
  */
 export async function initPushNotifications(): Promise<void> {
   const token = await registerForPushNotificationsAsync();
   if (token) {
-    await sendPushTokenToBackend(token);
+    const { verifyStoredToken } = await import('./api/auth');
+    const isAuthenticated = await verifyStoredToken();
+    if (isAuthenticated) {
+      await sendPushTokenToBackend(token);
+    }
   }
 }
