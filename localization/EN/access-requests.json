@@ -44,5 +44,7 @@
     "revokedSubtitle": "You haven't revoked any access requests.",
     "expired": "No Expired Requests",
     "expiredSubtitle": "You have no expired access requests."
-  }
+  },
+  "pendingDoctorReviewTitle": "Pending Doctor Review",
+  "pendingDoctorReviewSubtitle": "Please visit the nearest doctor to verify and activate your account. Your account will remain pending until verified."
 }

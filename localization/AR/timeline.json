@@ -66,5 +66,7 @@
   "emptySubtitle": "ستظهر هنا السجلات والزيارات والأدوية الخاصة بك بمجرد إضافتها.",
   "emptyTitle": "لا توجد سجلات بعد",
   "noRecordsFound": "لم يتم العثور على سجلات",
-  "noRecordsFoundSubtitle": "لم نتمكن من العثور على أي سجلات تطابق \"{{query}}\"."
+  "noRecordsFoundSubtitle": "لم نتمكن من العثور على أي سجلات تطابق \"{{query}}\".",
+  "pendingDoctorReviewTitle": "قيد مراجعة الطبيب",
+  "pendingDoctorReviewSubtitle": "يرجى التوجه لأقرب طبيب لتفعيل ومراجعة حسابك، سيظل حسابك قيد الانتظار حتى يتم التحقق منه بواسطة الطبيب."
 }

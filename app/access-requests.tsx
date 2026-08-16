@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, FlatList, StatusBar, ActivityIndicator, Pressable, RefreshControl, Modal, Image } from 'react-native';
+import { View, Text, FlatList, StatusBar, ActivityIndicator, Pressable, RefreshControl, Modal, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react-native';
@@ -16,6 +16,7 @@ import {
   AccessRequestItem
 } from '@/lib/api/access-requests';
 import { saveApprovedCode, getApprovedCodes } from '@/lib/access-codes-storage';
+import { useProfileStore } from '@/store/useProfileStore';
 
 const PAGE_SIZE = 15;
 
@@ -50,6 +51,15 @@ const MonthHeader = React.memo(({ label, isRTL }: { label: string; isRTL: boolea
 export default function AccessRequestsScreen() {
   const { t, i18n } = useTranslation('accessRequests');
   const isRTL = i18n.language === 'ar';
+  
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((state) => state.fetchProfile);
+
+  React.useEffect(() => {
+    if (!profile) {
+      void fetchProfile();
+    }
+  }, [profile, fetchProfile]);
 
   const [requests, setRequests] = useState<AccessRequestItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,6 +70,8 @@ export default function AccessRequestsScreen() {
 
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [error, setError] = useState<string | null>(null);
+
+  const isPending = profile?.identityVerificationStatus?.toLowerCase() === 'pending' || !!(error && String(error).includes('403'));
 
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
@@ -254,10 +266,38 @@ export default function AccessRequestsScreen() {
           </View>
 
           {/* Filter Chips */}
-          <AccessRequestFilterChips selectedFilter={selectedFilter} onSelectFilter={handleFilterChange} />
+          {!isPending && <AccessRequestFilterChips selectedFilter={selectedFilter} onSelectFilter={handleFilterChange} />}
 
           {/* Content */}
-          {loading && !refreshing ? (
+          {isPending ? (
+            <ScrollView
+              contentContainerStyle={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => {
+                    void fetchProfile();
+                    handleRefresh();
+                  }}
+                  colors={[colors.primary[900]]}
+                  tintColor={colors.primary[900]}
+                />
+              }
+            >
+              <Image
+                source={require('@/assets/images/Pending.webp')}
+                style={{ width: 250, height: 180 }}
+                resizeMode="contain"
+                className="mb-4"
+              />
+              <Text className="text-[18px] font-jakarta-bold text-gray-900 mb-2 text-center">
+                {t('pendingDoctorReviewTitle', { defaultValue: 'Pending Doctor Review' })}
+              </Text>
+              <Text className="text-[14px] font-inter-regular text-gray-500 text-center leading-5">
+                {t('pendingDoctorReviewSubtitle', { defaultValue: 'Please wait while the doctor reviews your profile.' })}
+              </Text>
+            </ScrollView>
+          ) : loading && !refreshing ? (
             <View className="flex-1 items-center justify-center">
               <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
               <Text className="text-[14px] font-inter-regular text-gray-400 mt-3">

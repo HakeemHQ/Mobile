@@ -131,6 +131,7 @@
       "notProvided": "Not provided",
       "male": "Male",
       "female": "Female",
+      "nationalId": "National ID",
       "editFirstName": "Edit first name",
       "editLastName": "Edit last name",
       "editEmailAddress": "Edit email address",
@@ -153,5 +154,7 @@
       "cancel": "Cancel",
       "saveChanges": "Save Changes"
     }
-  }
+  },
+  "statusVerified": "Verified",
+  "statusPending": "Pending"
 }

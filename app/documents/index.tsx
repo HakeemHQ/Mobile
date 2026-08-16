@@ -9,6 +9,7 @@ import {
   TextInput,
   Pressable,
   Image,
+  Keyboard,
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -35,6 +36,7 @@ import { useDocuments } from '@/hooks/useDocuments';
 import { cn } from '@/lib/utils';
 import { colors } from '@/lib/theme';
 import type { DocumentItem } from '@/types/document';
+import { useProfileStore } from '@/store/useProfileStore';
 
 /** Status badge styles helper */
 const getStatusBadge = (status: string) => {
@@ -84,11 +86,22 @@ export default function DocumentsScreen() {
   const isRTL = i18n.language === 'ar';
   const router = useRouter();
 
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((state) => state.fetchProfile);
+
+  React.useEffect(() => {
+    if (!profile) {
+      void fetchProfile();
+    }
+  }, [profile, fetchProfile]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('all');
 
   const { documents, loading, error, refreshing, refresh } = useDocuments();
+
+  const isPending = profile?.identityVerificationStatus?.toLowerCase() === 'pending' || !!(error && String(error).includes('403'));
 
   // Search and category filtering
   const filteredDocuments = useMemo(() => {
@@ -254,51 +267,81 @@ export default function DocumentsScreen() {
           </View>
 
           {/* Filter Chips */}
-          <View className="mb-4">
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingHorizontal: 4,
-                flexDirection: isRTL ? 'row-reverse' : 'row',
-                gap: 8,
-              }}
-            >
-              {[
-                { id: 'all', labelKey: 'filterAll' },
-                { id: 'prescription', labelKey: 'filterPrescription' },
-                { id: 'lab_report', labelKey: 'filterLabReport' },
-                { id: 'medical_visit', labelKey: 'filterMedicalVisit' },
-              ].map((opt) => {
-                const isSelected = selectedFilter === opt.id;
-                return (
-                  <Pressable
-                    key={opt.id}
-                    onPress={() => setSelectedFilter(opt.id)}
-                    className={cn(
-                      'px-4 py-2 rounded-full border items-center justify-center',
-                      isSelected
-                        ? 'bg-primary-900 border-primary-900'
-                        : 'bg-white border-gray-200'
-                    )}
-                    style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
-                  >
-                    <Text
+          {!isPending && (
+            <View className="mb-4">
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 4,
+                  flexDirection: isRTL ? 'row-reverse' : 'row',
+                  gap: 8,
+                }}
+              >
+                {[
+                  { id: 'all', labelKey: 'filterAll' },
+                  { id: 'prescription', labelKey: 'filterPrescription' },
+                  { id: 'lab_report', labelKey: 'filterLabReport' },
+                  { id: 'medical_visit', labelKey: 'filterMedicalVisit' },
+                ].map((opt) => {
+                  const isSelected = selectedFilter === opt.id;
+                  return (
+                    <Pressable
+                      key={opt.id}
+                      onPress={() => setSelectedFilter(opt.id)}
                       className={cn(
-                        'text-[13px] font-jakarta-semibold',
-                        isSelected ? 'text-white' : 'text-gray-700'
+                        'px-4 py-2 rounded-full border items-center justify-center',
+                        isSelected
+                          ? 'bg-primary-900 border-primary-900'
+                          : 'bg-white border-gray-200'
                       )}
+                      style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
                     >
-                      {t(opt.labelKey)}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </View>
+                      <Text
+                        className={cn(
+                          'text-[13px] font-jakarta-semibold',
+                          isSelected ? 'text-white' : 'text-gray-700'
+                        )}
+                      >
+                        {t(opt.labelKey)}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          )}
 
           {/* Content */}
-          {loading && !refreshing ? (
+          {isPending ? (
+          <ScrollView
+            contentContainerStyle={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => {
+                  void fetchProfile();
+                  refresh();
+                }}
+                colors={[colors.primary[900]]}
+                tintColor={colors.primary[900]}
+              />
+            }
+          >
+            <Image
+              source={require('@/assets/images/Pending.webp')}
+              style={{ width: 250, height: 180 }}
+              resizeMode="contain"
+              className="mb-4"
+            />
+            <Text className="text-[18px] font-jakarta-bold text-gray-900 mb-2 text-center">
+              {t('pendingDoctorReviewTitle', { defaultValue: 'Pending Doctor Review' })}
+            </Text>
+            <Text className="text-[14px] font-inter-regular text-gray-500 text-center leading-5">
+              {t('pendingDoctorReviewSubtitle', { defaultValue: 'Please wait while the doctor reviews your profile.' })}
+            </Text>
+          </ScrollView>
+        ) : loading && !refreshing ? (
             <View className="flex-1 items-center justify-center">
               <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
               <Text className="text-[14px] font-inter-regular text-gray-400 mt-3">

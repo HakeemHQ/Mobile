@@ -232,7 +232,7 @@ export function PersonalInfoCard({
 
             {profile.nationalIdMasked && (
                 <PersonalInfoRow
-                    label={'National ID'}
+                    label={t('profileComponents.personalInfoCard.nationalId', { defaultValue: 'National ID' })}
                     value={profile.nationalIdMasked}
                     leadingIcon={
                         <User02Icon
