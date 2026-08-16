@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Onboarding from '../../components/ui/Onboarding';
 import Onbording2Svg from '../../assets/images/Onbording2.svg';
 
@@ -7,7 +8,8 @@ export default function OnboardingStep2() {
      router.push('/(onboarding)/step3');
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    await AsyncStorage.setItem('hasLaunched', 'true');
     router.replace('/(auth)/login');
   };
 

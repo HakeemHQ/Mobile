@@ -131,6 +131,7 @@
       "notProvided": "غير متوفر",
       "male": "ذكر",
       "female": "أنثى",
+      "nationalId": "الرقم القومي",
       "editFirstName": "تعديل الاسم الأول",
       "editLastName": "تعديل اسم العائلة",
       "editEmailAddress": "تعديل البريد الإلكتروني",
@@ -153,5 +154,7 @@
       "cancel": "إلغاء",
       "saveChanges": "حفظ التغييرات"
     }
-  }
+  },
+  "statusVerified": "موثق",
+  "statusPending": "معلق"
 }

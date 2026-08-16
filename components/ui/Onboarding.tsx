@@ -137,7 +137,7 @@ export default function Onboarding({
                             {renderFooter ? renderFooter : (
                                 <View className="flex-row justify-end">
                                     <Pressable
-                                        className={`${buttonBgClass} px-8 py-3.5 rounded-xl items-center w-full sm:w-auto active:opacity-90`}
+                                        className={`${buttonBgClass} px-8 py-3.5 rounded-xl items-center  sm:w-auto active:opacity-90`}
                                         onPress={handleNext}
                                     >
                                         <Text className="text-white font-inter-semibold text-lg">{t('next')}</Text>

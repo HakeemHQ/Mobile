@@ -66,5 +66,7 @@
   "emptySubtitle": "Your clinical records, visits, and medications will appear here once added.",
   "emptyTitle": "No timeline records yet",
   "noRecordsFound": "No records found",
-  "noRecordsFoundSubtitle": "We couldn't find any records matching \"{{query}}\"."
+  "noRecordsFoundSubtitle": "We couldn't find any records matching \"{{query}}\".",
+  "pendingDoctorReviewTitle": "Pending Doctor Review",
+  "pendingDoctorReviewSubtitle": "Please visit the nearest doctor to verify and activate your account. Your account will remain pending until verified."
 }

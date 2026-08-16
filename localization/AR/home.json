@@ -49,5 +49,7 @@
   "filterMedicalVisit": "زيارة طبية",
   "emptyPrescriptions": "لا توجد وصفات طبية",
   "emptyLabReports": "لا توجد تقارير مختبر",
-  "emptyMedicalVisits": "لا توجد زيارات طبية"
+  "emptyMedicalVisits": "لا توجد زيارات طبية",
+  "pendingDoctorReviewTitle": "قيد مراجعة الطبيب",
+  "pendingDoctorReviewSubtitle": "يرجى التوجه لأقرب طبيب لتفعيل ومراجعة حسابك، سيظل حسابك قيد الانتظار حتى يتم التحقق منه بواسطة الطبيب."
 }

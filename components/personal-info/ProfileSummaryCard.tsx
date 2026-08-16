@@ -37,10 +37,36 @@ export function ProfileSummaryCard({
                     >
                         {displayName}
                     </Text>
-                    {profile.identityVerificationStatus === 'Verified' ? (
-                        <ShieldCheck size={24} color="#5CCFA9" strokeWidth={2.5} />
-                    ) : profile.identityVerificationStatus ? (
-                        <ShieldAlert size={24} color="#FFB020" strokeWidth={2.5} />
+                    {profile.identityVerificationStatus?.toLowerCase() === 'verified' ? (
+                        <View
+                            className={`rounded-full border px-2 py-1 ${isRTL ? 'mr-2' : 'ml-2'}`}
+                            style={{
+                                backgroundColor: '#5CCFA9',
+                                borderColor: 'rgba(255,255,255,0.2)',
+                            }}
+                        >
+                            <View className={`flex-row items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                <ShieldCheck size={20} color="#FFFFFF" strokeWidth={3} />
+                                <Text className={`font-jakarta-bold text-[12px] uppercase tracking-wide text-surface ${isRTL ? 'mr-1 text-right' : 'ml-1 text-left'}`}>
+                                    {t('statusVerified', { defaultValue: 'Verified' })}
+                                </Text>
+                            </View>
+                        </View>
+                    ) : profile.identityVerificationStatus?.toLowerCase() === 'pending' ? (
+                        <View
+                            className={`rounded-full border px-2 py-1 ${isRTL ? 'mr-2' : 'ml-2'}`}
+                            style={{
+                                backgroundColor: '#FFB020',
+                                borderColor: 'rgba(255,255,255,0.2)',
+                            }}
+                        >
+                            <View className={`flex-row items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                <ShieldAlert size={20} color="#FFFFFF" strokeWidth={3} />
+                                <Text className={`font-jakarta-bold text-[12px] uppercase tracking-wide text-surface ${isRTL ? 'mr-1 text-right' : 'ml-1 text-left'}`}>
+                                    {t('statusPending', { defaultValue: 'Pending' })}
+                                </Text>
+                            </View>
+                        </View>
                     ) : null}
                 </View>
 

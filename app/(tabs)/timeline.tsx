@@ -6,12 +6,17 @@ import {
   StatusBar,
   ActivityIndicator,
   RefreshControl,
+  TextInput,
+  Pressable,
   Image,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
+
+import { useProfileStore } from '@/store/useProfileStore';
 
 import {
   TimelineHeader,
@@ -154,6 +159,15 @@ export default function TimelineScreen() {
   const isRTL = i18n.language === 'ar';
   const router = useRouter();
 
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((state) => state.fetchProfile);
+
+  React.useEffect(() => {
+    if (!profile) {
+      void fetchProfile();
+    }
+  }, [profile, fetchProfile]);
+
   const [selectedFilter, setSelectedFilter] = useState('all');
 
   const {
@@ -171,6 +185,8 @@ export default function TimelineScreen() {
     loadMore,
     handleSearch,
   } = useMedicalRecords();
+
+  const isPending = profile?.identityVerificationStatus?.toLowerCase() === 'pending' || !!(error && String(error).includes('403'));
 
   // When filter changes, re-fetch from API with recordType param
   const handleFilterChange = useCallback(
@@ -217,7 +233,7 @@ export default function TimelineScreen() {
   }, [loadMore, isSearchActive]);
 
   // Loading state (initial load only)
-  if (loading && !refreshing) {
+  if (loading && !refreshing && !isPending) {
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -241,7 +257,7 @@ export default function TimelineScreen() {
   }
 
   // Error state
-  if (error && !loading) {
+  if (error && !loading && !isPending) {
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -283,83 +299,117 @@ export default function TimelineScreen() {
           />
 
           {/* Reusable Category Filter Pills */}
-          <TimelineFilterChips
-            selectedFilter={selectedFilter}
-            onSelectFilter={handleFilterChange}
-          />
-
-          {/* Searching indicator */}
-          {searching && (
-            <View className="py-2 items-center">
-              <ActivityIndicator size="small" color={colors.primary.DEFAULT} />
-            </View>
+          {!isPending && (
+            <TimelineFilterChips
+              selectedFilter={selectedFilter}
+              onSelectFilter={handleFilterChange}
+            />
           )}
 
-          {/* Timeline FlatList */}
-          <FlatList
-            data={flatData}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
-            onEndReached={handleEndReached}
-            onEndReachedThreshold={0.4}
+          {isPending ? (
+          <ScrollView
+            contentContainerStyle={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 }}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={handleRefresh}
-                colors={[colors.primary.DEFAULT]}
-                tintColor={colors.primary.DEFAULT}
+                onRefresh={() => {
+                  void fetchProfile();
+                  refresh();
+                }}
+                colors={[colors.primary[900]]}
+                tintColor={colors.primary[900]}
               />
             }
-            ListFooterComponent={
-              <ListFooter
-                loadingMore={loadingMore}
-                hasMore={hasMore}
-                isSearchActive={isSearchActive}
-              />
-            }
-            ListEmptyComponent={
-              !searching ? (
-                <View className="flex-1 items-center justify-center px-4 py-8">
-                  <Image
-                    source={require('@/assets/images/emptyList.png')}
-                    style={{ width: 220, height: 220 }}
-                    resizeMode="contain"
-                    className="mb-4"
-                  />
-                  {searchQuery.trim() ? (
-                    <>
-                      <Text className={cn('text-center font-jakarta-bold text-[18px] text-gray-900 mb-2', isRTL && 'text-right')}>
-                        {t('noRecordsFound', { defaultValue: 'No records found' })}
-                      </Text>
-                      <Text className={cn('text-center font-inter-regular text-[14px] text-gray-500 max-w-[300px]', isRTL && 'text-right')}>
-                        {t('noRecordsFoundSubtitle', {
-                          defaultValue: `We couldn't find any records matching "${searchQuery}".`,
-                          query: searchQuery,
-                        })}
-                      </Text>
-                    </>
-                  ) : (
-                    <>
-                      <Text className={cn('text-center font-jakarta-bold text-[20px] text-gray-900 mb-2', isRTL && 'text-right')}>
-                        {t('emptyTitle', { defaultValue: 'No timeline records yet' })}
-                      </Text>
-                      <Text className={cn('text-center font-inter-regular text-[14px] text-gray-500 max-w-[320px]', isRTL && 'text-right')}>
-                        {t('emptySubtitle')}
-                      </Text>
-                    </>
-                  )}
+          >
+            <Image
+              source={require('@/assets/images/Pending.webp')}
+              style={{ width: 250, height: 180 }}
+              resizeMode="contain"
+              className="mb-4"
+            />
+            <Text className="text-[18px] font-jakarta-bold text-gray-900 mb-2 text-center">
+              {t('pendingDoctorReviewTitle', { defaultValue: 'Pending Doctor Review' })}
+            </Text>
+            <Text className="text-[14px] font-inter-regular text-gray-500 text-center leading-5">
+              {t('pendingDoctorReviewSubtitle', { defaultValue: 'Please wait while the doctor reviews your profile.' })}
+            </Text>
+          </ScrollView>
+        ) : (
+            <>
+              {/* Searching indicator */}
+              {searching && (
+                <View className="py-2 items-center">
+                  <ActivityIndicator size="small" color={colors.primary.DEFAULT} />
                 </View>
-              ) : null
-            }
-            // Performance optimizations
-            removeClippedSubviews={true}
-            maxToRenderPerBatch={10}
-            windowSize={7}
-            initialNumToRender={15}
-            updateCellsBatchingPeriod={50}
-          />
+              )}
+
+              {/* Timeline FlatList */}
+              <FlatList
+                data={flatData}
+                renderItem={renderItem}
+                keyExtractor={keyExtractor}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
+                onEndReached={handleEndReached}
+                onEndReachedThreshold={0.4}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={handleRefresh}
+                    colors={[colors.primary.DEFAULT]}
+                    tintColor={colors.primary.DEFAULT}
+                  />
+                }
+                ListFooterComponent={
+                  <ListFooter
+                    loadingMore={loadingMore}
+                    hasMore={hasMore}
+                    isSearchActive={isSearchActive}
+                  />
+                }
+                ListEmptyComponent={
+                  !searching ? (
+                    <View className="flex-1 items-center justify-center px-4 py-8">
+                      <Image
+                        source={require('@/assets/images/emptyList.png')}
+                        style={{ width: 220, height: 220 }}
+                        resizeMode="contain"
+                        className="mb-4"
+                      />
+                      {searchQuery.trim() ? (
+                        <>
+                          <Text className={cn('text-center font-jakarta-bold text-[18px] text-gray-900 mb-2', isRTL && 'text-right')}>
+                            {t('noRecordsFound', { defaultValue: 'No records found' })}
+                          </Text>
+                          <Text className={cn('text-center font-inter-regular text-[14px] text-gray-500 max-w-[300px]', isRTL && 'text-right')}>
+                            {t('noRecordsFoundSubtitle', {
+                              defaultValue: `We couldn't find any records matching "${searchQuery}".`,
+                              query: searchQuery,
+                            })}
+                          </Text>
+                        </>
+                      ) : (
+                        <>
+                          <Text className={cn('text-center font-jakarta-bold text-[20px] text-gray-900 mb-2', isRTL && 'text-right')}>
+                            {t('emptyTitle', { defaultValue: 'No timeline records yet' })}
+                          </Text>
+                          <Text className={cn('text-center font-inter-regular text-[14px] text-gray-500 max-w-[320px]', isRTL && 'text-right')}>
+                            {t('emptySubtitle')}
+                          </Text>
+                        </>
+                      )}
+                    </View>
+                  ) : null
+                }
+                // Performance optimizations
+                removeClippedSubviews={true}
+                maxToRenderPerBatch={10}
+                windowSize={7}
+                initialNumToRender={15}
+                updateCellsBatchingPeriod={50}
+              />
+            </>
+          )}
         </View>
       </SafeAreaView>
     </>
