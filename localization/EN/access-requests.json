@@ -4,8 +4,10 @@
     "all": "All",
     "pending": "Pending",
     "active": "Active",
+    "rejected": "Rejected",
     "revoked": "Revoked",
-    "expired": "Expired"
+    "expired": "Expired",
+    "redeemed": "Redeemed"
   },
   "statuses": {
     "pending": "Pending",
@@ -13,7 +15,8 @@
     "active": "Active",
     "rejected": "Rejected",
     "revoked": "Revoked",
-    "expired": "Expired"
+    "expired": "Expired",
+    "redeemed": "Redeemed"
   },
   "unknownDoctor": "Unknown Doctor",
   "generalSpecialty": "General",
@@ -21,12 +24,14 @@
   "expiredTag": "Expired",
   "reject": "Reject",
   "approve": "Approve",
+  "revokeAccess": "Revoke Access",
   "loading": "Loading requests...",
   "retry": "Retry",
   "noRequests": "No access requests.",
   "failedToFetch": "Failed to fetch access requests",
   "failedToApprove": "Failed to approve request",
   "failedToReject": "Failed to reject request",
+  "failedToRevoke": "Failed to revoke access",
   "modal": {
     "title": "Access Request Approved!",
     "subtitle": "Provide this one-time code to Dr. {{name}}:",
@@ -40,10 +45,14 @@
     "pendingSubtitle": "You don't have any pending requests to approve or reject.",
     "active": "No Active Requests",
     "activeSubtitle": "You have no currently active access sessions.",
+    "rejected": "No Rejected Requests",
+    "rejectedSubtitle": "You don't have any rejected access requests.",
     "revoked": "No Revoked Requests",
     "revokedSubtitle": "You haven't revoked any access requests.",
     "expired": "No Expired Requests",
-    "expiredSubtitle": "You have no expired access requests."
+    "expiredSubtitle": "You have no expired access requests.",
+    "redeemed": "No Redeemed Requests",
+    "redeemedSubtitle": "You have no redeemed access requests."
   },
   "pendingDoctorReviewTitle": "Pending Doctor Review",
   "pendingDoctorReviewSubtitle": "Please visit the nearest doctor to verify and activate your account. Your account will remain pending until verified."

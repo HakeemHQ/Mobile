@@ -44,6 +44,14 @@ const FILTER_OPTIONS: FilterChipOption[] = [
     dotColor: '#059669',
   },
   {
+    id: 'rejected',
+    labelEn: 'Rejected',
+    labelAr: 'مرفوض',
+    activeBg: '#991B1B',
+    activeBorder: '#991B1B',
+    dotColor: '#991B1B',
+  },
+  {
     id: 'revoked',
     labelEn: 'Revoked',
     labelAr: 'ملغي',
@@ -58,6 +66,14 @@ const FILTER_OPTIONS: FilterChipOption[] = [
     activeBg: '#475569',
     activeBorder: '#475569',
     dotColor: '#475569',
+  },
+  {
+    id: 'redeemed',
+    labelEn: 'Redeemed',
+    labelAr: 'مُستخدم',
+    activeBg: '#3B82F6',
+    activeBorder: '#3B82F6',
+    dotColor: '#3B82F6',
   },
 ];
 

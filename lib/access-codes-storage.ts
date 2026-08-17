@@ -61,3 +61,20 @@ export async function removeApprovedCode(requestId: string): Promise<void> {
   } catch {
   }
 }
+
+export async function removeApprovedCodeByCode(codeToRemove: string): Promise<void> {
+  try {
+    const existing = await getApprovedCodes();
+    let changed = false;
+    for (const [key, val] of Object.entries(existing)) {
+      if (val.oneTimeCode === codeToRemove) {
+        delete existing[key];
+        changed = true;
+      }
+    }
+    if (changed) {
+      await AsyncStorage.setItem(ACCESS_CODES_STORAGE_KEY, JSON.stringify(existing));
+    }
+  } catch {
+  }
+}
