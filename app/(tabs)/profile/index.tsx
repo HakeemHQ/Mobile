@@ -8,6 +8,7 @@ import { Globe, Check, ChevronRight, ChevronLeft } from 'lucide-react-native';
 import { useProfileStore } from '@/store/useProfileStore';
 import { ProfileSummaryCard } from '@/components/personal-info/ProfileSummaryCard';
 import { logoutApi, clearTokens } from '@/lib/api';
+import { removePushTokenFromBackend } from '@/lib/push-notifications';
 import { colors } from '@/lib/theme/colors';
 import { setLanguage, getStoredLanguage } from '@/localization/i18n';
 
@@ -40,6 +41,7 @@ export default function ProfileScreen() {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
+      await removePushTokenFromBackend();
       await logoutApi();
     } finally {
       await clearTokens();
