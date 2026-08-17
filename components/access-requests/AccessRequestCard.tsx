@@ -13,6 +13,7 @@ export interface AccessRequestCardProps {
   isLast?: boolean;
   onApprove: (requestId: string, doctorName: string) => void;
   onReject: (requestId: string) => void;
+  onRevoke?: (requestId: string) => void;
 }
 
 const getNodeConfig = (status: string) => {
@@ -68,10 +69,12 @@ export const AccessRequestCard: React.FC<AccessRequestCardProps> = ({
   isLast = false,
   onApprove,
   onReject,
+  onRevoke,
 }) => {
   const { t } = useTranslation('accessRequests');
   const statusLower = (item.status || '').toLowerCase();
   const isPending = statusLower === 'pending';
+  const canRevoke = statusLower === 'redeemed';
 
   const expiresTime = item.codeExpiresAt ? new Date(item.codeExpiresAt).getTime() : null;
   const isExpired = expiresTime ? expiresTime < now : false;
@@ -215,6 +218,32 @@ export const AccessRequestCard: React.FC<AccessRequestCardProps> = ({
                   ) : (
                     <Text className="text-[13px] font-jakarta-semibold" style={{ color: '#FFFFFF' }}>
                       {t('approve', 'Approve')}
+                    </Text>
+                  )}
+                </Pressable>
+              </View>
+            </>
+          )}
+
+          {/* Action Buttons for Redeemed */}
+          {canRevoke && onRevoke && (
+            <>
+              <View className="h-[1px] bg-gray-200 my-3" />
+              <View className={cn('flex-row gap-2', isRTL && 'flex-row-reverse')}>
+                <Pressable
+                  onPress={() => onRevoke(item.requestId)}
+                  disabled={isProcessing}
+                  className={cn(
+                    'flex-1 py-2 rounded-full items-center justify-center',
+                    isProcessing && 'opacity-50'
+                  )}
+                  style={{ backgroundColor: '#FFF1F2', borderWidth: 1, borderColor: '#FECDD3' }}
+                >
+                  {isProcessing ? (
+                    <ActivityIndicator size="small" color="#E11D48" />
+                  ) : (
+                    <Text className="text-[13px] font-jakarta-semibold" style={{ color: '#E11D48' }}>
+                      {t('revokeAccess', 'Revoke Access')}
                     </Text>
                   )}
                 </Pressable>

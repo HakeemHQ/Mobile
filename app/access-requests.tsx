@@ -13,9 +13,11 @@ import {
   getAccessRequests,
   approveAccessRequest,
   rejectAccessRequest,
+  revokeAccess,
+  getDoctorAccesses,
   AccessRequestItem
 } from '@/lib/api/access-requests';
-import { saveApprovedCode, getApprovedCodes } from '@/lib/access-codes-storage';
+import { saveApprovedCode, getApprovedCodes, removeApprovedCode, removeApprovedCodeByCode } from '@/lib/access-codes-storage';
 import { useProfileStore } from '@/store/useProfileStore';
 
 const PAGE_SIZE = 15;
@@ -100,14 +102,87 @@ export default function AccessRequestsScreen() {
 
       try {
         const queryStatus = filterId === 'all' ? undefined : filterId;
-        const [res, localCodes] = await Promise.all([
-          getAccessRequests(queryStatus, page, PAGE_SIZE),
-          getApprovedCodes(),
-        ]);
+        
+        let res: any;
+        let localCodes: Record<string, any> = {};
+
+        if (filterId === 'redeemed') {
+          const [accessRes, codes] = await Promise.all([
+            getDoctorAccesses(page, PAGE_SIZE),
+            getApprovedCodes(),
+          ]);
+          localCodes = codes;
+          if (accessRes.success && accessRes.data) {
+            res = {
+              success: true,
+              data: {
+                items: accessRes.data.items.map((da: any) => ({
+                  requestId: da.accessId,
+                  doctor: { doctorId: da.doctorId, fullName: da.doctorName, specialty: da.specialty },
+                  status: 'redeemed',
+                  requestedAt: da.expiresAt || new Date().toISOString(),
+                  codeExpiresAt: da.expiresAt,
+                })),
+                totalCount: accessRes.data.totalCount,
+                pageNumber: accessRes.data.pageNumber,
+                pageSize: accessRes.data.pageSize,
+              },
+            };
+          } else {
+            res = accessRes;
+          }
+        } else if (filterId === 'all') {
+          const [reqRes, accessRes, codes] = await Promise.all([
+            getAccessRequests(undefined, page, PAGE_SIZE),
+            getDoctorAccesses(page, PAGE_SIZE),
+            getApprovedCodes(),
+          ]);
+          localCodes = codes;
+
+          const reqItems = reqRes.success && reqRes.data?.items 
+            ? reqRes.data.items.filter((r: any) => r.status?.toLowerCase() !== 'redeemed') 
+            : [];
+            
+          const accessItems = accessRes.success && accessRes.data?.items
+            ? accessRes.data.items.map((da: any) => ({
+                requestId: da.accessId,
+                doctor: { doctorId: da.doctorId, fullName: da.doctorName, specialty: da.specialty },
+                status: 'redeemed',
+                requestedAt: da.expiresAt || new Date().toISOString(),
+                codeExpiresAt: da.expiresAt,
+              }))
+            : [];
+
+          const combinedItems = [...reqItems, ...accessItems].sort(
+            (a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime()
+          );
+
+          res = {
+            success: true,
+            data: {
+              items: combinedItems,
+              totalCount: (reqRes.data?.totalCount || 0) + (accessRes.data?.totalCount || 0),
+              pageNumber: page,
+              pageSize: PAGE_SIZE,
+            },
+          };
+          
+          // Override hasMore for 'all' to check if either endpoint returned a full page
+          const reqHasMore = reqRes.success && reqRes.data ? (reqRes.data.items || []).length >= PAGE_SIZE : false;
+          const accessHasMore = accessRes.success && accessRes.data ? (accessRes.data.items || []).length >= PAGE_SIZE : false;
+          res._hasMore = reqHasMore || accessHasMore;
+        } else {
+          const [reqRes, codes] = await Promise.all([
+            getAccessRequests(queryStatus, page, PAGE_SIZE),
+            getApprovedCodes(),
+          ]);
+          res = reqRes;
+          localCodes = codes;
+        }
 
         if (res.success && res.data) {
           const rawItems = res.data.items || [];
-          const mergedItems = rawItems.map((item) => {
+          const mergedItems = rawItems.map((item: any) => {
             const stored = localCodes[item.requestId];
             if (stored) {
               return { ...item, oneTimeCode: stored.oneTimeCode, codeExpiresAt: stored.codeExpiresAt };
@@ -119,7 +194,12 @@ export default function AccessRequestsScreen() {
           else setRequests((prev) => [...prev, ...mergedItems]);
 
           setPageNumber(page);
-          setHasMore(rawItems.length >= PAGE_SIZE);
+          
+          if (res._hasMore !== undefined) {
+             setHasMore(res._hasMore);
+          } else {
+             setHasMore(rawItems.length >= PAGE_SIZE);
+          }
         } else {
           setError(res.message || t('failedToFetch', 'Failed to fetch access requests'));
         }
@@ -202,6 +282,36 @@ export default function AccessRequestsScreen() {
     }
   };
 
+  const handleRevoke = async (requestId: string) => {
+    setProcessingId(requestId);
+    try {
+      const isSuccess = await revokeAccess(requestId);
+      if (isSuccess) {
+        // Find the code and remove it from storage so it doesn't reappear in Revoked/All tabs
+        const targetItem = requests.find((r) => r.requestId === requestId);
+        if (targetItem && targetItem.oneTimeCode) {
+          await removeApprovedCodeByCode(targetItem.oneTimeCode);
+        } else {
+          await removeApprovedCode(requestId);
+        }
+
+        setRequests((prev) =>
+          prev.map((r) => 
+            r.requestId === requestId 
+              ? { ...r, status: 'revoked', oneTimeCode: undefined, codeExpiresAt: undefined } 
+              : r
+          )
+        );
+      } else {
+        setError(t('failedToRevoke', 'Failed to revoke access'));
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.message || err.message || t('failedToRevoke', 'Failed to revoke access'));
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   // ---------- Flatten into month-grouped list ----------
 
   const flatData = useMemo((): FlatListItem[] => {
@@ -244,6 +354,7 @@ export default function AccessRequestsScreen() {
           isLast={item.isLast}
           onApprove={handleApprove}
           onReject={handleReject}
+          onRevoke={handleRevoke}
         />
       );
     },

@@ -26,6 +26,25 @@ export interface AccessRequestsResponse {
   };
 }
 
+export interface DoctorAccessItem {
+  accessId: string;
+  doctorId: string;
+  doctorName: string;
+  specialty: string;
+  expiresAt: string;
+}
+
+export interface DoctorAccessResponse {
+  success: boolean;
+  message: string;
+  data: {
+    items: DoctorAccessItem[];
+    totalCount: number;
+    pageNumber: number;
+    pageSize: number;
+  };
+}
+
 export interface ApproveAccessRequestResponse {
   success: boolean;
   message: string;
@@ -46,6 +65,12 @@ export interface RejectAccessRequestResponse {
   };
 }
 
+export interface RevokeAccessResponse {
+  success: boolean;
+  message: string;
+  data: any;
+}
+
 export const getAccessRequests = async (status?: string, pageNumber = 1, pageSize = 50): Promise<AccessRequestsResponse> => {
   const params: Record<string, any> = {
     PageNumber: pageNumber,
@@ -54,7 +79,6 @@ export const getAccessRequests = async (status?: string, pageNumber = 1, pageSiz
   if (status && status !== 'all') {
     let queryStatus = status.toLowerCase();
     if (queryStatus === 'active') queryStatus = 'approved';
-    if (queryStatus === 'revoked') queryStatus = 'rejected';
     params.Status = queryStatus;
   }
   const response = await apiClient.get<AccessRequestsResponse>('/patient-access-requests', { params });
@@ -68,5 +92,19 @@ export const approveAccessRequest = async (requestId: string): Promise<ApproveAc
 
 export const rejectAccessRequest = async (requestId: string): Promise<RejectAccessRequestResponse> => {
   const response = await apiClient.post<RejectAccessRequestResponse>(`/patient-access-requests/${requestId}/reject`);
+  return response.data;
+};
+
+export const revokeAccess = async (accessId: string): Promise<boolean> => {
+  const response = await apiClient.delete(`/doctor-access/${accessId}`);
+  return response.status >= 200 && response.status < 300;
+};
+
+export const getDoctorAccesses = async (pageNumber = 1, pageSize = 50): Promise<DoctorAccessResponse> => {
+  const params: Record<string, any> = {
+    PageNumber: pageNumber,
+    PageSize: pageSize,
+  };
+  const response = await apiClient.get<DoctorAccessResponse>('/doctor-access', { params });
   return response.data;
 };
