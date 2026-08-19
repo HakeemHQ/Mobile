@@ -49,6 +49,11 @@ export default function MedicalCvScreen() {
         fetchMedicalCvs,
     } = useMedicalCvs();
 
+    const [
+        isRefreshing,
+        setIsRefreshing,
+    ] = React.useState(false);
+
     React.useEffect(() => {
         if (!profile) {
             void fetchProfile();
@@ -79,9 +84,21 @@ export default function MedicalCvScreen() {
         });
     };
 
-    const handlePendingRefresh = () => {
-        void fetchProfile();
-        void fetchMedicalCvs();
+    const handleRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+
+        setIsRefreshing(true);
+
+        try {
+            await Promise.all([
+                fetchProfile(),
+                fetchMedicalCvs(),
+            ]);
+        } finally {
+            setIsRefreshing(false);
+        }
     };
 
     return (
@@ -139,11 +156,11 @@ export default function MedicalCvScreen() {
                             refreshControl={
                                 <RefreshControl
                                     refreshing={
-                                        false
+                                        isRefreshing
                                     }
-                                    onRefresh={
-                                        handlePendingRefresh
-                                    }
+                                    onRefresh={() => {
+                                        void handleRefresh();
+                                    }}
                                     colors={[
                                         colors
                                             .primary[900],
@@ -192,8 +209,27 @@ export default function MedicalCvScreen() {
                                 false
                             }
                             contentContainerStyle={{
+                                flexGrow: 1,
                                 paddingBottom: 32,
                             }}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={
+                                        isRefreshing
+                                    }
+                                    onRefresh={() => {
+                                        void handleRefresh();
+                                    }}
+                                    colors={[
+                                        colors
+                                            .primary[900],
+                                    ]}
+                                    tintColor={
+                                        colors
+                                            .primary[900]
+                                    }
+                                />
+                            }
                         >
                             {isLoading ? (
                                 <MedicalCvListSkeleton />

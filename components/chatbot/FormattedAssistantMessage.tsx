@@ -1,4 +1,8 @@
-import { Text, View } from 'react-native';
+import {
+    Linking,
+    Text,
+    View,
+} from 'react-native'
 
 import { colors } from '@/lib/theme/colors';
 
@@ -9,6 +13,7 @@ interface FormattedAssistantMessageProps {
 interface InlineTextPart {
     text: string;
     bold: boolean;
+    url?: string;
 }
 
 function parseInlineText(
@@ -16,13 +21,14 @@ function parseInlineText(
 ): InlineTextPart[] {
     const parts: InlineTextPart[] = [];
 
-    const boldPattern = /\*\*(.+?)\*\*/g;
+    const inlinePattern =
+        /(\*\*(.+?)\*\*|https?:\/\/[^\s]+)/g;
 
     let lastIndex = 0;
     let match: RegExpExecArray | null;
 
     while (
-        (match = boldPattern.exec(value)) !== null
+        (match = inlinePattern.exec(value)) !== null
     ) {
         if (match.index > lastIndex) {
             parts.push({
@@ -34,10 +40,27 @@ function parseInlineText(
             });
         }
 
-        parts.push({
-            text: match[1],
-            bold: true,
-        });
+        const matchedValue = match[0];
+
+        if (
+            matchedValue.startsWith(
+                'http://',
+            ) ||
+            matchedValue.startsWith(
+                'https://',
+            )
+        ) {
+            parts.push({
+                text: matchedValue,
+                bold: false,
+                url: matchedValue,
+            });
+        } else {
+            parts.push({
+                text: match[2],
+                bold: true,
+            });
+        }
 
         lastIndex =
             match.index + match[0].length;
@@ -81,15 +104,35 @@ function InlineFormattedText({
             {parts.map((part, index) => (
                 <Text
                     key={index}
+                    accessibilityRole={
+                        part.url
+                            ? 'link'
+                            : undefined
+                    }
+                    onPress={
+                        part.url
+                            ? () => {
+                                void Linking.openURL(
+                                    part.url!,
+                                );
+                            }
+                            : undefined
+                    }
                     className={
                         part.bold
                             ? 'font-inter-semibold'
                             : 'font-inter-regular'
                     }
                     style={{
-                        color: part.bold
-                            ? colors.text[700]
-                            : colors.text.DEFAULT,
+                        color: part.url
+                            ? colors.primary.DEFAULT
+                            : part.bold
+                                ? colors.text[700]
+                                : colors.text.DEFAULT,
+                        textDecorationLine:
+                            part.url
+                                ? 'underline'
+                                : 'none',
                     }}
                 >
                     {part.text}

@@ -271,6 +271,9 @@ export default function ChatbotScreen() {
             }
 
             const assistantText =
+                response.data.generatedCv
+                ?.previewUrl
+                ?.trim() ||
                 response.data.message?.trim();
 
             if (!assistantText) {
