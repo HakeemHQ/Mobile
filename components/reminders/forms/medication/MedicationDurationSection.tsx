@@ -47,6 +47,7 @@ interface MedicationDurationSectionProps {
     durationType:
     MedicationDurationType;
     startDate: Date;
+    hasSelectedStartDate: boolean;
     endDate: Date;
     onDurationTypeChange: (
         value:
@@ -123,6 +124,7 @@ function CompactDateField({
 export function MedicationDurationSection({
     durationType,
     startDate,
+    hasSelectedStartDate,
     endDate,
     onDurationTypeChange,
     onStartDateChange,
@@ -228,18 +230,26 @@ export function MedicationDurationSection({
                     'FINITE' ? (
                     <CompactDateField
                         label={t('endDate')}
-                        value={formatDateForDisplay(
+                        value={hasSelectedStartDate ? formatDateForDisplay(
                             endDate,
                             i18n.language,
-                        )}
-                        onPress={() =>
-                            setPickerTarget(
-                                'endDate',
-                            )
-                        }
+                        ) : '---'}
+                        onPress={() => {
+                            if (hasSelectedStartDate) {
+                                setPickerTarget(
+                                    'endDate',
+                                );
+                            }
+                        }}
                     />
                 ) : null}
             </View>
+
+            {durationType === 'FINITE' && !hasSelectedStartDate && (
+                <Text className={`mt-2 font-jakarta-medium text-[12px] text-text2-400 ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {isRTL ? 'يرجى اختيار تاريخ البدء أولاً لتتمكن من تحديد تاريخ الانتهاء.' : 'Please select a start date first to choose an end date.'}
+                </Text>
+            )}
 
             {pickerTarget ? (
                 <DateTimePicker

@@ -82,6 +82,7 @@ export interface MedicationReminderFormController {
     durationType:
     MedicationDurationType;
     startDate: Date;
+    hasSelectedStartDate: boolean;
     endDate: Date;
     medicationTime: Date;
     frequencyType:
@@ -229,6 +230,11 @@ export function useMedicationReminderForm({
             initialValue,
         ),
     );
+
+    const [
+        hasSelectedStartDate,
+        setHasSelectedStartDate,
+    ] = useState(!!initialValue);
 
     const [
         endDate,
@@ -387,14 +393,11 @@ export function useMedicationReminderForm({
             normalizedValue,
         );
 
-        if (
-            endDate.getTime() <
-            normalizedValue.getTime()
-        ) {
-            setEndDate(
-                normalizedValue,
-            );
-        }
+        setHasSelectedStartDate(true);
+
+        const nextDay = new Date(normalizedValue);
+        nextDay.setDate(nextDay.getDate() + 1);
+        setEndDate(nextDay);
 
         setScheduleError(
             undefined,
@@ -570,6 +573,7 @@ export function useMedicationReminderForm({
         nameError,
         durationType,
         startDate,
+        hasSelectedStartDate,
         endDate,
         medicationTime,
         frequencyType,
@@ -750,6 +754,9 @@ export function MedicationReminderForm({
                 }
                 startDate={
                     form.startDate
+                }
+                hasSelectedStartDate={
+                    form.hasSelectedStartDate
                 }
                 endDate={
                     form.endDate

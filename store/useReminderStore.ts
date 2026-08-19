@@ -368,6 +368,11 @@ export const useReminderStore =
                     ) =>
                         runMutation(
                             async () => {
+                                const currentReminder = get().reminders.find(r => r.reminderId === input.reminderId);
+                                if (currentReminder) {
+                                    await ReminderSyncService.cancelReminder(currentReminder);
+                                }
+
                                 await updateReminderInDatabase(
                                     input,
                                 );

@@ -70,14 +70,13 @@ export function validateMedicationDraft(
 ): string | undefined {
     const isArabic = i18n.language === 'ar';
 
-    if (
-        input.durationType ===
-        'FINITE' &&
-        input.endDate &&
-        input.endDate <
-        input.startDate
-    ) {
-        return isArabic ? 'تاريخ الانتهاء لا يمكن أن يكون قبل تاريخ البدء.' : 'End date cannot be before the start date.';
+    if (input.durationType === 'FINITE') {
+        if (!input.endDate) {
+            return isArabic ? 'يرجى اختيار تاريخ الانتهاء.' : 'Please select an end date.';
+        }
+        if (input.endDate < input.startDate) {
+            return isArabic ? 'تاريخ الانتهاء لا يمكن أن يكون قبل تاريخ البدء.' : 'End date cannot be before the start date.';
+        }
     }
 
     if (
