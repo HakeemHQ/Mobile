@@ -262,34 +262,6 @@ export class AlarmEngine {
   }
 
   /**
-   * Snooze an alarm for X minutes into the future
-   */
-  static async snoozeAlarm(scheduleId: string, title: string, body: string, snoozeMinutes = 10): Promise<void> {
-    await this.init();
-    const snoozeId = `${scheduleId}_snooze_${Date.now()}`;
-
-    await Notifications.scheduleNotificationAsync({
-      identifier: snoozeId,
-      content: {
-        title: `[Snoozed] ${title}`,
-        body,
-        sound: 'default',
-        data: {
-          scheduleId,
-          deliveryMode: 'ALARM',
-          isSnoozed: true,
-        },
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: snoozeMinutes * 60,
-        repeats: false,
-        channelId: 'critical-alarms',
-      },
-    });
-  }
-
-  /**
    * Cancel all scheduled notifications and alarms
    */
   static async cancelAll(): Promise<void> {

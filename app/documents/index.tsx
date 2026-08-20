@@ -32,6 +32,7 @@ import BackButton from '@/components/ui/BackButton';
 import { Button } from '@/components/ui/Button';
 import { InfoBanner } from '@/components/ui/InfoBanner';
 import { TimelineItemNode } from '@/components/timeline/TimelineItemNode';
+import { TimelineSkeletonNode } from '@/components/timeline';
 import { useDocuments } from '@/hooks/useDocuments';
 import { cn } from '@/lib/utils';
 import { colors } from '@/lib/theme';
@@ -341,13 +342,12 @@ export default function DocumentsScreen() {
               {t('pendingDoctorReviewSubtitle', { defaultValue: 'Please wait while the doctor reviews your profile.' })}
             </Text>
           </ScrollView>
-        ) : loading && !refreshing ? (
-            <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
-              <Text className="text-[14px] font-inter-regular text-gray-400 mt-3">
-                {isRTL ? 'جاري تحميل المستندات...' : 'Loading documents...'}
-              </Text>
-            </View>
+          ) : loading && !refreshing ? (
+            <ScrollView showsVerticalScrollIndicator={false} className="flex-1 mt-4">
+              {[1, 2, 3, 4, 5].map((item, idx) => (
+                <TimelineSkeletonNode key={item} isLast={idx === 4} />
+              ))}
+            </ScrollView>
           ) : error && !loading ? (
             <View className="flex-1 items-center justify-center px-6">
               <Text className="text-[16px] font-jakarta-bold text-gray-700 mb-2">

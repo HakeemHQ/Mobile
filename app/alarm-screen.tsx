@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, BackHandler, Vibration } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { BellRing, Clock, Pill } from 'lucide-react-native';
+import { BellRing, Pill } from 'lucide-react-native';
 import { Button } from '@/components/ui/Button';
-import { AlarmEngine } from '@/lib/alarm-engine';
 import { colors } from '@/lib/theme/colors';
+import { useReminderStore } from '@/store/useReminderStore';
+import { ReminderSyncService } from '@/lib/reminder-sync-service';
 
 export default function AlarmScreen() {
   const router = useRouter();
@@ -45,21 +46,34 @@ export default function AlarmScreen() {
     };
   }, []);
 
-  const handleDismiss = () => {
-    Vibration.cancel();
-    router.replace('/(tabs)');
+  const rescheduleNextOccurrence = async () => {
+    if (!params.scheduleId) return;
+
+    try {
+      const store = useReminderStore.getState();
+      
+      // If store is empty (e.g. app was killed and opened via alarm), load reminders first
+      if (store.reminders.length === 0) {
+        await store.loadReminders();
+      }
+
+      const updatedStore = useReminderStore.getState();
+      const reminder = updatedStore.reminders.find(r =>
+        r.schedules.some(s => s.scheduleId === params.scheduleId)
+      );
+
+      if (reminder) {
+        // This calculates the next valid date and schedules the next occurrence
+        await ReminderSyncService.syncReminder(reminder);
+      }
+    } catch (error) {
+      console.error('Failed to reschedule next occurrence:', error);
+    }
   };
 
-  const handleSnooze = async () => {
+  const handleDismiss = async () => {
     Vibration.cancel();
-    if (params.scheduleId) {
-      await AlarmEngine.snoozeAlarm(
-        params.scheduleId,
-        params.title ?? 'Medication Reminder',
-        params.body ?? 'Time to take your medication',
-        10
-      );
-    }
+    await rescheduleNextOccurrence();
     router.replace('/(tabs)');
   };
 
@@ -95,18 +109,10 @@ export default function AlarmScreen() {
         </Text>
       </View>
 
-      {/* Bottom Actions: Snooze & Dismiss */}
+      {/* Bottom Actions: Stop Alarm */}
       <View className="w-full gap-4 mb-4">
         <Button
-          title="Snooze (10 minutes)"
-          variant="outline"
-          leftIcon={<Clock size={20} color="#F59E0B" />}
-          onPress={handleSnooze}
-          className="border-amber-500/40 py-4"
-        />
-
-        <Button
-          title="Dismiss Alarm"
+          title="Stop Alarm"
           variant="primary"
           onPress={handleDismiss}
           className="py-4 bg-rose-600 active:bg-rose-700"

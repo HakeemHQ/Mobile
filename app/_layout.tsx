@@ -1,7 +1,8 @@
 import '@/global.css';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFonts } from 'expo-font';
+import { Asset } from 'expo-asset';
 import { Stack, router } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
@@ -31,6 +32,29 @@ export default function RootLayout() {
     'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
   });
+
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadAssets() {
+      try {
+        await Asset.loadAsync([
+          require('../assets/images/remindersEmptyList.png'),
+          require('../assets/images/documentEmptyList.png'),
+          require('../assets/images/emptyList.png'),
+          require('../assets/images/record-detailEmptyState.png'),
+          require('../assets/images/Pending.webp'),
+          require('../assets/images/medical-cv-empty.png'),
+          require('../assets/images/medical-cv-versions-empty.png')
+        ]);
+      } catch (e) {
+        console.warn('Failed to load assets', e);
+      } finally {
+        setAssetsLoaded(true);
+      }
+    }
+    loadAssets();
+  }, []);
 
   // useLastNotificationResponse is the correct modern hook — works for both
   // foreground taps AND cold-start (app opened by tapping a push notification)
@@ -69,12 +93,12 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (loaded || error) {
+    if ((loaded && assetsLoaded) || error) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  }, [loaded, assetsLoaded, error]);
 
-  if (!loaded && !error) {
+  if ((!loaded || !assetsLoaded) && !error) {
     return null;
   }
 

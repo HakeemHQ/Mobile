@@ -58,6 +58,10 @@ import {
 } from '@/components/reminders/EditReminderModal';
 
 import {
+    ReminderCardSkeleton,
+} from '@/components/reminders/ReminderCardSkeleton';
+
+import {
     selectTodayMedicationReminders,
     selectUpcomingDatedReminders,
 } from '@/lib/reminder-selectors';
@@ -278,13 +282,10 @@ export default function RemindersScreen() {
                         'loading' &&
                         reminders.length ===
                         0 ? (
-                        <View className="items-center py-20">
-                            <ActivityIndicator
-                                size="small"
-                                color={
-                                    colors.primary.DEFAULT
-                                }
-                            />
+                        <View className="mt-4">
+                            {[1, 2, 3].map((item) => (
+                                <ReminderCardSkeleton key={item} />
+                            ))}
                         </View>
                     ) : null}
 

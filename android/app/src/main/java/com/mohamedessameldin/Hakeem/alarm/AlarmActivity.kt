@@ -89,6 +89,23 @@ class AlarmActivity : Activity() {
             setBackgroundColor(Color.WHITE)
             setPadding(48, 80, 48, 48)
             gravity = Gravity.CENTER_HORIZONTAL
+
+            setOnApplyWindowInsetsListener { view, insets ->
+                val bottomInset = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    insets.getInsets(android.view.WindowInsets.Type.navigationBars()).bottom
+                } else {
+                    @Suppress("DEPRECATION")
+                    insets.systemWindowInsetBottom
+                }
+                val topInset = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    insets.getInsets(android.view.WindowInsets.Type.statusBars()).top
+                } else {
+                    @Suppress("DEPRECATION")
+                    insets.systemWindowInsetTop
+                }
+                view.setPadding(48, 80 + topInset, 48, 48 + bottomInset)
+                insets
+            }
         }
 
         // Top Spacer
@@ -484,9 +501,14 @@ class AlarmActivity : Activity() {
                 val db = SQLiteDatabase.openDatabase(dbPath.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
                 val cursor = db.rawQuery(
                     """
-                    SELECT rs.schedule_id, rs.native_alarm_id, rs.local_time, r.title, r.is_enabled
+                    SELECT rs.schedule_id, rs.native_alarm_id, rs.local_time, r.title, r.is_enabled,
+                           r.reminder_type, mr.start_date, mr.end_date, mr.frequency_type,
+                           ar.appointment_date, lr.due_date, r.reminder_id
                     FROM reminder_schedules rs
                     JOIN reminders r ON rs.reminder_id = r.reminder_id
+                    LEFT JOIN medication_reminders mr ON r.reminder_id = mr.reminder_id
+                    LEFT JOIN appointment_reminders ar ON r.reminder_id = ar.reminder_id
+                    LEFT JOIN lab_test_reminders lr ON r.reminder_id = lr.reminder_id
                     WHERE (rs.schedule_id = ? OR rs.native_alarm_id = ?) AND r.is_enabled = 1
                     """,
                     arrayOf(scheduleId, scheduleId)
@@ -497,19 +519,37 @@ class AlarmActivity : Activity() {
                     val nativeAlarmId = cursor.getInt(1)
                     val localTime = cursor.getString(2)
                     val alarmTitle = cursor.getString(3)
+                    val type = cursor.getString(5)
+                    val startDate = cursor.getString(6)
+                    val endDate = cursor.getString(7)
+                    val freqType = cursor.getString(8)
+                    val apptDate = cursor.getString(9)
+                    val dDate = cursor.getString(10)
+                    val rId = cursor.getString(11)
 
-                    val parts = localTime.split(":")
-                    if (parts.size == 2) {
-                        val hour = parts[0].toIntOrNull() ?: 8
-                        val minute = parts[1].toIntOrNull() ?: 0
-
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, hour)
-                            set(Calendar.MINUTE, minute)
-                            set(Calendar.SECOND, 0)
-                            set(Calendar.MILLISECOND, 0)
-                            add(Calendar.DAY_OF_YEAR, 1)
+                    val weekdays = mutableListOf<String>()
+                    if (freqType == "WEEKLY") {
+                        val wkCursor = db.rawQuery("SELECT weekday_code FROM medication_weekdays WHERE reminder_id = ?", arrayOf(rId))
+                        while(wkCursor.moveToNext()) {
+                            weekdays.add(wkCursor.getString(0))
                         }
+                        wkCursor.close()
+                    }
+
+                    val monthDays = mutableListOf<Int>()
+                    if (freqType == "MONTHLY") {
+                        val mdCursor = db.rawQuery("SELECT month_day FROM medication_month_days WHERE reminder_id = ?", arrayOf(rId))
+                        while(mdCursor.moveToNext()) {
+                            monthDays.add(mdCursor.getInt(0))
+                        }
+                        mdCursor.close()
+                    }
+
+                    val calendar = calculateNextValidTriggerDate(
+                        type, localTime, apptDate, dDate, startDate, endDate, freqType, weekdays, monthDays
+                    )
+
+                    if (calendar != null) {
 
                         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
                         val alarmIntent = Intent(this, AlarmReceiver::class.java).apply {
@@ -627,5 +667,148 @@ class AlarmActivity : Activity() {
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         // User must tap STOP button to dismiss alarm
+    }
+
+    private fun calculateNextValidTriggerDate(
+        reminderType: String?,
+        localTime: String,
+        appointmentDate: String?,
+        dueDate: String?,
+        startDate: String?,
+        endDate: String?,
+        frequencyType: String?,
+        weekdays: List<String>,
+        monthDays: List<Int>
+    ): Calendar? {
+        val parts = localTime.split(":")
+        val hour = parts.getOrNull(0)?.toIntOrNull() ?: 8
+        val minute = parts.getOrNull(1)?.toIntOrNull() ?: 0
+
+        val now = Calendar.getInstance()
+
+        if (reminderType == "APPOINTMENT") {
+            if (appointmentDate == null) return null
+            val target = parseDateString(appointmentDate) ?: return null
+            target.set(Calendar.HOUR_OF_DAY, hour)
+            target.set(Calendar.MINUTE, minute)
+            target.set(Calendar.SECOND, 0)
+            target.set(Calendar.MILLISECOND, 0)
+            return if (target.after(now)) target else null
+        }
+
+        if (reminderType == "LAB_TEST") {
+            if (dueDate == null) return null
+            val target = parseDateString(dueDate) ?: return null
+            target.set(Calendar.HOUR_OF_DAY, hour)
+            target.set(Calendar.MINUTE, minute)
+            target.set(Calendar.SECOND, 0)
+            target.set(Calendar.MILLISECOND, 0)
+            return if (target.after(now)) target else null
+        }
+
+        if (reminderType == "MEDICATION") {
+            var candidate = Calendar.getInstance()
+            candidate.set(Calendar.HOUR_OF_DAY, hour)
+            candidate.set(Calendar.MINUTE, minute)
+            candidate.set(Calendar.SECOND, 0)
+            candidate.set(Calendar.MILLISECOND, 0)
+
+            if (!candidate.after(now)) {
+                candidate.add(Calendar.DAY_OF_YEAR, 1)
+            }
+
+            if (startDate != null) {
+                val startCal = parseDateString(startDate)
+                if (startCal != null) {
+                    startCal.set(Calendar.HOUR_OF_DAY, hour)
+                    startCal.set(Calendar.MINUTE, minute)
+                    startCal.set(Calendar.SECOND, 0)
+                    startCal.set(Calendar.MILLISECOND, 0)
+                    if (candidate.before(startCal)) {
+                        candidate = startCal
+                        if (!candidate.after(now)) {
+                            candidate.add(Calendar.DAY_OF_YEAR, 1)
+                        }
+                    }
+                }
+            }
+
+            val freq = frequencyType ?: "DAILY"
+            for (i in 0 until 60) {
+                var isValidDay = false
+                when (freq) {
+                    "DAILY" -> isValidDay = true
+                    "WEEKLY" -> {
+                        if (weekdays.isNotEmpty()) {
+                            val dayMap = mapOf(
+                                Calendar.SUNDAY to "SUN",
+                                Calendar.MONDAY to "MON",
+                                Calendar.TUESDAY to "TUE",
+                                Calendar.WEDNESDAY to "WED",
+                                Calendar.THURSDAY to "THU",
+                                Calendar.FRIDAY to "FRI",
+                                Calendar.SATURDAY to "SAT"
+                            )
+                            val currentDayCode = dayMap[candidate.get(Calendar.DAY_OF_WEEK)]
+                            if (weekdays.contains(currentDayCode)) {
+                                isValidDay = true
+                            }
+                        } else {
+                            isValidDay = true
+                        }
+                    }
+                    "MONTHLY" -> {
+                        if (monthDays.isNotEmpty()) {
+                            if (monthDays.contains(candidate.get(Calendar.DAY_OF_MONTH))) {
+                                isValidDay = true
+                            }
+                        } else {
+                            isValidDay = true
+                        }
+                    }
+                    else -> isValidDay = true
+                }
+
+                if (isValidDay) {
+                    break
+                } else {
+                    candidate.add(Calendar.DAY_OF_YEAR, 1)
+                }
+            }
+
+            if (endDate != null) {
+                val endCal = parseDateString(endDate)
+                if (endCal != null) {
+                    endCal.set(Calendar.HOUR_OF_DAY, 23)
+                    endCal.set(Calendar.MINUTE, 59)
+                    endCal.set(Calendar.SECOND, 59)
+                    endCal.set(Calendar.MILLISECOND, 999)
+                    if (candidate.after(endCal)) {
+                        return null
+                    }
+                }
+            }
+
+            return candidate
+        }
+
+        return null
+    }
+
+    private fun parseDateString(dateStr: String): Calendar? {
+        return try {
+            val parts = dateStr.split("-")
+            if (parts.size == 3) {
+                val cal = Calendar.getInstance()
+                cal.set(Calendar.YEAR, parts[0].toInt())
+                cal.set(Calendar.MONTH, parts[1].toInt() - 1)
+                cal.set(Calendar.DAY_OF_MONTH, parts[2].toInt())
+                cal
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
 }
