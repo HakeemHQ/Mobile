@@ -23,6 +23,7 @@ import {
   TimelineFilterChips,
   getRecordTypeConfig,
   parseDisplayName,
+  TimelineSkeletonNode,
 } from '@/components/timeline';
 import { TimelineItemNode, type TimelineItemNodeProps } from '@/components/timeline/TimelineItemNode';
 import { Button } from '@/components/ui/Button';
@@ -244,12 +245,11 @@ export default function TimelineScreen() {
               selectedFilter={selectedFilter}
               onSelectFilter={handleFilterChange}
             />
-            <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
-              <Text className="text-[14px] font-inter-regular text-gray-400 mt-3">
-                {t('loading', 'Loading records...')}
-              </Text>
-            </View>
+            <ScrollView showsVerticalScrollIndicator={false} className="flex-1 mt-4">
+              {[1, 2, 3, 4, 5].map((item, idx) => (
+                <TimelineSkeletonNode key={item} isLast={idx === 4} />
+              ))}
+            </ScrollView>
           </View>
         </SafeAreaView>
       </>

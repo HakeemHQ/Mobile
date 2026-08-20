@@ -1,5 +1,7 @@
 import { setSecureItem, getSecureItem, deleteSecureItem } from '../storage';
 
+const BASE_URL = 'https://hakeem1.runasp.net';
+
 export const saveTokens = async (accessToken: string, refreshToken?: string) => {
   try {
     if (accessToken) {
@@ -72,7 +74,8 @@ export const isTokenExpired = (token: string): boolean => {
 
     if (payload && typeof payload.exp === 'number') {
       const nowInSeconds = Math.floor(Date.now() / 1000);
-      return payload.exp <= nowInSeconds;
+      // Add a 10-second buffer so we refresh *before* it expires mid-request
+      return payload.exp <= nowInSeconds + 10;
     }
 
     return false;
@@ -87,8 +90,73 @@ export const verifyStoredToken = async (): Promise<boolean> => {
     return false;
   }
   if (isTokenExpired(token)) {
-    await clearTokens();
-    return false;
+    const refreshed = await refreshAccessToken();
+    return refreshed;
   }
   return true;
+};
+
+let refreshLock: Promise<boolean> | null = null;
+
+export const refreshAccessToken = async (): Promise<boolean> => {
+  if (refreshLock) return refreshLock;
+
+  refreshLock = (async () => {
+    try {
+      const refreshToken = await getSecureItem('refreshToken');
+      if (!refreshToken) {
+        await clearTokens();
+        return false;
+      }
+
+      const response = await fetch(`${BASE_URL}/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': '*/*',
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!response.ok) {
+        await clearTokens();
+        return false;
+      }
+
+      const text = await response.text();
+      let newAccessToken = '';
+      
+      try {
+        const data = JSON.parse(text);
+        newAccessToken = data.token || data.accessToken;
+        if (!newAccessToken) {
+          throw new Error('No token found in JSON');
+        }
+        if (data.refreshToken) {
+          await setSecureItem('refreshToken', data.refreshToken);
+        }
+      } catch (e: any) {
+        if (e.message === 'No token found in JSON') {
+          newAccessToken = ''; // Invalid response
+        } else {
+          newAccessToken = text; // Fallback to raw string
+        }
+      }
+
+      if (newAccessToken) {
+        await setSecureItem('accessToken', newAccessToken);
+        return true;
+      }
+
+      await clearTokens();
+      return false;
+    } catch (e) {
+      await clearTokens();
+      return false;
+    } finally {
+      refreshLock = null;
+    }
+  })();
+
+  return refreshLock;
 };

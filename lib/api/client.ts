@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { router } from 'expo-router';
 import { getSecureItem } from '../storage';
-import { isTokenExpired, clearTokens } from './auth';
+import { isTokenExpired, clearTokens, refreshAccessToken } from './auth';
 
 export const BASE_URL = 'https://hakeem1.runasp.net';
 
@@ -16,10 +16,16 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     try {
-      const token = await getSecureItem('accessToken');
+      let token = await getSecureItem('accessToken');
       if (token) {
         if (isTokenExpired(token)) {
-          await clearTokens();
+          const refreshed = await refreshAccessToken();
+          if (refreshed) {
+            token = await getSecureItem('accessToken');
+            config.headers.Authorization = `Bearer ${token}`;
+          } else {
+            // refresh failed, clearTokens is already called inside refreshAccessToken
+          }
         } else {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -35,10 +41,32 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
+    const originalRequest = error.config;
+    
     if (error?.response?.status === 401) {
-      await clearTokens();
-      const url = error?.config?.url || '';
-      if (!url.includes('/auth/login') && !url.includes('/auth/register')) {
+      const url = originalRequest?.url || '';
+      const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/refresh');
+
+      if (!originalRequest._retry && !isAuthEndpoint) {
+        originalRequest._retry = true;
+        
+        const refreshed = await refreshAccessToken();
+        
+        if (refreshed) {
+          // Token refreshed successfully, retry the original request
+          const newToken = await getSecureItem('accessToken');
+          if (newToken) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            return apiClient(originalRequest);
+          }
+        }
+      }
+      
+      // If we reach here on a 401, either it's an auth endpoint, 
+      // the refresh failed, OR we already retried and STILL got a 401.
+      // In all these cases (except login/register endpoints), we should log out.
+      if (!isAuthEndpoint) {
+        await clearTokens();
         try {
           router.replace('/(auth)/login');
         } catch (e) {

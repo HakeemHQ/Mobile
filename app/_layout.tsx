@@ -43,7 +43,9 @@ export default function RootLayout() {
           require('../assets/images/documentEmptyList.png'),
           require('../assets/images/emptyList.png'),
           require('../assets/images/record-detailEmptyState.png'),
-          require('../assets/images/Pending.webp')
+          require('../assets/images/Pending.webp'),
+          require('../assets/images/medical-cv-empty.png'),
+          require('../assets/images/medical-cv-versions-empty.png')
         ]);
       } catch (e) {
         console.warn('Failed to load assets', e);

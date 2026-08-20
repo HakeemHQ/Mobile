@@ -7,6 +7,7 @@ import { Check } from 'lucide-react-native';
 import BackButton from '@/components/ui/BackButton';
 import { AccessRequestCard } from '@/components/access-requests/AccessRequestCard';
 import { AccessRequestFilterChips } from '@/components/access-requests/AccessRequestFilterChips';
+import { TimelineSkeletonNode } from '@/components/timeline';
 import { cn } from '@/lib/utils';
 import { colors } from '@/lib/theme';
 import {
@@ -409,12 +410,11 @@ export default function AccessRequestsScreen() {
               </Text>
             </ScrollView>
           ) : loading && !refreshing ? (
-            <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
-              <Text className="text-[14px] font-inter-regular text-gray-400 mt-3">
-                {t('loading', 'Loading requests...')}
-              </Text>
-            </View>
+            <ScrollView showsVerticalScrollIndicator={false} className="flex-1 mt-4">
+              {[1, 2, 3, 4, 5].map((item, idx) => (
+                <TimelineSkeletonNode key={item} isLast={idx === 4} />
+              ))}
+            </ScrollView>
           ) : error && !loading ? (
             <View className="flex-1 items-center justify-center">
               <Text className="text-[14px] font-inter-regular text-danger-500 text-center mb-4">{error}</Text>
