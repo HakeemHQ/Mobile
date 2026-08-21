@@ -119,8 +119,7 @@ export const refreshAccessToken = async (): Promise<boolean> => {
   const promise = (async (): Promise<boolean> => {
     try {
       const refreshToken = await getSecureItem('refreshToken');
-      const token = await getSecureItem('accessToken');
-      if (!refreshToken || !token) {
+      if (!refreshToken) {
         await clearTokensQuietly();
         return false;
       }
@@ -131,7 +130,7 @@ export const refreshAccessToken = async (): Promise<boolean> => {
           'Content-Type': 'application/json',
           'Accept': '*/*',
         },
-        body: JSON.stringify({ token, refreshToken }),
+        body: JSON.stringify({ refreshToken }),
       });
 
       if (!response.ok) {
