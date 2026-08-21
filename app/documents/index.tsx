@@ -40,7 +40,7 @@ import type { DocumentItem } from '@/types/document';
 import { useProfileStore } from '@/store/useProfileStore';
 
 /** Status badge styles helper */
-const getStatusBadge = (status: string) => {
+const getStatusBadge = (status: string, t: any) => {
   const lower = (status || '').toLowerCase();
   if (lower === 'completed' || lower === 'success') {
     return {
@@ -48,7 +48,7 @@ const getStatusBadge = (status: string) => {
       border: 'border-secondary-100',
       text: 'text-secondary-700',
       icon: <HugeiconsIcon icon={CheckmarkCircle02Icon} size={13} color={colors.secondary[700]} />,
-      label: 'Completed',
+      label: t('statusCompleted'),
     };
   }
   if (lower === 'failed' || lower === 'error') {
@@ -57,7 +57,7 @@ const getStatusBadge = (status: string) => {
       border: 'border-danger-100',
       text: 'text-danger-700',
       icon: <HugeiconsIcon icon={AlertCircleIcon} size={13} color={colors.danger[700]} />,
-      label: 'Failed',
+      label: t('statusFailed'),
     };
   }
   return {
@@ -65,7 +65,7 @@ const getStatusBadge = (status: string) => {
     border: 'border-primary-100',
     text: 'text-primary-700',
     icon: <HugeiconsIcon icon={Clock01Icon} size={13} color={colors.primary[700]} />,
-    label: 'Processing',
+    label: t('statusProcessing'),
   };
 };
 
@@ -167,7 +167,7 @@ export default function DocumentsScreen() {
       }
       
       const { item, isLast } = flatItem;
-      const badge = getStatusBadge(item.extractionStatus);
+      const badge = getStatusBadge(item.extractionStatus, t);
       const formattedDate = new Date(item.documentDate).toLocaleDateString(
         isRTL ? 'ar-EG' : 'en-US',
         { month: 'short', day: 'numeric', year: 'numeric' }
@@ -228,7 +228,7 @@ export default function DocumentsScreen() {
                 <View className={cn('flex-row items-center gap-3', isRTL && 'flex-row-reverse')}>
                   <BackButton />
                   <Text className="text-[24px] font-jakarta-bold text-primary-900">
-                    {isRTL ? 'المستندات' : 'Documents'}
+                    {t('documentsTitle')}
                   </Text>
                 </View>
 
@@ -246,7 +246,7 @@ export default function DocumentsScreen() {
                 <TextInput
                   value={searchQuery}
                   onChangeText={setSearchQuery}
-                  placeholder={isRTL ? 'البحث في المستندات...' : 'Search documents...'}
+                  placeholder={t('searchDocuments')}
                   placeholderTextColor={colors.text2[500]}
                   className={cn(
                     'flex-1 text-[14px] font-inter-regular text-gray-900 mx-2 py-0',
@@ -351,13 +351,13 @@ export default function DocumentsScreen() {
           ) : error && !loading ? (
             <View className="flex-1 items-center justify-center px-6">
               <Text className="text-[16px] font-jakarta-bold text-gray-700 mb-2">
-                {isRTL ? 'فشل تحميل المستندات' : 'Failed to load documents'}
+                {t('failedToLoadDocuments')}
               </Text>
               <Text className="text-[14px] font-inter-regular text-gray-400 mb-4 text-center">
                 {error}
               </Text>
               <Button
-                title={isRTL ? 'إعادة المحاولة' : 'Retry'}
+                title={t('retry')}
                 variant="primary"
                 onPress={refresh}
               />

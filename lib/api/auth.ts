@@ -10,7 +10,7 @@ export const saveTokens = async (accessToken: string, refreshToken?: string) => 
     if (refreshToken) {
       await setSecureItem('refreshToken', refreshToken);
     }
-    const { initPushNotifications } = await import('../push-notifications');
+    const { initPushNotifications } = require('../push-notifications');
     void initPushNotifications();
   } catch (e) {
     // Intentionally left clean
@@ -23,7 +23,7 @@ export const clearTokens = async () => {
   if (isClearingTokens) return;
   isClearingTokens = true;
   try {
-    const { removePushTokenFromBackend, clearStoredPushToken } = await import('../push-notifications');
+    const { removePushTokenFromBackend, clearStoredPushToken } = require('../push-notifications');
     await removePushTokenFromBackend();
     await clearStoredPushToken();
     await deleteSecureItem('accessToken');
@@ -128,12 +128,14 @@ export const refreshAccessToken = async (): Promise<boolean> => {
       
       try {
         const data = JSON.parse(text);
-        newAccessToken = data.token || data.accessToken;
+        // The API wraps tokens inside a `data` property: { success, data: { accessToken, refreshToken } }
+        newAccessToken = data?.data?.accessToken || data?.accessToken || data?.token;
         if (!newAccessToken) {
           throw new Error('No token found in JSON');
         }
-        if (data.refreshToken) {
-          await setSecureItem('refreshToken', data.refreshToken);
+        const newRefreshToken = data?.data?.refreshToken || data?.refreshToken;
+        if (newRefreshToken) {
+          await setSecureItem('refreshToken', newRefreshToken);
         }
       } catch (e: any) {
         if (e.message === 'No token found in JSON') {
@@ -145,6 +147,11 @@ export const refreshAccessToken = async (): Promise<boolean> => {
 
       if (newAccessToken) {
         await setSecureItem('accessToken', newAccessToken);
+        // Re-register push token with the backend under the refreshed session
+        try {
+          const { initPushNotifications } = require('../push-notifications');
+          void initPushNotifications();
+        } catch {}
         return true;
       }
 

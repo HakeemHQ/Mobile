@@ -51,5 +51,21 @@
   "emptyLabReports": "لا توجد تقارير مختبر",
   "emptyMedicalVisits": "لا توجد زيارات طبية",
   "pendingDoctorReviewTitle": "قيد مراجعة الطبيب",
-  "pendingDoctorReviewSubtitle": "يرجى التوجه لأقرب طبيب لتفعيل ومراجعة حسابك، سيظل حسابك قيد الانتظار حتى يتم التحقق منه بواسطة الطبيب."
+  "pendingDoctorReviewSubtitle": "يرجى التوجه لأقرب طبيب لتفعيل ومراجعة حسابك، سيظل حسابك قيد الانتظار حتى يتم التحقق منه بواسطة الطبيب.",
+  "statusCompleted": "مكتمل",
+  "statusFailed": "فشل",
+  "statusProcessing": "قيد المعالجة",
+  "statusPending": "قيد الانتظار",
+  "failedToLoadDocuments": "فشل تحميل المستندات",
+  "failedToLoadDocument": "فشل تحميل المستند",
+  "retry": "إعادة المحاولة",
+  "loadingDocumentDetails": "جاري تحميل تفاصيل المستند...",
+  "failureCode": "رمز الخطأ: ",
+  "documentContent": "محتوى المستند",
+  "pdfHelperText": "هذا المستند بصيغة PDF. اضغط أدناه لفتحه في المتصفح.",
+  "viewDocument": "معاينة المستند",
+  "openInBrowser": "فتح في المتصفح",
+  "noDocumentPath": "لا يوجد رابط مستند متاح.",
+  "close": "إغلاق",
+  "searchDocuments": "البحث في المستندات..."
 }

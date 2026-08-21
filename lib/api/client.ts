@@ -2,6 +2,7 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import { getSecureItem } from '../storage';
 import { isTokenExpired, clearTokens, refreshAccessToken } from './auth';
+import i18n from '@/localization/i18n';
 
 export const BASE_URL = 'https://hakeem1.runasp.net';
 
@@ -24,7 +25,11 @@ apiClient.interceptors.request.use(
             token = await getSecureItem('accessToken');
             config.headers.Authorization = `Bearer ${token}`;
           } else {
-            // refresh failed, clearTokens is already called inside refreshAccessToken
+            // Refresh failed — redirect to login and abort the request
+            try {
+              router.replace('/(auth)/login');
+            } catch (e) {}
+            return Promise.reject(new axios.Cancel(i18n.t('common:sessionExpired', { defaultValue: 'Session expired' })));
           }
         } else {
           config.headers.Authorization = `Bearer ${token}`;
@@ -90,7 +95,7 @@ export const apiFetch = async (endpoint: string, options: any = {}) => {
   } catch (error: any) {
     const data = error?.response?.data;
     throw {
-      message: data?.message || error?.message || 'Something went wrong',
+      message: data?.message || error?.message || i18n.t('common:somethingWentWrong', { defaultValue: 'Something went wrong' }),
       errorList: data?.errorList || [],
     };
   }

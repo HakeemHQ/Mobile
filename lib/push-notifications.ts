@@ -139,7 +139,7 @@ export function setupPushNotificationResponseListener(): () => void {
 export async function initPushNotifications(): Promise<void> {
   const token = await registerForPushNotificationsAsync();
   if (token) {
-    const { verifyStoredToken } = await import('./api/auth');
+    const { verifyStoredToken } = require('./api/auth');
     const isAuthenticated = await verifyStoredToken();
     if (isAuthenticated) {
       await sendPushTokenToBackend(token);
