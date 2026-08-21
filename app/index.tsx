@@ -1,7 +1,7 @@
 import { Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { verifyStoredToken } from '@/lib/api';
+import { verifyStoredToken, resetLogoutFlag } from '@/lib/api';
 import { View, ActivityIndicator } from 'react-native';
 
 export default function Index() {
@@ -12,6 +12,8 @@ export default function Index() {
 
   useEffect(() => {
     async function checkAuthAndLaunchStatus() {
+      // Ensure the logout guard is cleared on fresh app start
+      resetLogoutFlag();
       try {
         const hasLaunched = await AsyncStorage.getItem('hasLaunched');
         const isAuthenticated = await verifyStoredToken();

@@ -45,6 +45,25 @@ export default function ProfileScreen() {
       await logoutApi();
     } finally {
       await clearTokens();
+
+      // Reset all in-memory stores so the next user starts clean
+      try {
+        const { useProfileStore } = require('@/store/useProfileStore');
+        useProfileStore.getState().resetProfile();
+      } catch {}
+      try {
+        const { useReminderStore } = require('@/store/useReminderStore');
+        useReminderStore.getState().resetReminders();
+      } catch {}
+      try {
+        const { useDocumentStore } = require('@/store/useDocumentStore');
+        useDocumentStore.getState().reset();
+      } catch {}
+      try {
+        const { useMedicationDraftStore } = require('@/store/useMedicationDraftStore');
+        useMedicationDraftStore.getState().resetWorkflow();
+      } catch {}
+
       router.replace('/(auth)/login');
     }
   };

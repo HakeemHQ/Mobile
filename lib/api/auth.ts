@@ -35,6 +35,20 @@ export const clearTokens = async () => {
   }
 };
 
+/**
+ * Lightweight token wipe — skips push-token network calls.
+ * Used when the refresh flow fails and we just need to clear
+ * stored JWT tokens without triggering any API calls.
+ */
+const clearTokensQuietly = async () => {
+  try {
+    await deleteSecureItem('accessToken');
+    await deleteSecureItem('refreshToken');
+  } catch {
+    // Intentionally left clean
+  }
+};
+
 export const getAccessToken = async () => {
   try {
     return await getSecureItem('accessToken');
@@ -99,13 +113,15 @@ export const verifyStoredToken = async (): Promise<boolean> => {
 let refreshLock: Promise<boolean> | null = null;
 
 export const refreshAccessToken = async (): Promise<boolean> => {
+  // If a refresh is already in-flight, piggyback on it
   if (refreshLock) return refreshLock;
 
-  refreshLock = (async () => {
+  const promise = (async (): Promise<boolean> => {
     try {
       const refreshToken = await getSecureItem('refreshToken');
-      if (!refreshToken) {
-        await clearTokens();
+      const token = await getSecureItem('accessToken');
+      if (!refreshToken || !token) {
+        await clearTokensQuietly();
         return false;
       }
 
@@ -115,11 +131,11 @@ export const refreshAccessToken = async (): Promise<boolean> => {
           'Content-Type': 'application/json',
           'Accept': '*/*',
         },
-        body: JSON.stringify({ refreshToken }),
+        body: JSON.stringify({ token, refreshToken }),
       });
 
       if (!response.ok) {
-        await clearTokens();
+        await clearTokensQuietly();
         return false;
       }
 
@@ -155,15 +171,16 @@ export const refreshAccessToken = async (): Promise<boolean> => {
         return true;
       }
 
-      await clearTokens();
+      await clearTokensQuietly();
       return false;
     } catch (e) {
-      await clearTokens();
+      await clearTokensQuietly();
       return false;
     } finally {
       refreshLock = null;
     }
   })();
 
-  return refreshLock;
+  refreshLock = promise;
+  return promise;
 };

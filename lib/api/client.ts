@@ -6,6 +6,49 @@ import i18n from '@/localization/i18n';
 
 export const BASE_URL = 'https://hakeem1.runasp.net';
 
+// ── Global logout guard ────────────────────────────────────────────
+// Prevents multiple 401 responses from racing each other and
+// triggering duplicate clearTokens / router.replace calls.
+let isLoggingOut = false;
+
+export const resetLogoutFlag = () => {
+  isLoggingOut = false;
+};
+
+/**
+ * One-shot forced logout: clears tokens, resets every in-memory store,
+ * and navigates to the login screen.  Subsequent calls while a logout
+ * is already in progress are silently ignored.
+ */
+const forceLogout = async () => {
+  if (isLoggingOut) return;
+  isLoggingOut = true;
+
+  await clearTokens();
+
+  // Reset all Zustand stores so the next user never sees stale data
+  try {
+    const { useProfileStore } = require('@/store/useProfileStore');
+    useProfileStore.getState().resetProfile();
+  } catch {}
+  try {
+    const { useReminderStore } = require('@/store/useReminderStore');
+    useReminderStore.getState().resetReminders();
+  } catch {}
+  try {
+    const { useDocumentStore } = require('@/store/useDocumentStore');
+    useDocumentStore.getState().reset();
+  } catch {}
+  try {
+    const { useMedicationDraftStore } = require('@/store/useMedicationDraftStore');
+    useMedicationDraftStore.getState().resetWorkflow();
+  } catch {}
+
+  try {
+    router.replace('/(auth)/login');
+  } catch {}
+};
+
 export const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -16,6 +59,11 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   async (config) => {
+    // If a forced logout is already underway, don't even try to attach a token.
+    if (isLoggingOut) {
+      return Promise.reject(new axios.Cancel('Logging out'));
+    }
+
     try {
       let token = await getSecureItem('accessToken');
       if (token) {
@@ -25,10 +73,8 @@ apiClient.interceptors.request.use(
             token = await getSecureItem('accessToken');
             config.headers.Authorization = `Bearer ${token}`;
           } else {
-            // Refresh failed — redirect to login and abort the request
-            try {
-              router.replace('/(auth)/login');
-            } catch (e) {}
+            // Refresh failed — force logout once
+            await forceLogout();
             return Promise.reject(new axios.Cancel(i18n.t('common:sessionExpired', { defaultValue: 'Session expired' })));
           }
         } else {
@@ -36,6 +82,7 @@ apiClient.interceptors.request.use(
         }
       }
     } catch (e) {
+      if (axios.isCancel(e)) throw e;
       // Intentionally left clean
     }
     return config;
@@ -46,6 +93,9 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
+    // If we are already logging out, don't process further 401s
+    if (isLoggingOut) return Promise.reject(error);
+
     const originalRequest = error.config;
     
     if (error?.response?.status === 401) {
@@ -71,12 +121,7 @@ apiClient.interceptors.response.use(
       // the refresh failed, OR we already retried and STILL got a 401.
       // In all these cases (except login/register endpoints), we should log out.
       if (!isAuthEndpoint) {
-        await clearTokens();
-        try {
-          router.replace('/(auth)/login');
-        } catch (e) {
-          // Intentionally left clean
-        }
+        await forceLogout();
       }
     }
     return Promise.reject(error);
