@@ -126,6 +126,8 @@
   "labTestDateTimeMessage": "Select a future lab-test date and time.",
   "unableToAddLabTest": "Unable to add lab test",
   "medicationNameRequired": "Medication name is required.",
+  "startDateRequired": "Start date is required.",
+  "endDateRequired": "End date is required.",
   "every": "Every",
   "noDaysSelected": "No days selected",
   "types": {

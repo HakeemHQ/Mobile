@@ -66,9 +66,7 @@ export default function ReminderSuccessScreen() {
     useEffect(() => {
         const onHardwareBackPress = () => {
             clearSummary();
-            router.replace(
-                '/reminders',
-            );
+            router.dismissAll();
             return true;
         };
 
@@ -88,10 +86,7 @@ export default function ReminderSuccessScreen() {
 
     const goToReminderList = () => {
         clearSummary();
-
-        router.replace(
-            '/reminders',
-        );
+        router.dismissAll();
     };
 
     const addAnotherReminder =

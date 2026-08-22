@@ -138,9 +138,11 @@ export default function AddReminderScreen() {
         );
 
     const goToReminderList = () => {
-        router.replace(
-            '/reminders',
-        );
+        if (router.canGoBack()) {
+            router.back();
+        } else {
+            router.replace('/reminders');
+        }
     };
 
     const finishMedicationForm =
