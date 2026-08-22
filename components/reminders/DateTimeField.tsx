@@ -19,6 +19,7 @@ interface DateTimeFieldProps {
     mode: 'date' | 'time';
     onPress: () => void;
     containerClassName?: string;
+    hasError?: boolean;
 }
 
 export function DateTimeField({
@@ -27,6 +28,7 @@ export function DateTimeField({
     mode,
     onPress,
     containerClassName = 'mb-5',
+    hasError = false,
 }: DateTimeFieldProps) {
     const { i18n } = useTranslation('reminders');
     const isRTL = i18n.language === 'ar';
@@ -53,8 +55,10 @@ export function DateTimeField({
                 className={`h-14 flex-row items-center rounded-2xl border bg-surface px-4 ${isRTL ? 'flex-row-reverse' : ''}`}
                 onPress={onPress}
                 style={({ pressed }: { pressed: boolean }) => ({
-                    borderColor:
-                        colors.text2[200],
+                    borderColor: hasError
+                        ? colors.danger[500]
+                        : colors.text2[200],
+                    borderWidth: hasError ? 1.5 : 1,
                     opacity: pressed
                         ? 0.8
                         : 1,

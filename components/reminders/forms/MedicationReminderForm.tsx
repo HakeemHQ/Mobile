@@ -84,6 +84,8 @@ export interface MedicationReminderFormController {
     startDate: Date;
     hasSelectedStartDate: boolean;
     endDate: Date;
+    hasSelectedEndDate: boolean;
+    showValidationError: boolean;
     medicationTime: Date;
     frequencyType:
     MedicationFrequencyType;
@@ -238,12 +240,23 @@ export function useMedicationReminderForm({
 
     const [
         endDate,
-        setEndDate,
+        setEndDateState,
     ] = useState(() =>
         getInitialEndDate(
             initialValue,
         ),
     );
+
+    const [
+        hasSelectedEndDate,
+        setHasSelectedEndDate,
+    ] = useState(!!initialValue);
+
+    const [
+        showValidationError,
+        setShowValidationError,
+    ] = useState(false);
+
 
     const [
         medicationTime,
@@ -394,10 +407,36 @@ export function useMedicationReminderForm({
         );
 
         setHasSelectedStartDate(true);
+        setShowValidationError(false);
 
         const nextDay = new Date(normalizedValue);
         nextDay.setDate(nextDay.getDate() + 1);
-        setEndDate(nextDay);
+        setEndDateState(nextDay);
+
+        setScheduleError(
+            undefined,
+        );
+    };
+
+    const setEndDate = (
+        value: Date,
+    ) => {
+        const normalizedValue =
+            new Date(value);
+
+        normalizedValue.setHours(
+            0,
+            0,
+            0,
+            0,
+        );
+
+        setEndDateState(
+            normalizedValue,
+        );
+
+        setHasSelectedEndDate(true);
+        setShowValidationError(false);
 
         setScheduleError(
             undefined,
@@ -478,6 +517,14 @@ export function useMedicationReminderForm({
     };
 
     const submit = async () => {
+        console.log('--- Medication Form Submit Triggered ---');
+        console.log('Name:', name);
+        console.log('HasSelectedStartDate:', hasSelectedStartDate);
+        console.log('HasSelectedEndDate:', hasSelectedEndDate);
+        console.log('DurationType:', durationType);
+
+        let hasError = false;
+
         const requiredError =
             validateRequiredText(
                 name,
@@ -485,10 +532,35 @@ export function useMedicationReminderForm({
             );
 
         if (requiredError) {
+            console.log('Validation failed: Name is empty');
             setNameError(
                 requiredError,
             );
+            hasError = true;
+        } else {
+            setNameError(undefined);
+        }
 
+        if (!hasSelectedStartDate || (durationType === 'FINITE' && !hasSelectedEndDate)) {
+            setShowValidationError(true);
+            hasError = true;
+        }
+
+        if (!hasSelectedStartDate) {
+            console.log('Validation failed: Start date not explicitly selected');
+            setScheduleError(
+                t('startDateRequired'),
+            );
+        } else if (durationType === 'FINITE' && !hasSelectedEndDate) {
+            console.log('Validation failed: End date not explicitly selected');
+            setScheduleError(
+                t('endDateRequired'),
+            );
+        } else {
+            setScheduleError(undefined);
+        }
+
+        if (hasError) {
             return;
         }
 
@@ -575,6 +647,8 @@ export function useMedicationReminderForm({
         startDate,
         hasSelectedStartDate,
         endDate,
+        hasSelectedEndDate,
+        showValidationError,
         medicationTime,
         frequencyType,
         timesPerDay,
@@ -760,6 +834,12 @@ export function MedicationReminderForm({
                 }
                 endDate={
                     form.endDate
+                }
+                hasSelectedEndDate={
+                    form.hasSelectedEndDate
+                }
+                showValidationError={
+                    form.showValidationError
                 }
                 onDurationTypeChange={
                     form.setDurationType

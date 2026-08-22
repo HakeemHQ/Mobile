@@ -49,6 +49,8 @@ interface MedicationDurationSectionProps {
     startDate: Date;
     hasSelectedStartDate: boolean;
     endDate: Date;
+    hasSelectedEndDate: boolean;
+    showValidationError: boolean;
     onDurationTypeChange: (
         value:
             MedicationDurationType,
@@ -65,10 +67,12 @@ function CompactDateField({
     label,
     value,
     onPress,
+    hasError = false,
 }: {
     label: string;
     value: string;
     onPress: () => void;
+    hasError?: boolean;
 }) {
     const { i18n } = useTranslation('reminders');
     const isRTL = i18n.language === 'ar';
@@ -86,8 +90,10 @@ function CompactDateField({
                 className={`h-12 flex-row items-center rounded-xl border bg-surface px-3 ${isRTL ? 'flex-row-reverse' : ''}`}
                 onPress={onPress}
                 style={({ pressed }: { pressed: boolean }) => ({
-                    borderColor:
-                        colors.text2[100],
+                    borderColor: hasError
+                        ? colors.danger[500]
+                        : colors.text2[100],
+                    borderWidth: hasError ? 1.5 : 1,
                     opacity:
                         pressed
                             ? 0.78
@@ -126,6 +132,8 @@ export function MedicationDurationSection({
     startDate,
     hasSelectedStartDate,
     endDate,
+    hasSelectedEndDate,
+    showValidationError,
     onDurationTypeChange,
     onStartDateChange,
     onEndDateChange,
@@ -215,22 +223,23 @@ export function MedicationDurationSection({
             >
                 <CompactDateField
                     label={t('startDate')}
-                    value={formatDateForDisplay(
+                    value={hasSelectedStartDate ? formatDateForDisplay(
                         startDate,
                         i18n.language,
-                    )}
+                    ) : '---'}
                     onPress={() =>
                         setPickerTarget(
                             'startDate',
                         )
                     }
+                    hasError={showValidationError && !hasSelectedStartDate}
                 />
 
                 {durationType ===
                     'FINITE' ? (
                     <CompactDateField
                         label={t('endDate')}
-                        value={hasSelectedStartDate ? formatDateForDisplay(
+                        value={hasSelectedEndDate ? formatDateForDisplay(
                             endDate,
                             i18n.language,
                         ) : '---'}
@@ -241,9 +250,22 @@ export function MedicationDurationSection({
                                 );
                             }
                         }}
+                        hasError={showValidationError && !hasSelectedEndDate}
                     />
                 ) : null}
             </View>
+
+            {showValidationError && !hasSelectedStartDate && (
+                <Text className={`mt-2 font-inter-medium text-[13px] text-red-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {t('startDateRequired')}
+                </Text>
+            )}
+
+            {showValidationError && durationType === 'FINITE' && hasSelectedStartDate && !hasSelectedEndDate && (
+                <Text className={`mt-2 font-inter-medium text-[13px] text-red-500 ${isRTL ? 'text-right' : 'text-left'}`}>
+                    {t('endDateRequired')}
+                </Text>
+            )}
 
             {durationType === 'FINITE' && !hasSelectedStartDate && (
                 <Text className={`mt-2 font-jakarta-medium text-[12px] text-text2-400 ${isRTL ? 'text-right' : 'text-left'}`}>

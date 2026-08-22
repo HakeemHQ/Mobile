@@ -179,11 +179,7 @@ export function MedicationFrequencySection({
 
             {scheduleError ? (
                 <Text
-                    className={`-mt-2 mb-4 font-inter-medium text-[12px] ${isRTL ? 'text-right' : 'text-left'}`}
-                    style={{
-                        color:
-                            colors.primary[700],
-                    }}
+                    className={`mt-2 mb-4 font-inter-medium text-[13px] text-red-500 ${isRTL ? 'text-right' : 'text-left'}`}
                 >
                     {scheduleError}
                 </Text>

@@ -128,15 +128,12 @@ export function ReminderDateTimeFields({
                         'time',
                     )
                 }
+                hasError={!!error}
             />
 
             {error ? (
                 <Text
-                    className={`-mt-2 mb-4 font-inter-medium text-[12px] ${isRTL ? 'text-right' : 'text-left'}`}
-                    style={{
-                        color:
-                            colors.primary[700],
-                    }}
+                    className={`mt-2 mb-4 font-inter-medium text-[13px] text-red-500 ${isRTL ? 'text-right' : 'text-left'}`}
                 >
                     {error}
                 </Text>
@@ -172,6 +169,7 @@ function ReminderDateTimeFieldsContent({
     language,
     onOpenDate,
     onOpenTime,
+    hasError,
 }: {
     value: Date;
     showDate: boolean;
@@ -179,6 +177,7 @@ function ReminderDateTimeFieldsContent({
     language?: string;
     onOpenDate: () => void;
     onOpenTime: () => void;
+    hasError?: boolean;
 }) {
     const { t } = useTranslation('reminders');
 
@@ -195,6 +194,7 @@ function ReminderDateTimeFieldsContent({
                     onPress={
                         onOpenDate
                     }
+                    hasError={hasError}
                 />
             ) : null}
 
@@ -208,6 +208,7 @@ function ReminderDateTimeFieldsContent({
                 onPress={
                     onOpenTime
                 }
+                hasError={hasError}
             />
         </>
     );

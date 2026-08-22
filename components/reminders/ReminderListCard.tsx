@@ -153,13 +153,18 @@ export function ReminderListCard({
                 reminder.appointmentDate,
                 i18n.language,
             )
-            : reminder.reminderType ===
-                'LAB_TEST'
+            : reminder.reminderType === 'LAB_TEST'
                 ? formatReminderDate(
                     reminder.dueDate,
                     i18n.language,
                 )
-                : null;
+                : reminder.reminderType === 'MEDICATION'
+                    ? `${formatReminderDate(reminder.startDate, i18n.language)} - ${
+                        reminder.endDate
+                            ? formatReminderDate(reminder.endDate, i18n.language)
+                            : t('lifelong')
+                      }`
+                    : null;
 
     const contentOpacity =
         isMedication &&
@@ -281,21 +286,13 @@ export function ReminderListCard({
                                 isRTL ? 'flex-row-reverse' : ''
                             }`}
                             style={{
-                                backgroundColor: isAppointment
-                                    ? colors.secondary[50]
-                                    : colors.tertiary[50],
-                                borderColor: isAppointment
-                                    ? colors.secondary[100]
-                                    : colors.tertiary[100],
+                                backgroundColor: reminderCardTheme.softBackgroundColor,
+                                borderColor: reminderCardTheme.badgeBackgroundColor,
                             }}
                         >
                             <CalendarDays
                                 size={12}
-                                color={
-                                    isAppointment
-                                        ? colors.secondary.DEFAULT
-                                        : colors.tertiary.DEFAULT
-                                }
+                                color={reminderCardTheme.accentColor}
                                 strokeWidth={2.2}
                                 style={{
                                     [isRTL ? 'marginLeft' : 'marginRight']: 4,
@@ -304,9 +301,7 @@ export function ReminderListCard({
                             <Text
                                 className="font-jakarta-semibold text-[11px]"
                                 style={{
-                                    color: isAppointment
-                                        ? colors.secondary.DEFAULT
-                                        : colors.tertiary.DEFAULT,
+                                    color: reminderCardTheme.accentColor,
                                 }}
                             >
                                 {reminderDate}
