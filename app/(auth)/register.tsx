@@ -25,12 +25,13 @@ export default function RegisterScreen() {
   const isRTL = i18n.language === 'ar';
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [globalError, setGlobalError] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  const { control, handleSubmit, setError, formState: { errors } } = useForm({
+  const { control, handleSubmit, setError, getValues, formState: { errors } } = useForm({
     mode: 'onChange',
     defaultValues: {
       firstName: '',
@@ -40,6 +41,7 @@ export default function RegisterScreen() {
       nationalId: '',
       birthDate: '',
       password: '',
+      confirmPassword: '',
       gender: '',
       isChecked: false
     }
@@ -367,6 +369,29 @@ export default function RegisterScreen() {
                 value={value}
                 onChangeText={onChange}
                 error={errors.password?.message as string}
+                bgClassName="bg-primary-50"
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="confirmPassword"
+            rules={{
+              required: t('confirmPasswordRequired'),
+              validate: (value) => value === getValues('password') || t('passwordsDoNotMatch')
+            }}
+            render={({ field: { onChange, value } }) => (
+              <InputField
+                label={t('confirmPassword')}
+                icon={LockOpenIcon}
+                placeholder={t('confirmPasswordPlaceholder')}
+                secureTextEntry={!isConfirmPasswordVisible}
+                rightIcon={isConfirmPasswordVisible ? ViewIcon : EyeOffIcon}
+                onRightIconPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                value={value}
+                onChangeText={onChange}
+                error={errors.confirmPassword?.message as string}
                 bgClassName="bg-primary-50"
               />
             )}
