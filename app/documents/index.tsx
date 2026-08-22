@@ -321,7 +321,7 @@ export default function DocumentsScreen() {
               <RefreshControl
                 refreshing={refreshing}
                 onRefresh={() => {
-                  void fetchProfile();
+                  void fetchProfile(true);
                   refresh();
                 }}
                 colors={[colors.primary[900]]}

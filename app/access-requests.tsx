@@ -388,7 +388,7 @@ export default function AccessRequestsScreen() {
                 <RefreshControl
                   refreshing={refreshing}
                   onRefresh={() => {
-                    void fetchProfile();
+                    void fetchProfile(true);
                     handleRefresh();
                   }}
                   colors={[colors.primary[900]]}
