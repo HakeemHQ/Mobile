@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Pressable, ActivityIndicator, ScrollView, Modal, Alert } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator, ScrollView, Modal, Alert, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -31,12 +31,25 @@ export default function ProfileScreen() {
   const fetchError = useProfileStore((state) => state.fetchError);
   const fetchProfile = useProfileStore((state) => state.fetchProfile);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
     void fetchProfile();
     getStoredLanguage().then((lang) => {
       setActiveLang(lang as LanguageOption);
     });
   }, [fetchProfile]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await fetchProfile(true);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -103,7 +116,18 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-bg" edges={['top']}>
-      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className="flex-1 px-6"
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[colors.primary[900]]}
+            tintColor={colors.primary[900]}
+          />
+        }
+      >
         <Text className={`text-[28px] font-jakarta-bold text-primary-900 mt-2 mb-6 ${isRTL ? 'text-right' : 'text-left'}`}>
           {t('title')}
         </Text>

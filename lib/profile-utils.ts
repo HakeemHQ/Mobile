@@ -1,4 +1,5 @@
 import type { KeyboardTypeOptions } from 'react-native';
+import i18n from '@/localization/i18n';
 
 import type {
     ApiThrownError,
@@ -80,14 +81,14 @@ export function validateProfileField(
     const cleanedValue = value.trim();
 
     if (!cleanedValue) {
-        return 'This field is required.';
+        return i18n.t('profile:profileComponents.editFieldModal.validation.required', { defaultValue: 'This field is required.' });
     }
 
     if (
         field === 'email' &&
         !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanedValue)
     ) {
-        return 'Enter a valid email address.';
+        return i18n.t('profile:profileComponents.editFieldModal.validation.email', { defaultValue: 'Enter a valid email address.' });
     }
 
     if (
@@ -95,15 +96,15 @@ export function validateProfileField(
         cleanedValue.length < 2
     ) {
         return field === 'firstName'
-            ? 'Enter a valid first name.'
-            : 'Enter a valid last name.';
+            ? i18n.t('profile:profileComponents.editFieldModal.validation.firstName', { defaultValue: 'Enter a valid first name.' })
+            : i18n.t('profile:profileComponents.editFieldModal.validation.lastName', { defaultValue: 'Enter a valid last name.' });
     }
 
     if (
         field === 'phoneNumber' &&
         !/^01[0-9]{9}$/.test(cleanedValue)
     ) {
-        return 'Enter a valid Egyptian phone number starting with 01 and containing 11 digits.';
+        return i18n.t('profile:profileComponents.editFieldModal.validation.phoneNumber', { defaultValue: 'Enter a valid Egyptian phone number starting with 01 and containing 11 digits.' });
     }
 
     return null;

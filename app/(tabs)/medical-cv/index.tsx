@@ -93,7 +93,7 @@ export default function MedicalCvScreen() {
 
         try {
             await Promise.all([
-                fetchProfile(),
+                fetchProfile(true),
                 fetchMedicalCvs(),
             ]);
         } finally {
