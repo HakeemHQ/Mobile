@@ -40,11 +40,11 @@ export default function LoginScreen() {
     try {
       const { useReminderStore } = require('@/store/useReminderStore');
       useReminderStore.getState().resetReminders();
-    } catch {}
+    } catch { }
     try {
       const { useDocumentStore } = require('@/store/useDocumentStore');
       useDocumentStore.getState().reset();
-    } catch {}
+    } catch { }
 
     try {
       const response = await apiFetch('/auth/login', {
@@ -65,7 +65,7 @@ export default function LoginScreen() {
         // Best-effort profile fetch — don't let it block or break login
         try {
           await useProfileStore.getState().fetchProfile(true);
-        } catch {}
+        } catch { }
 
         router.replace('/(tabs)');
       } else {

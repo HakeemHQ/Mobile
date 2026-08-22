@@ -59,6 +59,11 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   async (config) => {
+    const appLang = i18n.language?.startsWith('ar') ? 'ar' : 'en';
+    if (config.headers) {
+      config.headers['Accept-Language'] = appLang;
+    }
+
     const url = config.url || '';
     const isAuthRequest = url.includes('/auth/') || url.includes('/refresh');
 

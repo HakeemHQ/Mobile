@@ -152,7 +152,14 @@
       },
       "closeAccessibility": "Close profile editor",
       "cancel": "Cancel",
-      "saveChanges": "Save Changes"
+      "saveChanges": "Save Changes",
+      "validation": {
+        "required": "This field is required.",
+        "email": "Enter a valid email address.",
+        "firstName": "Enter a valid first name.",
+        "lastName": "Enter a valid last name.",
+        "phoneNumber": "Enter a valid Egyptian phone number starting with 01 and containing 11 digits."
+      }
     }
   },
   "statusVerified": "Verified",
