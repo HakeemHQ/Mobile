@@ -205,8 +205,8 @@ export default function DocumentsScreen() {
           nodeIcon={<HugeiconsIcon icon={CategoryIcon} size={24} color={iconColor} />}
           isLast={isLast}
           cardProps={{
-            title: item.title,
-            subtitle: item.documentType,
+            title: t(item.title, { defaultValue: item.title }),
+            subtitle: t(item.documentType, { defaultValue: item.documentType }),
             tag: badge.label,
             onPress: () => router.push(`/documents/${item.documentId}` as any),
           }}
@@ -228,7 +228,7 @@ export default function DocumentsScreen() {
                 <View className={cn('flex-row items-center gap-3', isRTL && 'flex-row-reverse')}>
                   <BackButton />
                   <Text className="text-[24px] font-jakarta-bold text-primary-900">
-                    {t('documentsTitle')}
+                    {t('documents', { defaultValue: 'Documents' })}
                   </Text>
                 </View>
 

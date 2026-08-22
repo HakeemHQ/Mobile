@@ -183,6 +183,7 @@ export default function DocumentDetailScreen() {
   const formattedDate = formatDate(document.documentDate, isRTL);
   const isImage = checkIsImage(document.documentPath);
   const docConfig = getDocumentTypeConfig(document.documentType);
+  const secureImageUri = document?.documentPath?.replace(/^http:\/\//i, 'https://');
 
   return (
     <>
@@ -258,7 +259,7 @@ export default function DocumentDetailScreen() {
                       className="w-full h-44 rounded-xl overflow-hidden bg-gray-100 relative border border-gray-100 active:opacity-90"
                     >
                       <Image
-                        source={{ uri: document.documentPath }}
+                        source={{ uri: secureImageUri }}
                         className="w-full h-full"
                         resizeMode="cover"
                       />
@@ -323,11 +324,11 @@ export default function DocumentDetailScreen() {
           <View className="flex-1 bg-black/95">
             <View className="flex-1 flex-col justify-between relative">
               {/* Top Header Overlay */}
-              <View 
-                className={cn('absolute w-full z-50 flex-row items-center justify-between px-5', isRTL && 'flex-row-reverse')}
+              <View
+                className="absolute w-full z-50 flex-row items-center justify-between px-5"
                 style={{ top: Math.max(insets.top, 24) + 10 }}
               >
-                <Text className="text-white text-[16px] font-jakarta-bold flex-1" numberOfLines={1}>
+                <Text className={cn("text-white text-[16px] font-jakarta-bold flex-1", isRTL && "text-right")} numberOfLines={1}>
                   {document.title}
                 </Text>
                 <Pressable
@@ -350,7 +351,7 @@ export default function DocumentDetailScreen() {
                   style={{ width: '100%', height: '100%' }}
                 >
                   <Image
-                    source={{ uri: document.documentPath }}
+                    source={{ uri: secureImageUri }}
                     style={{ width: width, height: height * 0.7 }}
                     resizeMode="contain"
                   />
@@ -358,7 +359,7 @@ export default function DocumentDetailScreen() {
               </View>
 
               {/* Bottom Close Button Overlay */}
-              <View 
+              <View
                 className="absolute w-full px-5 z-50"
                 style={{ bottom: Math.max(insets.bottom, 24) + 10 }}
               >
