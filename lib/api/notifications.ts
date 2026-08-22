@@ -1,5 +1,7 @@
-import { apiClient } from './client';
+import { apiClient, BASE_URL } from './client';
 import i18n from '@/localization/i18n';
+import axios from 'axios';
+import { getSecureItem } from '../storage';
 
 /**
  * Register a device's Expo Push Token with the Hakeem backend.
@@ -24,7 +26,15 @@ export const registerPushToken = async (
 export const unregisterPushToken = async (
   expoPushToken: string
 ): Promise<void> => {
-  await apiClient.delete('/patient/push-devices', {
-    data: { expoPushToken },
-  });
+  try {
+    const token = await getSecureItem('accessToken');
+    await axios.delete(`${BASE_URL}/patient/push-devices`, {
+      data: { expoPushToken },
+      headers: {
+        Authorization: token ? `Bearer ${token}` : '',
+      }
+    });
+  } catch (error) {
+    // Silently ignore as this is usually called during logout or token clear
+  }
 };

@@ -3,8 +3,8 @@ import { Modal, Pressable, View, Text, ScrollView, TouchableOpacity, Platform } 
 import { useTranslation } from 'react-i18next';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { HugeiconsIcon } from '@hugeicons/react-native';
-import { 
-  Cancel01Icon, 
+import {
+  Cancel01Icon,
   PillIcon,
   Calendar03Icon,
   FlaskConicalIcon
@@ -17,11 +17,11 @@ import { cn } from '@/lib/utils';
 import { colors } from '@/lib/theme';
 import { formatLocalTime, formatLocalTimeValue, localTimeToDate } from '@/lib/reminder-utils';
 import { useReminderStore } from '@/store/useReminderStore';
-import type { 
-  Reminder, 
-  ReminderDeliveryMode, 
-  ReminderScheduleInput, 
-  UpdateReminderInput 
+import type {
+  Reminder,
+  ReminderDeliveryMode,
+  ReminderScheduleInput,
+  UpdateReminderInput
 } from '@/types/reminder';
 
 export interface EditReminderModalProps {
@@ -242,11 +242,11 @@ export function EditReminderModal({
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <Pressable 
+      <Pressable
         className="flex-1 bg-black/50 justify-end"
         onPress={onClose}
       >
-        <Pressable 
+        <Pressable
           className="bg-white rounded-t-[32px] px-6 pt-6 pb-8 w-full max-h-[85%] shadow-2xl"
           onPress={(e) => e.stopPropagation()}
         >

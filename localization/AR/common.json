@@ -2,5 +2,7 @@
   "language": "اللغة",
   "auto": "تلقائي",
   "arabic": "عربي",
-  "english": "EN"
+  "english": "EN",
+  "somethingWentWrong": "حدث خطأ ما",
+  "sessionExpired": "انتهت الجلسة"
 }

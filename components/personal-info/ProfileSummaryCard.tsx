@@ -32,14 +32,47 @@ export function ProfileSummaryCard({
             <View className="flex-1">
                 <View className={`flex-row items-center ${isRTL ? 'justify-end' : 'justify-start'} gap-1.5`}>
                     <Text
-                        className={`font-jakarta-bold text-[17px] text-surface`}
+                        className={`font-jakarta-bold text-[17px] text-surface flex-1`}
                         numberOfLines={1}
+                        style={{ textAlign: isRTL ? 'right' : 'left' }}
                     >
                         {displayName}
                     </Text>
+                </View>
+
+                <Text
+                    className={`mt-1 font-inter-regular text-[11px] text-surface opacity-90 ${isRTL ? 'text-right' : 'text-left'}`}
+                    ellipsizeMode="middle"
+                    numberOfLines={1}
+                >
+                    {t('profileComponents.summary.idLabel')}: <Text className="font-jakarta-bold text-[16x]">{profile.patientCode}</Text>
+                </Text>
+
+                <View className={`mt-2 flex-row flex-wrap items-center gap-2 ${isRTL ? 'justify-end' : 'justify-start'}`}>
+                    <View
+                        className={`rounded-full border px-3 py-1.5`}
+                        style={{
+                            backgroundColor: colors.primary[400],
+                            borderColor: colors.primary[300],
+                        }}
+                    >
+                        <View className={`flex-row items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                            <View
+                                className={`${isRTL ? 'ml-2' : 'mr-2'} h-2 w-2 rounded-full`}
+                                style={{
+                                    backgroundColor: colors.secondary[300],
+                                }}
+                            />
+
+                            <Text className={`font-jakarta-bold text-[9px] uppercase tracking-wide text-surface ${isRTL ? 'text-right' : 'text-left'}`}>
+                                {profile.status || t('profileComponents.summary.unknownStatus')}
+                            </Text>
+                        </View>
+                    </View>
+
                     {profile.identityVerificationStatus?.toLowerCase() === 'verified' ? (
                         <View
-                            className={`rounded-full border px-2 py-1 ${isRTL ? 'mr-2' : 'ml-2'}`}
+                            className={`rounded-full border px-2 py-1`}
                             style={{
                                 backgroundColor: '#5CCFA9',
                                 borderColor: 'rgba(255,255,255,0.2)',
@@ -54,7 +87,7 @@ export function ProfileSummaryCard({
                         </View>
                     ) : profile.identityVerificationStatus?.toLowerCase() === 'pending' ? (
                         <View
-                            className={`rounded-full border px-2 py-1 ${isRTL ? 'mr-2' : 'ml-2'}`}
+                            className={`rounded-full border px-2 py-1`}
                             style={{
                                 backgroundColor: '#FFB020',
                                 borderColor: 'rgba(255,255,255,0.2)',
@@ -68,35 +101,6 @@ export function ProfileSummaryCard({
                             </View>
                         </View>
                     ) : null}
-                </View>
-
-                <Text
-                    className={`mt-1 font-inter-regular text-[11px] text-surface opacity-90 ${isRTL ? 'text-right' : 'text-left'}`}
-                    ellipsizeMode="middle"
-                    numberOfLines={1}
-                >
-                    {t('profileComponents.summary.idLabel')}: <Text className="font-jakarta-bold text-[16x]">{profile.patientCode}</Text>
-                </Text>
-
-                <View
-                    className={`mt-2 rounded-full border px-3 py-1.5 ${isRTL ? 'self-end' : 'self-start'}`}
-                    style={{
-                        backgroundColor: colors.primary[400],
-                        borderColor: colors.primary[300],
-                    }}
-                >
-                    <View className={`flex-row items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
-                        <View
-                            className={`${isRTL ? 'ml-2' : 'mr-2'} h-2 w-2 rounded-full`}
-                            style={{
-                                backgroundColor: colors.secondary[300],
-                            }}
-                        />
-
-                        <Text className={`font-jakarta-bold text-[9px] uppercase tracking-wide text-surface ${isRTL ? 'text-right' : 'text-left'}`}>
-                            {profile.status || t('profileComponents.summary.unknownStatus')}
-                        </Text>
-                    </View>
                 </View>
             </View>
         </View>

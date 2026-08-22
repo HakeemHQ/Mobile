@@ -167,8 +167,49 @@ function updateSchedule(
     });
 }
 
-export const useMedicationDraftStore =
-    create<MedicationDraftStore>(
+function parseTimeToMinutes(localTime: string): number {
+    const [h, m] = localTime.split(':').map(Number);
+    return (h ?? 0) * 60 + (m ?? 0);
+}
+
+function formatMinutesToTime(totalMinutes: number): string {
+    const normalized = ((totalMinutes % 1440) + 1440) % 1440;
+    const hours = Math.floor(normalized / 60);
+    const minutes = normalized % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
+function distributeEqualIntervals(
+    schedules: ReminderScheduleInput[],
+    changedDoseSequence: number,
+    newTime: string,
+): ReminderScheduleInput[] {
+    const count = schedules.length;
+    if (count <= 1) {
+        return schedules.map((s) =>
+            s.doseSequence === changedDoseSequence
+                ? { ...s, localTime: newTime }
+                : s,
+        );
+    }
+
+    const intervalMinutes = Math.round(1440 / count);
+    const baseMinutes = parseTimeToMinutes(newTime);
+    const changedIndex = schedules.findIndex(
+        (s) => s.doseSequence === changedDoseSequence,
+    );
+
+    return schedules.map((schedule, i) => {
+        const offset = ((i - changedIndex) * intervalMinutes + 1440) % 1440;
+        const computedMinutes = (baseMinutes + offset) % 1440;
+        return {
+            ...schedule,
+            localTime: formatMinutesToTime(computedMinutes),
+        };
+    });
+}
+
+export const useMedicationDraftStore = create<MedicationDraftStore>(
         (set, get) => ({
             drafts: [],
             lastSavedSummary: [],
@@ -243,16 +284,17 @@ export const useMedicationDraftStore =
                 localTime,
             ) => {
                 set((state) => ({
-                    drafts:
-                        updateSchedule(
-                            state.drafts,
-                            draftId,
-                            doseSequence,
-                            (schedule) => ({
-                                ...schedule,
+                    drafts: state.drafts.map((draft) => {
+                        if (draft.draftId !== draftId) return draft;
+                        return {
+                            ...draft,
+                            schedules: distributeEqualIntervals(
+                                draft.schedules,
+                                doseSequence,
                                 localTime,
-                            }),
-                        ),
+                            ),
+                        };
+                    }),
                 }));
             },
 

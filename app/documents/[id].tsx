@@ -37,14 +37,14 @@ import { cn } from '@/lib/utils';
 import { colors } from '@/lib/theme';
 
 /** Status badge styles helper */
-const getStatusStyle = (status: string) => {
+const getStatusStyle = (status: string, t: any) => {
   const lower = (status || '').toLowerCase();
   if (lower === 'completed' || lower === 'success') {
     return {
       bg: 'bg-secondary-50',
       text: 'text-secondary-700',
       icon: <HugeiconsIcon icon={CheckmarkCircle02Icon} size={14} color={colors.secondary[700]} />,
-      label: 'Completed',
+      label: t('statusCompleted'),
     };
   }
   if (lower === 'failed' || lower === 'error') {
@@ -52,14 +52,14 @@ const getStatusStyle = (status: string) => {
       bg: 'bg-danger-50',
       text: 'text-danger-700',
       icon: <HugeiconsIcon icon={AlertCircleIcon} size={14} color={colors.danger[700]} />,
-      label: 'Failed',
+      label: t('statusFailed'),
     };
   }
   return {
     bg: 'bg-primary-50',
     text: 'text-primary-700',
     icon: <HugeiconsIcon icon={Clock01Icon} size={14} color={colors.primary[700]} />,
-    label: 'Pending',
+    label: t('statusPending'),
   };
 };
 
@@ -145,7 +145,7 @@ export default function DocumentDetailScreen() {
           <View className="flex-1 items-center justify-center">
             <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
             <Text className="text-[14px] font-inter-regular text-gray-400 mt-3">
-              {isRTL ? 'جاري تحميل تفاصيل المستند...' : 'Loading document details...'}
+              {t('loadingDocumentDetails')}
             </Text>
           </View>
         </SafeAreaView>
@@ -163,13 +163,13 @@ export default function DocumentDetailScreen() {
           </View>
           <View className="flex-1 items-center justify-center px-6">
             <Text className="text-[16px] font-jakarta-bold text-gray-700 mb-2">
-              {isRTL ? 'فشل تحميل المستند' : 'Failed to load document'}
+              {t('failedToLoadDocument')}
             </Text>
             <Text className="text-[14px] font-inter-regular text-gray-400 mb-4 text-center">
               {error || ''}
             </Text>
             <Button
-              title={isRTL ? 'إعادة المحاولة' : 'Retry'}
+              title={t('retry')}
               variant="primary"
               onPress={retry}
             />
@@ -179,10 +179,11 @@ export default function DocumentDetailScreen() {
     );
   }
 
-  const statusStyle = getStatusStyle(document.extractionStatus);
+  const statusStyle = getStatusStyle(document.extractionStatus, t);
   const formattedDate = formatDate(document.documentDate, isRTL);
   const isImage = checkIsImage(document.documentPath);
   const docConfig = getDocumentTypeConfig(document.documentType);
+  const secureImageUri = document?.documentPath?.replace(/^http:\/\//i, 'https://');
 
   return (
     <>
@@ -234,7 +235,7 @@ export default function DocumentDetailScreen() {
           {document.failureCode && (
             <View className="mx-5 mt-4">
               <InfoBanner
-                text={`${isRTL ? 'رمز الخطأ: ' : 'Failure Code: '}${document.failureCode}`}
+                text={`${t('failureCode')}${document.failureCode}`}
                 bgColor={colors.danger[50]}
                 textColor={colors.danger[700]}
                 borderColor="transparent"
@@ -245,7 +246,7 @@ export default function DocumentDetailScreen() {
           {/* Document Content Section */}
           <View className="mx-5 mt-6">
             <Text className={cn('text-[16px] font-jakarta-bold text-gray-900 mb-3', isRTL && 'text-right')}>
-              {isRTL ? 'محتوى المستند' : 'Document Content'}
+              {t('documentContent')}
             </Text>
 
             {document.documentPath ? (
@@ -258,7 +259,7 @@ export default function DocumentDetailScreen() {
                       className="w-full h-44 rounded-xl overflow-hidden bg-gray-100 relative border border-gray-100 active:opacity-90"
                     >
                       <Image
-                        source={{ uri: document.documentPath }}
+                        source={{ uri: secureImageUri }}
                         className="w-full h-full"
                         resizeMode="cover"
                       />
@@ -276,9 +277,7 @@ export default function DocumentDetailScreen() {
                         {document.title}
                       </Text>
                       <Text className="text-[13px] font-inter-regular text-gray-500 text-center mb-2 px-4 leading-5">
-                        {isRTL
-                          ? 'هذا المستند بصيغة PDF. اضغط أدناه لفتحه في المتصفح.'
-                          : 'This document is a PDF file. Click below to open it in your browser.'}
+                        {t('pdfHelperText')}
                       </Text>
                     </View>
                   )}
@@ -287,7 +286,7 @@ export default function DocumentDetailScreen() {
                 {/* Full Width Buttons outside the card */}
                 {isImage && (
                   <Button
-                    title={isRTL ? 'معاينة المستند' : 'View Document'}
+                    title={t('viewDocument')}
                     leftIcon={<HugeiconsIcon icon={ViewIcon} size={18} color="#FFFFFF" />}
                     variant="primary"
                     className="w-full mb-3"
@@ -296,7 +295,7 @@ export default function DocumentDetailScreen() {
                 )}
 
                 <Button
-                  title={isRTL ? 'فتح في المتصفح' : 'Open in Browser'}
+                  title={t('openInBrowser')}
                   leftIcon={<HugeiconsIcon icon={Link02Icon} size={18} color={isImage ? colors.primary.DEFAULT : '#FFFFFF'} />}
                   variant={isImage ? "outline" : "primary"}
                   className="w-full"
@@ -306,7 +305,7 @@ export default function DocumentDetailScreen() {
             ) : (
               <View className="bg-white rounded-2xl border border-[#E5E7EB] p-6 items-center justify-center">
                 <Text className="text-[14px] font-inter-regular text-gray-400">
-                  {isRTL ? 'لا يوجد رابط مستند متاح.' : 'No document file path available.'}
+                  {t('noDocumentPath')}
                 </Text>
               </View>
             )}
@@ -325,11 +324,11 @@ export default function DocumentDetailScreen() {
           <View className="flex-1 bg-black/95">
             <View className="flex-1 flex-col justify-between relative">
               {/* Top Header Overlay */}
-              <View 
-                className={cn('absolute w-full z-50 flex-row items-center justify-between px-5', isRTL && 'flex-row-reverse')}
+              <View
+                className="absolute w-full z-50 flex-row items-center justify-between px-5"
                 style={{ top: Math.max(insets.top, 24) + 10 }}
               >
-                <Text className="text-white text-[16px] font-jakarta-bold flex-1" numberOfLines={1}>
+                <Text className={cn("text-white text-[16px] font-jakarta-bold flex-1", isRTL && "text-right")} numberOfLines={1}>
                   {document.title}
                 </Text>
                 <Pressable
@@ -352,7 +351,7 @@ export default function DocumentDetailScreen() {
                   style={{ width: '100%', height: '100%' }}
                 >
                   <Image
-                    source={{ uri: document.documentPath }}
+                    source={{ uri: secureImageUri }}
                     style={{ width: width, height: height * 0.7 }}
                     resizeMode="contain"
                   />
@@ -360,12 +359,12 @@ export default function DocumentDetailScreen() {
               </View>
 
               {/* Bottom Close Button Overlay */}
-              <View 
+              <View
                 className="absolute w-full px-5 z-50"
                 style={{ bottom: Math.max(insets.bottom, 24) + 10 }}
               >
                 <Button
-                  title={isRTL ? 'إغلاق' : 'Close'}
+                  title={t('close')}
                   variant="outline"
                   className="w-full bg-white/10 border-white/30 text-white shadow-lg"
                   onPress={() => setShowFullImage(false)}

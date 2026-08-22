@@ -51,5 +51,21 @@
   "emptyLabReports": "No Lab Reports",
   "emptyMedicalVisits": "No Medical Visits",
   "pendingDoctorReviewTitle": "Pending Doctor Review",
-  "pendingDoctorReviewSubtitle": "Please visit the nearest doctor to verify and activate your account. Your account will remain pending until verified."
+  "pendingDoctorReviewSubtitle": "Please visit the nearest doctor to verify and activate your account. Your account will remain pending until verified.",
+  "statusCompleted": "Completed",
+  "statusFailed": "Failed",
+  "statusProcessing": "Processing",
+  "statusPending": "Pending",
+  "failedToLoadDocuments": "Failed to load documents",
+  "failedToLoadDocument": "Failed to load document",
+  "retry": "Retry",
+  "loadingDocumentDetails": "Loading document details...",
+  "failureCode": "Failure Code: ",
+  "documentContent": "Document Content",
+  "pdfHelperText": "This document is a PDF file. Click below to open it in your browser.",
+  "viewDocument": "View Document",
+  "openInBrowser": "Open in Browser",
+  "noDocumentPath": "No document file path available.",
+  "close": "Close",
+  "searchDocuments": "Search documents..."
 }

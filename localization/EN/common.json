@@ -2,5 +2,7 @@
   "language": "Language",
   "auto": "Auto",
   "arabic": "AR",
-  "english": "EN"
+  "english": "EN",
+  "somethingWentWrong": "Something went wrong",
+  "sessionExpired": "Session expired"
 }

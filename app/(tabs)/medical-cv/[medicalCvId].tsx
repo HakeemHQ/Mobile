@@ -1,5 +1,7 @@
+import React from 'react';
 import {
     Alert,
+    RefreshControl,
     ScrollView,
     StatusBar,
     Text,
@@ -24,6 +26,7 @@ import {
     useMedicalCvDetails,
     useMedicalCvPdf,
 } from '@/hooks/useMedicalCv';
+import { colors } from '@/lib/theme';
 
 export default function MedicalCvVersionsScreen() {
     const { t } =
@@ -61,6 +64,8 @@ export default function MedicalCvVersionsScreen() {
             selectedMedicalCv,
         );
 
+    const [isRefreshing, setIsRefreshing] = React.useState(false);
+
     const isLoading =
         detailsStatus === 'idle' ||
         detailsStatus === 'loading';
@@ -88,6 +93,20 @@ export default function MedicalCvVersionsScreen() {
                 );
             }
         };
+
+    const handleRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+
+        setIsRefreshing(true);
+
+        try {
+            await fetchMedicalCv();
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
     return (
         <>
@@ -123,6 +142,16 @@ export default function MedicalCvVersionsScreen() {
                         contentContainerStyle={{
                             paddingBottom: 40,
                         }}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={isRefreshing}
+                                onRefresh={() => {
+                                    void handleRefresh();
+                                }}
+                                colors={[colors.primary[900]]}
+                                tintColor={colors.primary[900]}
+                            />
+                        }
                     >
                         {!medicalCvId ? (
                             <MedicalCvErrorState

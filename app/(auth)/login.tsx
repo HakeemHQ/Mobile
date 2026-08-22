@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { apiFetch, saveTokens } from '../../lib/api';
+import { apiFetch, saveTokens, resetLogoutFlag } from '../../lib/api';
 import { ArrowLeft02Icon } from '../../components/icons/ArrowLeft02Icon';
 import { Mail01Icon } from '../../components/icons/Mail01Icon';
 import { LockOpenIcon } from '../../components/icons/LockOpenIcon';
@@ -32,6 +32,20 @@ export default function LoginScreen() {
     setGlobalError('');
     setIsLoading(true);
 
+    // Reset the forced-logout flag so interceptors allow requests again
+    resetLogoutFlag();
+
+    // Clear all stale in-memory data from a previous session
+    useProfileStore.getState().resetProfile();
+    try {
+      const { useReminderStore } = require('@/store/useReminderStore');
+      useReminderStore.getState().resetReminders();
+    } catch {}
+    try {
+      const { useDocumentStore } = require('@/store/useDocumentStore');
+      useDocumentStore.getState().reset();
+    } catch {}
+
     try {
       const response = await apiFetch('/auth/login', {
         method: 'POST',
@@ -47,7 +61,11 @@ export default function LoginScreen() {
         const refreshToken = response.data.refreshToken || '';
 
         await saveTokens(token, refreshToken);
-        await useProfileStore.getState().fetchProfile(true);
+
+        // Best-effort profile fetch — don't let it block or break login
+        try {
+          await useProfileStore.getState().fetchProfile(true);
+        } catch {}
 
         router.replace('/(tabs)');
       } else {
