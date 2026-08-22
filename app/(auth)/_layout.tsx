@@ -1,6 +1,12 @@
 import { Stack } from 'expo-router';
+import { useEffect } from 'react';
+import { resetLogoutFlag } from '@/lib/api';
 
 export default function AuthLayout() {
+  useEffect(() => {
+    resetLogoutFlag();
+  }, []);
+
   return (
     <Stack screenOptions={{ animation: 'none' }}>
       <Stack.Screen name="login" options={{ headerShown: false }} />
@@ -10,3 +16,4 @@ export default function AuthLayout() {
     </Stack>
   );
 }
+

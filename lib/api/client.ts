@@ -59,32 +59,42 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   async (config) => {
-    // If a forced logout is already underway, don't even try to attach a token.
-    if (isLoggingOut) {
+    const url = config.url || '';
+    const isAuthRequest = url.includes('/auth/') || url.includes('/refresh');
+
+    // If a forced logout is already underway, don't even try to attach a token,
+    // unless it is an authentication request (like login, register, or logout).
+    if (isLoggingOut && !isAuthRequest) {
       return Promise.reject(new axios.Cancel('Logging out'));
     }
 
-    try {
-      let token = await getSecureItem('accessToken');
-      if (token) {
-        if (isTokenExpired(token)) {
-          const refreshed = await refreshAccessToken();
-          if (refreshed) {
-            token = await getSecureItem('accessToken');
-            config.headers.Authorization = `Bearer ${token}`;
+
+    const isPublicAuthRequest = url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/password-reset/');
+
+    if (!isPublicAuthRequest) {
+      try {
+        let token = await getSecureItem('accessToken');
+        if (token) {
+          if (isTokenExpired(token)) {
+            const refreshed = await refreshAccessToken();
+            if (refreshed) {
+              token = await getSecureItem('accessToken');
+              config.headers.Authorization = `Bearer ${token}`;
+            } else {
+              // Refresh failed — force logout once
+              await forceLogout();
+              return Promise.reject(new axios.Cancel(i18n.t('common:sessionExpired', { defaultValue: 'Session expired' })));
+            }
           } else {
-            // Refresh failed — force logout once
-            await forceLogout();
-            return Promise.reject(new axios.Cancel(i18n.t('common:sessionExpired', { defaultValue: 'Session expired' })));
+            config.headers.Authorization = `Bearer ${token}`;
           }
-        } else {
-          config.headers.Authorization = `Bearer ${token}`;
         }
+      } catch (e) {
+        if (axios.isCancel(e)) throw e;
+        // Intentionally left clean
       }
-    } catch (e) {
-      if (axios.isCancel(e)) throw e;
-      // Intentionally left clean
     }
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -100,7 +110,8 @@ apiClient.interceptors.response.use(
     
     if (error?.response?.status === 401) {
       const url = originalRequest?.url || '';
-      const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/refresh');
+      const isAuthEndpoint = url.includes('/auth/') || url.includes('/refresh');
+
 
       if (!originalRequest._retry && !isAuthEndpoint) {
         originalRequest._retry = true;
