@@ -30,7 +30,7 @@
 
 ## 📖 Overview
 
-**Hakeem** (Arabic: حكيم — "wise") is a cross-platform mobile application that puts patients in control of their medical history. Patients upload medical documents (prescriptions, lab reports, scans, discharge summaries, clinical notes), and Hakeem uses AI-powered extraction to parse them into structured, verified medical records. Approved records are compiled into a sharable **Medical CV** — a professional, chronological summary of the patient's health profile.
+**Hakeem** (Arabic: حكيم ) is a cross-platform mobile application that puts patients in control of their medical history. Patients upload medical documents (prescriptions, lab reports, scans, discharge summaries, clinical notes), and Hakeem uses AI-powered extraction to parse them into structured, verified medical records. Approved records are compiled into a sharable **Medical CV** — a professional, chronological summary of the patient's health profile.
 
 The patient always remains in full control: they review, confirm, or correct every piece of extracted data before it becomes part of their official profile. The Medical CV can be kept private, downloaded as a PDF, or shared externally with doctors via secure, time-limited preview links.
 
@@ -378,6 +378,33 @@ hakeem/
 ---
 
 ## 🚀 Getting Started
+
+---
+
+## 📱 Latest Release
+
+### Android — v1.0.0
+
+The latest Android release build is available through Expo EAS.
+
+<p align="center">
+  <a href="https://expo.dev/accounts/mohamedessameldin/projects/Hakeem/builds/df8b8137-64dc-466a-9444-c62dfc64e82c">
+    <img src="https://img.shields.io/badge/Download-Android%20Build-1A56DB?style=for-the-badge&logo=android&logoColor=white" alt="Download Android Build" />
+  </a>
+</p>
+
+| Build | Details |
+|:---|:---|
+| **Version** | `1.0.0` |
+| **Platform** | Android |
+| **Profile** | Preview |
+| **Distribution** | Internal |
+| **Build Status** | Finished |
+
+> [!NOTE]
+> This release is distributed as an internal Android build through Expo EAS.
+
+---
 
 ### Prerequisites
 
