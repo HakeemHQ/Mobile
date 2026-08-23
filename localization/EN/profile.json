@@ -1,0 +1,167 @@
+{
+  "title": "Profile",
+  "loading": "Loading your profile...",
+  "unableToLoad": "Unable to load your profile",
+  "menu": {
+    "personalInfo": "Personal Info",
+    "privacy": "Privacy & Security",
+    "language": "Language",
+    "notifications": "Notifications",
+    "dataStorage": "Data & Storage",
+    "helpSupport": "Help & Support"
+  },
+  "languageModal": {
+    "title": "Language",
+    "subtitle": "Choose your preferred language",
+    "auto": "System Language",
+    "cancel": "Cancel"
+  },
+  "signOut": "Sign Out",
+  "version": "Version 1.0.0",
+  "profileScreens": {
+    "index": {
+      "fallbackUserName": "Hakeem User",
+      "privacyUnavailableMessage": "This feature is temporarily unavailable.",
+      "language": {
+        "englishCode": "English (EN)",
+        "arabicCode": "العربية (AR)",
+        "english": "English",
+        "englishUS": "English (US)",
+        "arabic": "العربية",
+        "arabicDescription": "Arabic",
+        "systemLanguage": "System Language"
+      }
+    },
+    "personalInfo": {
+      "backToProfile": "Return to Profile",
+      "title": "Personal Info",
+      "loading": "Loading your profile...",
+      "loadError": "Could not load your profile",
+      "retryAccessibility": "Retry loading profile",
+      "tryAgain": "Try Again",
+      "securityDescription": "Your personal information is encrypted and stored according to Hakeem Privacy Standards.",
+      "hipaaSecurity": "HIPAA Compliant Security"
+    },
+    "privacy": {
+      "backToProfile": "Return to Profile",
+      "title": "Privacy & Security",
+      "passwordSection": "Password",
+      "changePassword": "Change Password",
+      "lastChanged": "Last changed 3 months ago",
+      "authenticationSection": "Authentication",
+      "biometrics": "Enable Face ID / Biometrics",
+      "twoFactor": "Two-Factor Authentication",
+      "twoFactorDescription": "Secure your account via SMS/Email",
+      "sessionSection": "Session",
+      "manageDevices": "Manage Logged-in Devices",
+      "activeSessions": "3 active sessions",
+      "hipaaTitle": "Your data is HIPAA compliant",
+      "hipaaDescription": "Hakeem uses end-to-end encryption for all medical records and private communications.",
+      "deleteAccount": "Delete Account",
+      "deleteDescription": "Permanently remove all your data"
+    },
+    "changePassword": {
+      "backToPrivacy": "Return to Privacy",
+      "title": "Change Password",
+      "subtitle": "Update your password to keep your medical data secure.",
+      "currentPassword": "Current Password",
+      "currentPasswordPlaceholder": "Enter current password",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Min. 8 characters",
+      "strengthNone": "Strength: None",
+      "confirmNewPassword": "Confirm New Password",
+      "confirmNewPasswordPlaceholder": "Re-type new password",
+      "securityHint": "Ensure your new password uses a combination of letters, numbers, and symbols for maximum clinical-grade security.",
+      "updatePassword": "Update Password"
+    },
+    "deleteAccount": {
+      "backToPrivacy": "Return to Privacy",
+      "title": "Delete Account",
+      "confirmTitle": "Are you absolutely sure?",
+      "warning": "Deleting your account permanently removes your medical profile and personal information. This action cannot be undone and you will lose access to all your clinical records stored on Hakeem.",
+      "acknowledgement": "I understand this action is permanent and my clinical data will be irrecoverable.",
+      "retentionNotice": "In compliance with HIPAA and local medical record regulations, some transactional logs may be retained for auditing purposes in a secure, non-identifiable state.",
+      "cancel": "Cancel"
+    },
+    "help": {
+      "backToProfile": "Return to Profile",
+      "title": "Help & Support",
+      "comingSoon": "Coming soon",
+      "notConnected": "{{title}} is not connected yet.",
+      "immediateAssistance": "Need immediate assistance?",
+      "securityFooter": "HIPAA-compliant • Secure • 24/7",
+      "items": {
+        "faq": {
+          "title": "FAQ",
+          "description": "Frequently Asked Questions"
+        },
+        "contactSupport": {
+          "title": "Contact Support",
+          "description": "Get help from our support team"
+        },
+        "reportIssue": {
+          "title": "Report an Issue",
+          "description": "Report bugs or technical issues"
+        },
+        "privacyPolicy": {
+          "title": "Privacy Policy"
+        },
+        "terms": {
+          "title": "Terms & Conditions"
+        },
+        "about": {
+          "title": "About Hakeem",
+          "description": "Version 1.0.0"
+        }
+      }
+    }
+  },
+  "profileComponents": {
+    "summary": {
+      "idLabel": "ID",
+      "unknownStatus": "Unknown"
+    },
+    "personalInfoCard": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "emailAddress": "Email Address",
+      "phoneNumber": "Phone Number",
+      "birthDate": "Birth Date",
+      "gender": "Gender",
+      "notProvided": "Not provided",
+      "male": "Male",
+      "female": "Female",
+      "nationalId": "National ID",
+      "editFirstName": "Edit first name",
+      "editLastName": "Edit last name",
+      "editEmailAddress": "Edit email address",
+      "editPhoneNumber": "Edit phone number"
+    },
+    "editFieldModal": {
+      "titles": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "phoneNumber": "Phone Number"
+      },
+      "placeholders": {
+        "firstName": "Enter first name",
+        "lastName": "Enter last name",
+        "email": "Enter email address",
+        "phoneNumber": "Enter phone number"
+      },
+      "closeAccessibility": "Close profile editor",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "validation": {
+        "required": "This field is required.",
+        "email": "Enter a valid email address.",
+        "firstName": "Enter a valid first name.",
+        "lastName": "Enter a valid last name.",
+        "phoneNumber": "Enter a valid Egyptian phone number starting with 01 and containing 11 digits."
+      }
+    }
+  },
+  "statusVerified": "Verified",
+  "statusPending": "Pending"
+}

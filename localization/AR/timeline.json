@@ -1,0 +1,72 @@
+{
+  "title": "الخط الزمني",
+  "searchPlaceholder": "البحث في الخط الزمني...",
+  "filters": {
+    "all": "الكل",
+    "Medication": "الأدوية",
+    "LabResult": "نتائج المختبر",
+    "Condition": "الحالات",
+    "Allergy": "الحساسية",
+    "Procedure": "الإجراءات",
+    "Visit": "الزيارات",
+    "Facility": "المرافق",
+    "PatientInformation": "بيانات المريض"
+  },
+  "tags": {
+    "labs": "تحاليل",
+    "medication": "دواء",
+    "normal": "طبيعي",
+    "visits": "زيارة",
+    "scans": "فحص"
+  },
+  "recordTypes": {
+    "Medication": "دواء",
+    "LabResult": "نتيجة مختبر",
+    "Condition": "حالة مرضية",
+    "Allergy": "حساسية",
+    "Procedure": "إجراء طبي",
+    "Visit": "زيارة",
+    "Facility": "مرفق صحي",
+    "PatientInformation": "بيانات المريض"
+  },
+  "fieldNames": {
+    "MedicationName": "اسم الدواء",
+    "Dose": "الجرعة",
+    "Quantity": "الكمية",
+    "Frequency": "التكرار",
+    "Route": "طريقة الإعطاء",
+    "LabTestName": "اسم التحليل",
+    "LabValue": "القيمة",
+    "Unit": "الوحدة",
+    "ReferenceRange": "النطاق المرجعي",
+    "ConditionName": "الحالة",
+    "AllergyName": "الحساسية",
+    "ProcedureName": "الإجراء",
+    "Date": "التاريخ",
+    "DoctorName": "الطبيب",
+    "FacilityName": "المرفق",
+    "PatientName": "المريض"
+  },
+  "detail": {
+    "details": "التفاصيل",
+    "sourceDocuments": "المستندات المصدرية",
+    "status": "الحالة",
+    "clinicalDate": "التاريخ السريري",
+    "page": "صفحة",
+    "loading": "جاري تحميل السجل...",
+    "error": "فشل في تحميل السجل",
+    "retry": "إعادة المحاولة",
+    "emptyTitle": "لا توجد تفاصيل متاحة",
+    "emptySubtitle": "هذا السجل لا يحتوي على تفاصيل أو مستندات مصدرية."
+  },
+  "loading": "جاري تحميل السجلات...",
+  "error": "فشل تحميل السجلات",
+  "retry": "إعادة المحاولة",
+  "noResults": "لم يتم العثور على سجلات.",
+  "emptySubtitle": "ستظهر هنا السجلات والزيارات والأدوية الخاصة بك بمجرد إضافتها.",
+  "emptyTitle": "لا توجد سجلات بعد",
+  "noRecordsFound": "لم يتم العثور على سجلات",
+  "noRecordsFoundSubtitle": "لم نتمكن من العثور على أي سجلات تطابق \"{{query}}\".",
+  "pendingDoctorReviewTitle": "قيد مراجعة الطبيب",
+  "pendingDoctorReviewSubtitle": "يرجى التوجه لأقرب طبيب لتفعيل ومراجعة حسابك، سيظل حسابك قيد الانتظار حتى يتم التحقق منه بواسطة الطبيب."
+}

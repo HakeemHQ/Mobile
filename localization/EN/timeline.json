@@ -1,0 +1,72 @@
+{
+  "title": "Time line",
+  "searchPlaceholder": "Search timeline...",
+  "filters": {
+    "all": "All",
+    "Medication": "Medication",
+    "LabResult": "Lab Results",
+    "Condition": "Conditions",
+    "Allergy": "Allergies",
+    "Procedure": "Procedures",
+    "Visit": "Visits",
+    "Facility": "Facilities",
+    "PatientInformation": "Patient Info"
+  },
+  "tags": {
+    "labs": "Labs",
+    "medication": "Medication",
+    "normal": "Normal",
+    "visits": "Visits",
+    "scans": "Scans"
+  },
+  "recordTypes": {
+    "Medication": "Medication",
+    "LabResult": "Lab Result",
+    "Condition": "Condition",
+    "Allergy": "Allergy",
+    "Procedure": "Procedure",
+    "Visit": "Visit",
+    "Facility": "Facility",
+    "PatientInformation": "Patient Info"
+  },
+  "fieldNames": {
+    "MedicationName": "Medication",
+    "Dose": "Dose",
+    "Quantity": "Quantity",
+    "Frequency": "Frequency",
+    "Route": "Route",
+    "LabTestName": "Lab Test",
+    "LabValue": "Value",
+    "Unit": "Unit",
+    "ReferenceRange": "Reference Range",
+    "ConditionName": "Condition",
+    "AllergyName": "Allergy",
+    "ProcedureName": "Procedure",
+    "Date": "Date",
+    "DoctorName": "Doctor",
+    "FacilityName": "Facility",
+    "PatientName": "Patient"
+  },
+  "detail": {
+    "details": "Details",
+    "sourceDocuments": "Source Documents",
+    "status": "Status",
+    "clinicalDate": "Clinical Date",
+    "page": "Page",
+    "loading": "Loading record...",
+    "error": "Failed to load record",
+    "retry": "Retry",
+    "emptyTitle": "No Details Available",
+    "emptySubtitle": "This record has no details or source documents."
+  },
+  "loading": "Loading records...",
+  "error": "Failed to load records",
+  "retry": "Retry",
+  "noResults": "No timeline records found.",
+  "emptySubtitle": "Your clinical records, visits, and medications will appear here once added.",
+  "emptyTitle": "No timeline records yet",
+  "noRecordsFound": "No records found",
+  "noRecordsFoundSubtitle": "We couldn't find any records matching \"{{query}}\".",
+  "pendingDoctorReviewTitle": "Pending Doctor Review",
+  "pendingDoctorReviewSubtitle": "Please visit the nearest doctor to verify and activate your account. Your account will remain pending until verified."
+}

@@ -1,0 +1,15 @@
+{
+  "title": "H-bot",
+  "subtitle": "Medical Assistant",
+  "greetingWithName": "Hello there {{firstName}}, how can I help you today?",
+  "greeting": "Hello there, how can I help you today?",
+  "errors": {
+    "unableToGetResponse": "Unable to get a response from H-bot.",
+    "emptyResponse": "H-bot returned an empty response.",
+    "unableToConnect": "Unable to connect to H-bot. Please try again."
+  },
+  "closeHbot": "Close H-bot",
+  "messageInput": "H-bot message",
+  "enterMessage": "Enter message",
+  "sendMessage": "Send message"
+}

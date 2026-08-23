@@ -1,4 +1,5 @@
 const { hairlineWidth } = require('nativewind/theme');
+const {colors}= require('./lib/theme/colors');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -7,39 +8,50 @@ module.exports = {
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
+      fontFamily: {
+        'inter-regular': ['Inter-Regular'],
+        'inter-medium': ['Inter-Medium'],
+        'inter-semibold': ['Inter-SemiBold'],
+        'inter-bold': ['Inter-Bold'],
+        'jakarta-regular': ['PlusJakarta-Regular'],
+        'jakarta-medium': ['PlusJakarta-Medium'],
+        'jakarta-semibold': ['PlusJakarta-SemiBold'],
+        'jakarta-bold': ['PlusJakarta-Bold'],
+      },
       colors: {
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        ...colors,
+        border: '#E5E7EB',
+        input: '#E5E7EB',
+        ring: '#1A56DB',
+        background: '#F9FAFB',
+        foreground: '#1F2937',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          foreground: '#FFFFFF',
+          ...colors.primary,
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          foreground: '#FFFFFF',
+          ...colors.secondary,
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: '#EF4444',
+          foreground: '#FFFFFF',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: '#F3F4F6',
+          foreground: '#6B7280',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: '#F3F4F6',
+          foreground: '#111827',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          DEFAULT: '#FFFFFF',
+          foreground: '#111827',
         },
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: '#FFFFFF',
+          foreground: '#111827',
         },
       },
       borderRadius: {

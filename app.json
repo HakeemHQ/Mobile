@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "Hakeem",
+    "scheme": "hakeem",
     "userInterfaceStyle": "automatic",
     "assetBundlePatterns": [
       "**/*"
@@ -16,9 +16,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1A56DB"
       },
-      "package": "com.mohamedessameldin.Hakeem"
+      "package": "com.mohamedessameldin.Hakeem",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -32,13 +33,32 @@
         {
           "image": "./assets/images/splash.png",
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#F9FAFB"
         }
       ],
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-localization",
+      "@react-native-community/datetimepicker",
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#1A56DB"
+        }
+      ],
+      "./plugins/withClockAlarm.js"
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "newArchEnabled": false,
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e7d250ab-c4c4-4e6d-a372-6d7822961474"
+      }
+    },
+    "owner": "mohamedessameldin"
   }
 }

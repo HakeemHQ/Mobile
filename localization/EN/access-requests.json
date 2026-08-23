@@ -1,0 +1,59 @@
+{
+  "title": "Access Requests",
+  "filters": {
+    "all": "All",
+    "pending": "Pending",
+    "active": "Active",
+    "rejected": "Rejected",
+    "revoked": "Revoked",
+    "expired": "Expired",
+    "redeemed": "Redeemed"
+  },
+  "statuses": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "active": "Active",
+    "rejected": "Rejected",
+    "revoked": "Revoked",
+    "expired": "Expired",
+    "redeemed": "Redeemed"
+  },
+  "unknownDoctor": "Unknown Doctor",
+  "generalSpecialty": "General",
+  "accessCode": "Access Code",
+  "expiredTag": "Expired",
+  "reject": "Reject",
+  "approve": "Approve",
+  "revokeAccess": "Revoke Access",
+  "loading": "Loading requests...",
+  "retry": "Retry",
+  "noRequests": "No access requests.",
+  "failedToFetch": "Failed to fetch access requests",
+  "failedToApprove": "Failed to approve request",
+  "failedToReject": "Failed to reject request",
+  "failedToRevoke": "Failed to revoke access",
+  "modal": {
+    "title": "Access Request Approved!",
+    "subtitle": "Provide this one-time code to Dr. {{name}}:",
+    "expiresAt": "Code expires at: {{time}}",
+    "done": "Done"
+  },
+  "emptyStates": {
+    "all": "No access requests.",
+    "allSubtitle": "You don't have any access requests right now.",
+    "pending": "No Pending Requests",
+    "pendingSubtitle": "You don't have any pending requests to approve or reject.",
+    "active": "No Active Requests",
+    "activeSubtitle": "You have no currently active access sessions.",
+    "rejected": "No Rejected Requests",
+    "rejectedSubtitle": "You don't have any rejected access requests.",
+    "revoked": "No Revoked Requests",
+    "revokedSubtitle": "You haven't revoked any access requests.",
+    "expired": "No Expired Requests",
+    "expiredSubtitle": "You have no expired access requests.",
+    "redeemed": "No Redeemed Requests",
+    "redeemedSubtitle": "You have no redeemed access requests."
+  },
+  "pendingDoctorReviewTitle": "Pending Doctor Review",
+  "pendingDoctorReviewSubtitle": "Please visit the nearest doctor to verify and activate your account. Your account will remain pending until verified."
+}
